@@ -3,6 +3,7 @@ package net.adinvas.prototype_pain;
 import com.mojang.logging.LogUtils;
 import net.adinvas.prototype_pain.events.ModEvents;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -55,6 +56,11 @@ public class PrototypePain {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
 
+        }
+
+        @SubscribeEvent
+        public static void registerKeybindings(RegisterKeyMappingsEvent event){
+            Keybinds.register(event);
         }
     }
 }
