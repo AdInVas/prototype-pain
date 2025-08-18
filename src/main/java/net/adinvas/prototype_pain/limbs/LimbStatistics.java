@@ -6,12 +6,17 @@ public class LimbStatistics {
     float pain = 0f;//
     float infection = 0f;//
     float fractureTimer = 0f;//
-    boolean dislocated = false;
+    float dislocatedTimer = 0f;
     boolean shrapnell = false;//
     boolean hasSplint = false;//
     float bleedRate = 0f;//
     float desinfectionTimer = 0f;//
-    float targetPain = 0f;//
+    float MinPain = 0f;//
+    float finalPain = 0f;
+    boolean SkinHeal = false;
+    boolean MuscleHeal = false;
+    boolean Tourniquet = false;
+    int tourniquetTimer = 0;
 
 
     LimbStatistics(){}

@@ -2,6 +2,8 @@ package net.adinvas.prototype_pain;
 
 import com.mojang.logging.LogUtils;
 import net.adinvas.prototype_pain.events.ModEvents;
+import net.adinvas.prototype_pain.item.ModItems;
+import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,10 +34,12 @@ public class PrototypePain {
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ModEvents());
+
+        ModItems.ITEMS.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-
+        event.enqueueWork(ModNetwork::register);
     }
 
     // Add the example block item to the building blocks tab

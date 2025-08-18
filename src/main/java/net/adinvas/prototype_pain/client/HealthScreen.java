@@ -1,0 +1,294 @@
+package net.adinvas.prototype_pain.client;
+
+import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.limbs.Limb;
+import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
+import net.adinvas.prototype_pain.network.ModNetwork;
+import net.adinvas.prototype_pain.network.UseMedItemPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.*;
+
+public class HealthScreen extends Screen {
+    private LimbWidget L_Hand;
+    private LimbWidget R_Hand;
+    private LimbWidget L_Arm;
+    private LimbWidget R_Arm;
+    private LimbWidget L_Foot;
+    private LimbWidget R_Foot;
+    private LimbWidget L_Leg;
+    private LimbWidget R_Leg;
+    private LimbWidget Chest;
+    private LimbWidget Head;
+    private ItemWidget MainHand;
+    private ItemWidget OffHand;
+    private HealthInfoBoxWidget healthbox;
+
+    private Player target;
+
+    private List<CustomButton> buttonList = new ArrayList<>();
+    private int listStartX = 5;
+    private int listStartY = height/4 * 3;
+
+    private LimbWidget lastClicked;
+    private LimbWidget lastHovered;
+
+
+    public HealthScreen(UUID target) {
+        super(Component.empty());
+        this.target = Minecraft.getInstance().player.level().getPlayerByUUID(target);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        int start_x = (this.width/2)+50;
+        int start_y = (this.height / 4)-25;
+        listStartX = 1;
+        listStartY = 196+2;
+        Head = new LimbWidget(start_x,start_y,32,32,Component.empty(),Limb.HEAD);
+        Chest = new LimbWidget(start_x,start_y+32,32,64,Component.empty(),Limb.CHEST);
+        L_Arm = new LimbWidget(start_x+32,start_y+32,48,16,Component.empty(),Limb.LEFT_ARM);
+        R_Arm = new LimbWidget(start_x-48,start_y+32,48,16,Component.empty(),Limb.RIGHT_ARM);
+        L_Hand = new LimbWidget(start_x+32+48,start_y+32,16,16,Component.empty(),Limb.LEFT_HAND);
+        R_Hand = new LimbWidget(start_x-48-16,start_y+32,16,16,Component.empty(),Limb.RIGHT_HAND);
+        L_Leg = new LimbWidget(start_x+16,start_y+32+64,16,48,Component.empty(),Limb.LEFT_LEG);
+        R_Leg = new LimbWidget(start_x,start_y+32+64,16,48,Component.empty(),Limb.RIGHT_LEG);
+        L_Foot = new LimbWidget(start_x+16,start_y+32+64+48,16,16,Component.empty(),Limb.LEFT_FOOT);
+        R_Foot = new LimbWidget(start_x,start_y+32+64+48,16,16,Component.empty(),Limb.RIGHT_FOOT);
+        healthbox = new HealthInfoBoxWidget(0,0,128,196,Component.empty());
+
+        MainHand = new ItemWidget(start_x-48-16-8,start_y+8, Minecraft.getInstance().player.getMainHandItem());
+        OffHand = new ItemWidget(start_x+32+48+8,start_y+8, Minecraft.getInstance().player.getOffhandItem());
+        addRenderableWidget(Head);
+        addRenderableWidget(Chest);
+        addRenderableWidget(L_Arm);
+        addRenderableWidget(L_Leg);
+        addRenderableWidget(L_Foot);
+        addRenderableWidget(L_Hand);
+        addRenderableWidget(R_Arm);
+        addRenderableWidget(R_Foot);
+        addRenderableWidget(R_Hand);
+        addRenderableWidget(R_Leg);
+        addRenderableWidget(OffHand);
+        addRenderableWidget(MainHand);
+        addRenderableWidget(healthbox);
+        Head.populate_sprites();
+        Chest.populate_sprites();
+        L_Arm.populate_sprites();
+        L_Leg.populate_sprites();
+        L_Foot.populate_sprites();
+        L_Hand.populate_sprites();
+        R_Arm.populate_sprites();
+        R_Foot.populate_sprites();
+        R_Hand.populate_sprites();
+        R_Leg.populate_sprites();
+        updateScreen();
+        ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(true,target.getUUID()));
+        lastHovered = Head;
+        healthbox.setName(Component.literal(target.getScoreboardName()));
+    }
+
+    @Override
+    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        renderBackground(pGuiGraphics);
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
+        R_Arm.renderSprites(pGuiGraphics);
+        Chest.renderSprites(pGuiGraphics);
+        Head.renderSprites(pGuiGraphics);
+        L_Arm.renderSprites(pGuiGraphics);
+        R_Hand.renderSprites(pGuiGraphics);
+        L_Hand.renderSprites(pGuiGraphics);
+        R_Leg.renderSprites(pGuiGraphics);
+        L_Leg.renderSprites(pGuiGraphics);
+        R_Foot.renderSprites(pGuiGraphics);
+        L_Foot.renderSprites(pGuiGraphics);
+        LimbWidget h = getHoveringWidget(pMouseX,pMouseY);
+        if (h!=null){
+            lastHovered = h;
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (target == null || !target.isAlive()) {
+            onClose(); // target gone
+            return;
+        }
+
+        Player viewer = Minecraft.getInstance().player;
+        double distSq = viewer.distanceToSqr(target);
+        double maxDist = 3.0D; // example, 8 blocks
+
+        if (distSq > maxDist * maxDist) {
+            onClose(); // too far -> close GUI
+            return;
+        }
+        updateScreen();
+        UpdateButtons(lastClicked);
+        target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
+            healthbox.setSkin(health.getLimbSkinHealth(lastHovered.getLimb()));
+            healthbox.setMuscle(health.getLimbMuscleHealth(lastHovered.getLimb()));
+            healthbox.setLimbname(lastHovered.getLimb());
+            healthbox.setPain2(health.getLimbPain(lastHovered.getLimb()));
+        });
+
+
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    public void updateScreen(){
+        MainHand.setStack(Minecraft.getInstance().player.getMainHandItem());
+        OffHand.setStack(Minecraft.getInstance().player.getOffhandItem());
+        target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
+            for (Limb limb : Limb.values()) {
+                LimbWidget widget = switch (limb) {
+                    case HEAD      -> Head;
+                    case CHEST     -> Chest;
+                    case LEFT_ARM  -> L_Arm;
+                    case RIGHT_ARM -> R_Arm;
+                    case LEFT_HAND -> L_Hand;
+                    case RIGHT_HAND-> R_Hand;
+                    case LEFT_LEG  -> L_Leg;
+                    case RIGHT_LEG -> R_Leg;
+                    case LEFT_FOOT -> L_Foot;
+                    case RIGHT_FOOT-> R_Foot;
+                };
+
+                // collect values once
+                float bleed = health.getLimbBleedRate(limb);
+                boolean isBleeding = bleed > 0&& !health.getTourniquet(limb)&& !health.isOppositeToChestUnderTourniquet(limb);
+                float pain = health.getLimbPain(limb);
+                float skin = health.getLimbSkinHealth(limb);
+                float muscle = health.getLimbMuscleHealth(limb);
+
+                boolean infection = health.getLimbInfection(limb) > 25;
+                boolean dislocated = health.isLimbDislocated(limb)>0;
+                boolean splint = health.hasLimbSplint(limb);
+                boolean shrapnel = health.hasLimbShrapnell(limb);
+                boolean fractured = health.getLimbFracture(limb) > 0;
+                boolean desinfection = health.getLimbDesinfected(limb) > 0;
+                boolean tourniquet = health.getTourniquet(limb);
+
+                // ---- apply to the widget ----
+                widget.setShake(pain / 100f);
+                widget.setBorder_red(1 - (skin / 100f));
+                widget.setBase_red(1 - (muscle / 100f));
+
+                if (isBleeding) {
+                    float scale = Math.max(0.7f, (bleed / health.MAX_BLEED_RATE) * 2f);
+                    widget.setScaleOf(StatusSprites.BLEED, scale);
+                }
+                widget.setSubSpriteVisible(StatusSprites.BLEED, isBleeding);
+                widget.setSubSpriteVisible(StatusSprites.DISINFECTION, desinfection);
+                widget.setSubSpriteVisible(StatusSprites.FRACTURE, fractured);
+                widget.setSubSpriteVisible(StatusSprites.INFECTION, infection);
+                widget.setSubSpriteVisible(StatusSprites.SHRAPNEL, shrapnel);
+                widget.setSubSpriteVisible(StatusSprites.SPLINT, splint);
+                widget.setSubSpriteVisible(StatusSprites.DISLOCATION, dislocated);
+                widget.setSubSpriteVisible(StatusSprites.TOURNIQUET,tourniquet);
+            }
+        });
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(false,target.getUUID()));
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics gui) {
+        super.renderBackground(gui);
+        gui.fill(0,0,this.width,this.height,0x000000FF);
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+        if (MainHand.isDragging()){
+            LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
+            if (widget!=null) {
+                Limb limb = widget.getLimb();
+                ItemStack itemstack = Minecraft.getInstance().player.getMainHandItem();
+                ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), false));
+            }
+        }else if (OffHand.isDragging()){
+            LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
+            if (widget!=null) {
+                Limb limb = widget.getLimb();
+                ItemStack itemstack = Minecraft.getInstance().player.getOffhandItem();
+                ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), true));
+            }
+        }
+        MainHand.onRelease(pMouseX,pMouseY);
+        OffHand.onRelease(pMouseX,pMouseY);
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
+    }
+
+    private LimbWidget getHoveringWidget(double pMouseX,double pMouseY){
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof LimbWidget limbwidget) {
+                if (limbwidget.isMouseOver(pMouseX,pMouseY)) return limbwidget;
+            }
+        }
+        return null;
+    }
+
+    private CustomButton getHoveringWidgetCusomButton(double pMouseX,double pMouseY){
+        for (GuiEventListener child : this.children()) {
+            if (child instanceof CustomButton limbwidget) {
+                if (limbwidget.isMouseOver(pMouseX,pMouseY)) return limbwidget;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
+        if (widget!=null) {
+            UpdateButtons(widget);
+        }
+
+        CustomButton button = getHoveringWidgetCusomButton(pMouseX,pMouseY);
+        if (button!=null){
+            UpdateButtons(lastClicked);
+        }
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    public void UpdateButtons(LimbWidget widget){
+        List<StatusSprites> statusList = new ArrayList<>();
+        if (widget!=null) {
+            for (CustomButton button : buttonList){
+                removeWidget(button);
+            }
+            buttonList= new ArrayList<>();
+            if (widget.isSpritePresent(StatusSprites.SHRAPNEL)) statusList.add(StatusSprites.SHRAPNEL);
+            if (widget.isSpritePresent(StatusSprites.DISLOCATION)) statusList.add(StatusSprites.DISLOCATION);
+            if (widget.isSpritePresent(StatusSprites.TOURNIQUET)) statusList.add(StatusSprites.TOURNIQUET);
+            if (widget.isSpritePresent(StatusSprites.SPLINT)) statusList.add(StatusSprites.SPLINT);
+            int i = 0;
+            for (StatusSprites sprite:statusList){
+                buttonList.add(new CustomButton(listStartX,listStartY+(16*i),sprite,widget.getLimb(),target));
+                addRenderableWidget(buttonList.get(i));
+                i++;
+            }
+            lastClicked = widget;
+        }
+    }
+}

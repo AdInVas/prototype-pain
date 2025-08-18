@@ -1,0 +1,16 @@
+{  "prototype_pain.gui.tourniquet_button": "Remove Tourniquet",
+"prototype_pain.gui.dislocation_button": "Fix Dislocation",
+"prototype_pain.gui.shrapnel_button": "Remove Shrapnel",
+"prototype_pain.gui.splint_button": "Remove Splint",
+"prototype_pain.limb.chest": "Torso",
+"prototype_pain.limb.lfoot": "Left Foot",
+"prototype_pain.limb.head": "Head",
+"prototype_pain.limb.rleg": "Right Leg",
+"prototype_pain.limb.rfoot": "Right Foot",
+"prototype_pain.limb.lleg": "Left Leg",
+"prototype_pain.limb.larm": "Left Arm",
+"prototype_pain.limb.lhand": "Left Hand",
+"prototype_pain.limb.rarm": "Right Arm",
+"prototype_pain.limb.rhand": "Right Hand"
+
+}

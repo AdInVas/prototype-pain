@@ -14,4 +14,6 @@ public class Keybinds {
     public static void register(RegisterKeyMappingsEvent event){
         event.register(OPEN_PAIN_GUI);
     }
+
+
 }

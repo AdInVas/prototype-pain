@@ -1,12 +1,18 @@
 package net.adinvas.prototype_pain.events;
 
+import net.adinvas.prototype_pain.Keybinds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.client.HealthScreen;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.SyncTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -15,9 +21,13 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.server.ServerLifecycleHooks;
+
+import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID)
 public class ModEvents {
+
 
     @SubscribeEvent
     public void onAttachCap(AttachCapabilitiesEvent<Entity> event) {
@@ -47,12 +57,32 @@ public class ModEvents {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.side == LogicalSide.SERVER){
+            if (event.phase!= TickEvent.Phase.START)return;
             if (event.player instanceof ServerPlayer player) {
                 event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(playerHealthData -> {
                     playerHealthData.tickUpdate(player);
                 });
             }
         }
+        /*
+            if (event.player instanceof Player) {
+                if (Keybinds.OPEN_PAIN_GUI.isDown()) {
+                    Keybinds.OPEN_PAIN_GUI.consumeClick();
+
+                    Player target = getLookedAtPlayer(event.player, 2);
+                    boolean self = target==null||event.player.isShiftKeyDown();
+                    if (event.side == LogicalSide.CLIENT) {
+                        if (self){
+                            Minecraft.getInstance().setScreen(new HealthScreen(event.player));
+                        }else {
+                            Minecraft.getInstance().setScreen(new HealthScreen(target));
+                        }
+                    }
+                }
+            }
+            //Doesnt work IG.
+         */
+
     }
 
     @SubscribeEvent
@@ -61,4 +91,45 @@ public class ModEvents {
 
         }
     }
+
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            SyncTracker.tick(ServerLifecycleHooks.getCurrentServer());
+        }
+    }
+
+
+
+    public static Player getLookedAtPlayer(Player viewer, double maxDistance) {
+        Vec3 eyePos = viewer.getEyePosition(1.0F);
+        Vec3 lookVec = viewer.getLookAngle();
+        Vec3 reachVec = eyePos.add(lookVec.scale(maxDistance));
+
+        AABB searchBox = viewer.getBoundingBox()
+                .expandTowards(lookVec.scale(maxDistance))
+                .inflate(1.0D); // widen a bit so it's easier to hit
+
+        // find closest player along the ray
+        Player nearest = null;
+        double nearestDist = maxDistance;
+
+        for (Player target : viewer.level().getEntitiesOfClass(Player.class, searchBox)) {
+            if (target == viewer) continue; // skip self
+
+            AABB hitBox = target.getBoundingBox().inflate(0.3); // tolerance
+            Optional<Vec3> hit = hitBox.clip(eyePos, reachVec);
+
+            if (hit.isPresent()) {
+                double dist = eyePos.distanceTo(hit.get());
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearest = target;
+                }
+            }
+        }
+
+        return nearest;
+    }
+
 }

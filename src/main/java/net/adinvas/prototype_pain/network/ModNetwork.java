@@ -1,0 +1,27 @@
+package net.adinvas.prototype_pain.network;
+
+import net.adinvas.prototype_pain.PrototypePain;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
+
+public class ModNetwork {
+    private static final String PROTOCOL_VERSION = "1";
+    public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(PrototypePain.MOD_ID, "main"), // channel name (unique per mod)
+            () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals,
+            PROTOCOL_VERSION::equals
+    );
+
+
+    public static void register() {
+        // Register your packets here
+        CHANNEL.registerMessage(0,SyncHealthPacket.class,SyncHealthPacket::write,SyncHealthPacket::new,SyncHealthPacket::handle);
+        CHANNEL.registerMessage(1, GuiSyncTogglePacket.class, GuiSyncTogglePacket::write, GuiSyncTogglePacket::new, GuiSyncTogglePacket::handle);
+        CHANNEL.registerMessage(2, UseMedItemPacket.class, UseMedItemPacket::write, UseMedItemPacket::new, UseMedItemPacket::handle);
+        CHANNEL.registerMessage(3, MedicalActionPacket.class, MedicalActionPacket::write, MedicalActionPacket::new, MedicalActionPacket::handle);
+
+    }
+}
