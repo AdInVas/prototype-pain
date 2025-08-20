@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.client;
+package net.adinvas.prototype_pain.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,7 +20,7 @@ public class SubSprite {
 
     private int tickCount = 0;
 
-    public SubSprite(StatusSprites sprite,float parentX, float parentY) {
+    public SubSprite(StatusSprites sprite, float parentX, float parentY) {
         this.txt = sprite.getResourceLocation();
         this.txtWidth = 16;
         this.txtHeight = 16;

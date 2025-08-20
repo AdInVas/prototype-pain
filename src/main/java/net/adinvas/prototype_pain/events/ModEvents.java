@@ -1,15 +1,14 @@
 package net.adinvas.prototype_pain.events;
 
-import net.adinvas.prototype_pain.Keybinds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.client.HealthScreen;
+import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -17,7 +16,9 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -64,6 +65,19 @@ public class ModEvents {
                 });
             }
         }
+        Player player = event.player;
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            boolean isUnc = h.getContiousness()<=4;
+            if (isUnc){
+                player.setDeltaMovement(0, 0, 0);
+                player.zza = 0;
+                player.xxa = 0;
+                player.yRotO = 0; // Stop looking around
+                player.xRotO = 0;
+                player.setPose(Pose.SLEEPING);
+            }
+        });
+
         /*
             if (event.player instanceof Player) {
                 if (Keybinds.OPEN_PAIN_GUI.isDown()) {
@@ -96,6 +110,7 @@ public class ModEvents {
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             SyncTracker.tick(ServerLifecycleHooks.getCurrentServer());
+            SyncTracker.tickEveryone(ServerLifecycleHooks.getCurrentServer());
         }
     }
 
@@ -130,6 +145,28 @@ public class ModEvents {
         }
 
         return nearest;
+    }
+
+    @SubscribeEvent
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getEntity();
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            boolean isUnc = h.getContiousness()<=4;
+            if (isUnc){
+                event.setCanceled(true);
+            }
+        });
+    }
+
+    @SubscribeEvent
+    public void onAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            boolean isUnc = h.getContiousness()<=4;
+            if (isUnc){
+                event.setCanceled(true);
+            }
+        });
     }
 
 }

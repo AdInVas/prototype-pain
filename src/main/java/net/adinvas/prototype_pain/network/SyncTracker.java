@@ -34,5 +34,30 @@ public class SyncTracker {
         }
     }
 
+    static int tickCounter = 0;
+    public static void tickEveryone(MinecraftServer server){
+        tickCounter++;
+        if (tickCounter<3){
+            return;
+        }else{
+            tickCounter = 0;
+        }
+        for (ServerPlayer viewer : server.getPlayerList().getPlayers()) {
+            UUID targetId = syncing.get(viewer.getUUID());
+            if (targetId==viewer.getUUID())return;
+            targetId = viewer.getUUID();
+            if (targetId != null) {
+                ServerPlayer target = server.getPlayerList().getPlayer(targetId);
+                if (target != null) {
+                    target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(cap -> {
+                        CompoundTag tag = cap.serializeNBT(new CompoundTag());
+                        ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> viewer), new SyncHealthPacket(tag, target.getUUID())
+                        );
+                    });
+                }
+            }
+        }
+    }
+
 
 }

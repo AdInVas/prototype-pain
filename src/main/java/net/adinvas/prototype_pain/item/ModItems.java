@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,6 +16,6 @@ public class ModItems {
     ));
     public static final RegistryObject<Item> Tourniquet = ITEMS.register("tourniquet",()->new TourniquetItem(new Item.Properties().stacksTo(1)));
 
-
+    public static final RegistryObject<Item> Alcohol = ITEMS.register("alcohol", ()-> new AlcoholItem(new Item.Properties().durability(4).food(new FoodProperties.Builder().alwaysEat().build())));
 
 }

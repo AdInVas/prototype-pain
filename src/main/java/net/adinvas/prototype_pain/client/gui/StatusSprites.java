@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.client;
+package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.network.chat.Component;

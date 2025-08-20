@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.client;
+package net.adinvas.prototype_pain.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.adinvas.prototype_pain.PrototypePain;
@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,7 +23,7 @@ public class LimbWidget extends AbstractWidget {
     private int txt_height;
     private int txt_width;
 
-    private final Map<StatusSprites,SubSprite> subSprites = new EnumMap<>(StatusSprites.class);
+    private final Map<StatusSprites, SubSprite> subSprites = new EnumMap<>(StatusSprites.class);
     private boolean expanded = false;
 
 

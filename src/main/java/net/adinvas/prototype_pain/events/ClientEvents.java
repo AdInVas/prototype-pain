@@ -1,8 +1,12 @@
 package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.Keybinds;
+import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.client.HealthScreen;
+import net.adinvas.prototype_pain.client.ContiousnessOverlay;
+import net.adinvas.prototype_pain.client.OverlayController;
+import net.adinvas.prototype_pain.client.PainOverlay;
+import net.adinvas.prototype_pain.client.gui.HealthScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,18 +19,32 @@ import net.minecraftforge.fml.common.Mod;
 public class ClientEvents {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
-        if (Keybinds.OPEN_PAIN_GUI.isDown()) {
-            Keybinds.OPEN_PAIN_GUI.consumeClick();
+        if (event.side== LogicalSide.CLIENT) {
+            if (Keybinds.OPEN_PAIN_GUI.isDown()) {
+                Keybinds.OPEN_PAIN_GUI.consumeClick();
 
-            Player target = ModEvents.getLookedAtPlayer(event.player, 2);
-            boolean self = target == null || event.player.isShiftKeyDown();
-            if (event.side== LogicalSide.CLIENT) {
+                Player target = ModEvents.getLookedAtPlayer(event.player, 2);
+                boolean self = target == null || event.player.isShiftKeyDown();
+
                 if (self) {
                     Minecraft.getInstance().setScreen(new HealthScreen(event.player.getUUID()));
                 } else {
                     Minecraft.getInstance().setScreen(new HealthScreen(target.getUUID()));
                 }
+
             }
         }
+        if (event.player!=null){
+            event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                double pain = h.getTotalPain();
+                pain = pain/100;
+                PainOverlay overlay = OverlayController.getOverlay(PainOverlay.class);
+                overlay.setIntensity((float) pain);
+                ContiousnessOverlay conc = OverlayController.getOverlay(ContiousnessOverlay.class);
+                float contiousness = (100-h.getContiousness())/100;
+                conc.setIntensity(contiousness);
+            });
+        }
+
     }
 }

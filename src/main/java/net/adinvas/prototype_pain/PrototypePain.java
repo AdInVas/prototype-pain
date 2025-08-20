@@ -1,6 +1,9 @@
 package net.adinvas.prototype_pain;
 
 import com.mojang.logging.LogUtils;
+import net.adinvas.prototype_pain.client.ContiousnessOverlay;
+import net.adinvas.prototype_pain.client.PainOverlay;
+import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.events.ModEvents;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.network.ModNetwork;
@@ -36,6 +39,8 @@ public class PrototypePain {
         MinecraftForge.EVENT_BUS.register(new ModEvents());
 
         ModItems.ITEMS.register(modEventBus);
+        OverlayController.registerOverlay(new PainOverlay());
+        OverlayController.registerOverlay(new ContiousnessOverlay());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
