@@ -22,6 +22,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(1, GuiSyncTogglePacket.class, GuiSyncTogglePacket::write, GuiSyncTogglePacket::new, GuiSyncTogglePacket::handle);
         CHANNEL.registerMessage(2, UseMedItemPacket.class, UseMedItemPacket::write, UseMedItemPacket::new, UseMedItemPacket::handle);
         CHANNEL.registerMessage(3, MedicalActionPacket.class, MedicalActionPacket::write, MedicalActionPacket::new, MedicalActionPacket::handle);
-
+        CHANNEL.registerMessage(4, UseNarcoticItemPacket.class,UseNarcoticItemPacket::write,UseNarcoticItemPacket::new,UseNarcoticItemPacket::handle);
     }
 }

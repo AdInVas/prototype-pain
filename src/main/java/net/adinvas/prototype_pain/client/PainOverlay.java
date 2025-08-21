@@ -30,8 +30,8 @@ public class PainOverlay implements IOverlay{
         // --- Compute pulsing intensity ---
         double time = (mc.level.getGameTime() + partialTicks) / 20.0; // 20 ticks = 1 second
         float pulse = (float)(Math.sin(time * Math.PI * pulseSpeed) * 0.5 + 0.5f);
-        double intensity = strength*baseIntensity * (1.0f - pulseStrength + pulse * pulseStrength);
-        if (intensity<strength*baseIntensity){
+        double intensity = Math.pow(strength,4)*baseIntensity * (1.0f - pulseStrength + pulse * pulseStrength);
+        if (intensity<Math.pow(strength,4)*baseIntensity){
             intensity*=2;
         }
         lastIntensity = Mth.lerp(0.01,lastIntensity,intensity);

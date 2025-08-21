@@ -18,4 +18,10 @@ public class ModItems {
 
     public static final RegistryObject<Item> Alcohol = ITEMS.register("alcohol", ()-> new AlcoholItem(new Item.Properties().durability(4).food(new FoodProperties.Builder().alwaysEat().build())));
 
+    public static final RegistryObject<Item> BruiseKit = ITEMS.register("bruise_kit",()->new BruiseKitItem(new Item.Properties().durability(4)));
+
+    public static final  RegistryObject<Item> Opium = ITEMS.register("opium", OpiumItem::new);
+
+    public static final RegistryObject<Item> Saline = ITEMS.register("saline",()->new SalineItem(new Item.Properties().stacksTo(1)));
+
 }

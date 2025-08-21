@@ -69,7 +69,6 @@ public class ModEvents {
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             boolean isUnc = h.getContiousness()<=4;
             if (isUnc){
-                player.setDeltaMovement(0, 0, 0);
                 player.zza = 0;
                 player.xxa = 0;
                 player.yRotO = 0; // Stop looking around

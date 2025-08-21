@@ -22,6 +22,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -105,6 +106,25 @@ public class HitboxEvents {
         ));
     }
 
+    @SubscribeEvent
+    public static void onFall(LivingFallEvent event){
+        if (event.getEntity() instanceof Player player) {
+            float distance = event.getDistance();
+            float damageMultiplier = event.getDamageMultiplier();
 
+            // Calculate vanilla fall damage
+            float damage = (distance - 3.0F) * damageMultiplier;
+
+            if (damage > 0) {
+                // Cancel vanilla damage
+                event.setCanceled(true);
+
+                // Call your custom fall damage handler
+               player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                   h.handleFallDamage(damage);
+               });
+            }
+        }
+    }
 
 }

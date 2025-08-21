@@ -1,10 +1,13 @@
 package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.item.INarcotic;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
+import net.adinvas.prototype_pain.network.UseNarcoticItemPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -29,6 +32,7 @@ public class HealthScreen extends Screen {
     private ItemWidget MainHand;
     private ItemWidget OffHand;
     private HealthInfoBoxWidget healthbox;
+    private NarcoticWidget narcoticWidget;
 
     private Player target;
 
@@ -38,6 +42,8 @@ public class HealthScreen extends Screen {
 
     private LimbWidget lastClicked;
     private LimbWidget lastHovered;
+
+    private boolean lastHandOffHand= false;
 
 
     public HealthScreen(UUID target) {
@@ -66,6 +72,7 @@ public class HealthScreen extends Screen {
 
         MainHand = new ItemWidget(start_x-48-16-8,start_y+8, Minecraft.getInstance().player.getMainHandItem());
         OffHand = new ItemWidget(start_x+32+48+8,start_y+8, Minecraft.getInstance().player.getOffhandItem());
+        narcoticWidget = new NarcoticWidget(this.width/2-64,this.height/2-32,128,64,Component.empty());
         addRenderableWidget(Head);
         addRenderableWidget(Chest);
         addRenderableWidget(L_Arm);
@@ -79,6 +86,7 @@ public class HealthScreen extends Screen {
         addRenderableWidget(OffHand);
         addRenderableWidget(MainHand);
         addRenderableWidget(healthbox);
+        addRenderableWidget(narcoticWidget);
         Head.populate_sprites();
         Chest.populate_sprites();
         L_Arm.populate_sprites();
@@ -118,6 +126,7 @@ public class HealthScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
+        narcoticWidget.tick();
         if (target == null || !target.isAlive()) {
             onClose(); // target gone
             return;
@@ -138,9 +147,25 @@ public class HealthScreen extends Screen {
             healthbox.setMuscle(health.getLimbMuscleHealth(lastHovered.getLimb()));
             healthbox.setLimbname(lastHovered.getLimb());
             healthbox.setPain2(health.getLimbPain(lastHovered.getLimb()));
+            healthbox.setBleed2(health.getLimbBleedRate(lastHovered.getLimb()));
+            healthbox.setPain((float)health.getTotalPain());
+            healthbox.setContiousness(health.getContiousness());
+            healthbox.setBlood(health.getBloodVolume());
+            healthbox.setBleed(health.getCombinedBleed());
+            healthbox.setInfection(health.getLimbInfection(lastHovered.getLimb()));
+            healthbox.setOpiates(health.getOpioids());
+            healthbox.setOxygen(health.getOxygen());
+            healthbox.setDislocated(health.getLimbDislocated(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T);
+            healthbox.setFracture(health.getLimbFracture(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T);
         });
-
-
+        if (narcoticWidget.getReleased()>1){
+            ItemStack itemstack = narcoticWidget.getRememberItemstack();
+            float currentdamage = (itemstack.getMaxDamage()-itemstack.getDamageValue())/100f;
+            float nextdamage = narcoticWidget.getAmountleft();
+            float amountUsed = (currentdamage-nextdamage);
+            ModNetwork.CHANNEL.sendToServer(new UseNarcoticItemPacket(itemstack,amountUsed,target.getUUID(),lastHandOffHand));
+            narcoticWidget.setNull();
+        }
     }
 
     @Override
@@ -217,18 +242,32 @@ public class HealthScreen extends Screen {
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
         if (MainHand.isDragging()){
+            narcoticWidget.setNull();
             LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
             if (widget!=null) {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = Minecraft.getInstance().player.getMainHandItem();
-                ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), false));
+                if (itemstack.getItem() instanceof INarcotic){
+                    float damage = ((100-itemstack.getDamageValue())/100f);
+                    narcoticWidget.setDisplay(damage,itemstack);
+                    lastHandOffHand = false;
+                }else {
+                    ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), false));
+                }
             }
         }else if (OffHand.isDragging()){
+            narcoticWidget.setNull();
             LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
             if (widget!=null) {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = Minecraft.getInstance().player.getOffhandItem();
-                ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), true));
+                if (itemstack.getItem() instanceof INarcotic){
+                    float damage = ((itemstack.getMaxDamage()-itemstack.getDamageValue())/100f);
+                    narcoticWidget.setDisplay(damage,itemstack);
+                    lastHandOffHand = true;
+                }else {
+                    ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), true));
+                }
             }
         }
         MainHand.onRelease(pMouseX,pMouseY);

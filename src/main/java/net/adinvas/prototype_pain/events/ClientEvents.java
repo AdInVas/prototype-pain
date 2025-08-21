@@ -37,11 +37,14 @@ public class ClientEvents {
         if (event.player!=null){
             event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 double pain = h.getTotalPain();
+                float contiousness = (100-h.getContiousness())/100;
                 pain = pain/100;
+                if (contiousness>99){
+                    pain = 0;
+                }
                 PainOverlay overlay = OverlayController.getOverlay(PainOverlay.class);
                 overlay.setIntensity((float) pain);
                 ContiousnessOverlay conc = OverlayController.getOverlay(ContiousnessOverlay.class);
-                float contiousness = (100-h.getContiousness())/100;
                 conc.setIntensity(contiousness);
             });
         }

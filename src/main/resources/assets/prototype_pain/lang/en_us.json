@@ -11,6 +11,7 @@
 "prototype_pain.limb.larm": "Left Arm",
 "prototype_pain.limb.lhand": "Left Hand",
 "prototype_pain.limb.rarm": "Right Arm",
-"prototype_pain.limb.rhand": "Right Hand"
+"prototype_pain.limb.rhand": "Right Hand",
+"prototype_pain.gui.inject": "Inject"
 
 }
