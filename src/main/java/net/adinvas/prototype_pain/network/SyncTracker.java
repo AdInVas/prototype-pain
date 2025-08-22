@@ -4,6 +4,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.network.PacketDistributor;
 import java.util.*;
 

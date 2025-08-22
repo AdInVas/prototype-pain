@@ -7,11 +7,13 @@ import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -55,6 +57,8 @@ public class ModEvents {
         event.register(PlayerHealthData.class);
     }
 
+
+
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.side == LogicalSide.SERVER){
@@ -62,21 +66,14 @@ public class ModEvents {
             if (event.player instanceof ServerPlayer player) {
                 event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(playerHealthData -> {
                     playerHealthData.tickUpdate(player);
+                    boolean usingArm = player.isUsingItem();
+                    if (usingArm){
+                        InteractionHand hand = player.getUsedItemHand();
+                        playerHealthData.onArmUse(hand);
+                    }
                 });
             }
         }
-        Player player = event.player;
-        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            boolean isUnc = h.getContiousness()<=4;
-            if (isUnc){
-                player.zza = 0;
-                player.xxa = 0;
-                player.yRotO = 0; // Stop looking around
-                player.xRotO = 0;
-                player.setPose(Pose.SLEEPING);
-            }
-        });
-
         /*
             if (event.player instanceof Player) {
                 if (Keybinds.OPEN_PAIN_GUI.isDown()) {

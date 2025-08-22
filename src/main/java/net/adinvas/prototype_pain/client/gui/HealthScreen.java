@@ -1,8 +1,7 @@
 package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.item.INarcotic;
+import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
@@ -155,8 +154,8 @@ public class HealthScreen extends Screen {
             healthbox.setInfection(health.getLimbInfection(lastHovered.getLimb()));
             healthbox.setOpiates(health.getOpioids());
             healthbox.setOxygen(health.getOxygen());
-            healthbox.setDislocated(health.getLimbDislocated(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T);
-            healthbox.setFracture(health.getLimbFracture(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T);
+            healthbox.setDislocated((health.getLimbDislocated(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T)*100);
+            healthbox.setFracture((health.getLimbFracture(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T)*100);
         });
         if (narcoticWidget.getReleased()>1){
             ItemStack itemstack = narcoticWidget.getRememberItemstack();
@@ -247,7 +246,7 @@ public class HealthScreen extends Screen {
             if (widget!=null) {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = Minecraft.getInstance().player.getMainHandItem();
-                if (itemstack.getItem() instanceof INarcotic){
+                if (itemstack.getItem() instanceof INarcoticUsable){
                     float damage = ((100-itemstack.getDamageValue())/100f);
                     narcoticWidget.setDisplay(damage,itemstack);
                     lastHandOffHand = false;
@@ -261,7 +260,7 @@ public class HealthScreen extends Screen {
             if (widget!=null) {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = Minecraft.getInstance().player.getOffhandItem();
-                if (itemstack.getItem() instanceof INarcotic){
+                if (itemstack.getItem() instanceof INarcoticUsable){
                     float damage = ((itemstack.getMaxDamage()-itemstack.getDamageValue())/100f);
                     narcoticWidget.setDisplay(damage,itemstack);
                     lastHandOffHand = true;

@@ -4,7 +4,9 @@ package net.adinvas.prototype_pain.hitbox;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.Limb;
+import net.adinvas.prototype_pain.tags.ModDamageTypeTags;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
@@ -22,42 +24,68 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.List;
+import java.util.Random;
 
 @Mod.EventBusSubscriber
 public class HitboxEvents {
 
     @SubscribeEvent
-    public static void onLivingAttack(LivingAttackEvent event){
+    public static void onLivingDamage(LivingDamageEvent event){
         if (!(event.getEntity() instanceof Player player))return;
-        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
         float damageamount = event.getAmount();
         if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
+        if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)){
+            Entity directEntity = event.getSource().getDirectEntity();
+            if (!(directEntity instanceof Projectile projectile)) return;
+            Vec3 hitPos = projectile.position();
 
-        HitResult result = raytraceMeleeHit(attacker, player);
-        if (result instanceof EntityHitResult entityResult && entityResult.getEntity() == player) {
-            Vec3 hitPos = entityResult.getLocation();
+            // Your custom hit sector logic
             HitSector hit = detectHit(player, hitPos);
+            // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
+            float finalDamage = event.getAmount();
 
-
-
+            // Call into your capability with final damage
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.handleProjectileDamage(hit, finalDamage);
+            });
         }
-        event.setCanceled(true);
-    }
+        else if (event.getSource().getEntity() instanceof LivingEntity attacker) {
+            HitResult result = raytraceMeleeHit(attacker, player);
+            if (result instanceof EntityHitResult entityResult && entityResult.getEntity() == player) {
+                Vec3 hitPos = entityResult.getLocation();
+                HitSector hit = detectHit(player, hitPos);
+                List<Limb> limbList = hit.getLimbsPerSector();
+                Random random = new Random();
+                Limb limb = limbList.get(random.nextInt(limbList.size()));
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                    h.applyPain(limb,h.painFromDamage(damageamount));
+                    h.applySkinDamage(limb,damageamount*0.8f);
+                    h.applyMuscleDamage(limb,damageamount*0.3f);
+                    if (random.nextBoolean()){
+                        h.applyBleedDamage(limb,damageamount);
+                    }
+                });
 
-
-
-    @SubscribeEvent
-    public static void onProjectileImpact(ProjectileImpactEvent event){
-        if (!(event.getRayTraceResult()instanceof EntityHitResult entityHitResult))return;
-        if (entityHitResult.getEntity() instanceof Player player){
-           HitSector hit =  detectHit(player,entityHitResult.getLocation());
-
-
-
+            }
         }
+       else if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)){
+           player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+               h.handleExplosionDamage(damageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL));
+           });
+       }
+       else{
+           player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+               h.handleRandomDamage(damageamount);
+           });
+        }
+
+        event.setAmount(0);
     }
 
     public static HitSector detectHit(Player player, Vec3 hitpos){

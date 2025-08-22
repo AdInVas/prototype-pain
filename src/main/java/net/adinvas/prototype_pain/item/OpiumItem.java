@@ -1,15 +1,13 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class OpiumItem extends Item implements INarcotic {
+public class OpiumItem extends Item implements INarcoticUsable {
 
     public OpiumItem() {
         super(new Properties().durability(100));

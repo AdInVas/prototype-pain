@@ -5,8 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "prototype_pain.refmap.json",
   "mixins": [
+    "PlayerMixin"
   ],
   "client": [
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

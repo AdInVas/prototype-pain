@@ -23,5 +23,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(2, UseMedItemPacket.class, UseMedItemPacket::write, UseMedItemPacket::new, UseMedItemPacket::handle);
         CHANNEL.registerMessage(3, MedicalActionPacket.class, MedicalActionPacket::write, MedicalActionPacket::new, MedicalActionPacket::handle);
         CHANNEL.registerMessage(4, UseNarcoticItemPacket.class,UseNarcoticItemPacket::write,UseNarcoticItemPacket::new,UseNarcoticItemPacket::handle);
+        CHANNEL.registerMessage(5, LegUsePacket.class,LegUsePacket::toBytes,LegUsePacket::new,LegUsePacket::handle);
     }
 }

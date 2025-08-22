@@ -5,6 +5,7 @@ import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.events.ModEvents;
+import net.adinvas.prototype_pain.item.ModCreativeTab;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,6 +42,7 @@ public class PrototypePain {
         ModItems.ITEMS.register(modEventBus);
         OverlayController.registerOverlay(new PainOverlay());
         OverlayController.registerOverlay(new ContiousnessOverlay());
+        ModCreativeTab.CREATIVE_TABS.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
