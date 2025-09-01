@@ -5,6 +5,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
+import net.minecraft.client.telemetry.TelemetryProperty;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -64,6 +65,7 @@ public class ModEvents {
         if(event.side == LogicalSide.SERVER){
             if (event.phase!= TickEvent.Phase.START)return;
             if (event.player instanceof ServerPlayer player) {
+                if (player.gameMode.isCreative())return;
                 event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(playerHealthData -> {
                     playerHealthData.tickUpdate(player);
                     boolean usingArm = player.isUsingItem();
@@ -143,26 +145,5 @@ public class ModEvents {
         return nearest;
     }
 
-    @SubscribeEvent
-    public void onInteract(PlayerInteractEvent event) {
-        Player player = event.getEntity();
-        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            boolean isUnc = h.getContiousness()<=4;
-            if (isUnc){
-                event.setCanceled(true);
-            }
-        });
-    }
-
-    @SubscribeEvent
-    public void onAttack(AttackEntityEvent event) {
-        Player player = event.getEntity();
-        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            boolean isUnc = h.getContiousness()<=4;
-            if (isUnc){
-                event.setCanceled(true);
-            }
-        });
-    }
 
 }

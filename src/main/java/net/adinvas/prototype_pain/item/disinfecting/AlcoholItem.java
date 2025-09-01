@@ -1,20 +1,28 @@
-package net.adinvas.prototype_pain.item;
+package net.adinvas.prototype_pain.item.disinfecting;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class AlcoholItem extends Item implements IMedUsable {
-    public AlcoholItem(Properties pProperties) {
-        super(pProperties);
+    public AlcoholItem() {
+        super(new Item.Properties().durability(4).food(new FoodProperties.Builder().alwaysEat().build()));
     }
 
     @Override
@@ -44,5 +52,11 @@ public class AlcoholItem extends Item implements IMedUsable {
     @Override
     public int getUseDuration(ItemStack stack) {
         return 32;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.alcohol.discription").withStyle(ChatFormatting.GRAY));
     }
 }

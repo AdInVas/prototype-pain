@@ -154,8 +154,8 @@ public class HealthScreen extends Screen {
             healthbox.setInfection(health.getLimbInfection(lastHovered.getLimb()));
             healthbox.setOpiates(health.getOpioids());
             healthbox.setOxygen(health.getOxygen());
-            healthbox.setDislocated((health.getLimbDislocated(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T)*100);
-            healthbox.setFracture((health.getLimbFracture(lastHovered.getLimb())/health.MAX_FRACT_DISL_TIME_T)*100);
+            healthbox.setDislocated((health.getLimbDislocated(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
+            healthbox.setFracture((health.getLimbFracture(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
         });
         if (narcoticWidget.getReleased()>1){
             ItemStack itemstack = narcoticWidget.getRememberItemstack();
@@ -165,6 +165,10 @@ public class HealthScreen extends Screen {
             ModNetwork.CHANNEL.sendToServer(new UseNarcoticItemPacket(itemstack,amountUsed,target.getUUID(),lastHandOffHand));
             narcoticWidget.setNull();
         }
+        Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            if (h.getContiousness()<=4)
+                Minecraft.getInstance().setScreen(null);
+        });
     }
 
     @Override
@@ -211,7 +215,7 @@ public class HealthScreen extends Screen {
                 widget.setBase_red(1 - (muscle / 100f));
 
                 if (isBleeding) {
-                    float scale = Math.max(0.7f, (bleed / health.MAX_BLEED_RATE) * 2f);
+                    float scale = Math.max(0.7f, (bleed / health.getMAX_BLEED_RATE()) * 2f);
                     widget.setScaleOf(StatusSprites.BLEED, scale);
                 }
                 widget.setSubSpriteVisible(StatusSprites.BLEED, isBleeding);

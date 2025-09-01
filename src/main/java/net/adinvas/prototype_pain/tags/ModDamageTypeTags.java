@@ -8,6 +8,9 @@ import net.minecraft.world.damagesource.DamageType;
 
 public class ModDamageTypeTags {
     public static final TagKey<DamageType> SHRAPNELL = tag("shrapnel");
+    public static final TagKey<DamageType> MAGIC = tag("magic");
+    public static final TagKey<DamageType> IGNORE = tag("ignore");
+    public static final TagKey<DamageType> ABSTRACT_PROJECTILE = tag("abstract_projectile");
 
     private static TagKey<DamageType> tag(String name) {
         return TagKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(PrototypePain.MOD_ID, name));

@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "createbigcannons:shrapnel",
+    "createbigcannons:big_cannon_projectile",
+    "createbigcannons:cannon_projectile",
+    "createbigcannons:grapeshot",
+    "createbigcannons:machine_gun_fire",
+    "createbigcannons:machine_gun_fire_in_water",
+    "createbigcannons:traffic_cone"
+  ]
+}

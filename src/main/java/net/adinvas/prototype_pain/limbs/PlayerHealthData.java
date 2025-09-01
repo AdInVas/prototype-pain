@@ -1,7 +1,8 @@
 package net.adinvas.prototype_pain.limbs;
 
-import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
 import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
@@ -38,6 +39,7 @@ public class PlayerHealthData {
     private boolean isBreathing = true;
     private boolean respitoryArrest = false;
     private float deathTimer = 0;
+    private float bloodViscosity = 0;
 
     //passtrough values
     private int hungerLevel = 20;
@@ -45,40 +47,76 @@ public class PlayerHealthData {
 
 
 
-    // Constants — ALL values now in per-tick units
-    public final float INFECTION_RATE = (.25f) / 20f;           // 1% per second infection growth
-    public final float DESINFECTION_RATE = (3.0f) / 20f;        // 3% per second healing from disinfection
-    public final double WUND_ANTIBLEED_RATE = (0.02f) / 20f;   // L per second → per tick
-    public final float INFECTION_CHANCE = (0.001f) / 20f;         // (5%) chance per second → per tick
-    public final float INFECTION_MUSCLE_DRAIN = (0.4f) / 20f;   // % per second muscle health loss
-    public final float HEMOTHORAX_HEAL_RATE = (0.1f) / 20f;     // points per second
 
-    // Oxygen changes
-    public final float OXYGEN_REPLENISH = (8f) / 20f;           // % per second
-    public final float OXYGEN_DRAIN = (5f) / 20f;               // % per second
-
-    // Blood regen & bleeding
-    public final float BLOOD_REGEN_RATE = (0.001f) / 20f;       // L per second
-    public final float MAX_BLEED_RATE = (0.03f) / 20f;          // L per second
-
-    // Damage scaling
-    public final float DAMAGE_SCALE = 5f;
-    public final float PAIN_PER_DAMAGE = 5f;
-    public final float OPIATE_PAIN_REDUCTION = 0.4f;
-    public final float FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE = 0.33f;
-    public final int MAX_FRACT_DISL_TIME_T = 5*60*20;
-
-    // Limb healing rates
-    public final float NORMAL_LIMB_HEAL_RATE =  (0.04f) / 20f;    // % per second
-    public final float BOOSTED_LIMB_HEAL_RATE = (0.125f) / 20f;   // % per second
-
-    public final float MANUAL_SHRAPNEL_SUCCESS_CHANCE = 0.30f;
-    public final float DISLOCATION_FIX_CHANCE = 0.7f;
-
-    // Tourniquet behavior
-    public final float TOURNIQUET_PAIN_PER_TICK = 1f / (20f);
-    public final int TOURNIQUET_SAFE_TICKS = 20 * 60*5;                 // 60s before muscle damage starts
-    public final float TOURNIQUET_MUSCLE_DAMAGE = 1.5f / 20f;         // 1.5 per second
+    public float getINFECTION_RATE(){
+        return (float) (ServerConfig.INFECTION_RATE.get()/20f);
+    }
+    public float getDISINFECTION_RATE(){
+        return (float) (ServerConfig.DISINFECTION_RATE.get()/20f);
+    }
+    public double getWUND_ANTIBLEED_RATE(){
+        return ServerConfig.WUND_ANTIBLEED_RATE.get()/20f;
+    }
+    public float getINFECTION_CHANCE(){
+        return (float) (ServerConfig.INFECTION_CHANCE.get()/20f);
+    }
+    public float getINFECTION_MUSCLE_DRAIN(){
+        return (float) (ServerConfig.INFECTION_MUSCLE_DRAIN.get()/20f);
+    }
+    public float getHEMOTHORAX_HEAL_RATE(){
+        return (float) (ServerConfig.HEMOTHORAX_HEAL_RATE.get()/20f);
+    }
+    public float getOXYGEN_REPLENISH(){
+        return (float) (ServerConfig.OXYGEN_REPLENISH.get()/20f);
+    }
+    public float getOXYGEN_DRAIN(){
+        return (float) (ServerConfig.OXYGEN_DRAIN.get()/20f);
+    }
+    public float getBLOOD_REGEN_RATE(){
+        return (float) (ServerConfig.BLOOD_REGEN_RATE.get()/20f);
+    }
+   public float getMAX_BLEED_RATE(){
+        return (float) (ServerConfig.MAX_BLEED_RATE.get()/20f);
+   }
+   public float getBLOOD_VISCOSITY_REGEN(){
+        return (float) (ServerConfig.BLOOD_VISCOSITY_REGEN.get()/20f);
+   }
+   public double getDAMAGE_SCALE(){
+        return ServerConfig.DAMAGE_SCALE.get();
+   }
+   public double getPAIN_PER_DAMAGE(){
+        return ServerConfig.PAIN_PER_DAMAGE.get();
+   }
+   public double getOPIATE_PAIN_REDUCTION(){
+        return ServerConfig.OPIATE_PAIN_REDUCTION.get();
+   }
+   public double getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE(){
+        return ServerConfig.FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE.get();
+   }
+   public int getMAX_FRACT_DISL_TIME_T(){
+        return ServerConfig.MAX_FRACT_DISL_TIME_T.get();
+   }
+   public float getNORMAL_LIMB_HEAL_RATE(){
+        return (float) (ServerConfig.NORMAL_LIMB_HEAL_RATE.get()/20f);
+   }
+   public float getBOOSTED_LIMB_HEAL_RATE(){
+        return (float) (ServerConfig.BOOSTED_LIMB_HEAL_RATE.get()/20f);
+   }
+   public double getMANUAL_SHRAPNEL_SUCCESS_CHANCE(){
+        return ServerConfig.MANUAL_SHRAPNEL_SUCCESS_CHANCE.get();
+   }
+   public double getDISLOCATION_FIX_CHANCE(){
+        return ServerConfig.DISLOCATION_FIX_CHANCE.get();
+   }
+   public float getTOURNIQUET_PAIN_PER_TICK(){
+        return (float) (ServerConfig.TOURNIQUET_PAIN_PER_TICK.get()/20f);
+   }
+   public int getTOURNIQUET_SAFE_TICKS(){
+        return ServerConfig.TOURNIQUET_SAFE_TICKS.get();
+   }
+   public float getTOURNIQUET_MUSCLE_DAMAGE(){
+        return (float) (ServerConfig.TOURNIQUET_MUSCLE_DAMAGE.get()/20f);
+   }
 
 
 
@@ -197,6 +235,21 @@ public class PlayerHealthData {
         ensureLimb(limb).bleedRate = bleed;
     }
 
+    public void setInternalBleeding(float internalBleeding) {
+        this.internalBleeding = internalBleeding;
+    }
+
+    public float getInternalBleeding() {
+        return internalBleeding;
+    }
+
+    public void setHemothorax(float hemothorax) {
+        this.hemothorax = hemothorax;
+    }
+
+    public float getHemothorax() {
+        return hemothorax;
+    }
 
     public float getLimbDesinfected(Limb limb) {
         return ensureLimb(limb).desinfectionTimer;
@@ -379,15 +432,15 @@ public class PlayerHealthData {
 
         //Healing
         if (stats.SkinHeal){
-            stats.skinHealth += BOOSTED_LIMB_HEAL_RATE;
+            stats.skinHealth += getBOOSTED_LIMB_HEAL_RATE();
         }else {
-            stats.skinHealth += NORMAL_LIMB_HEAL_RATE;
+            stats.skinHealth += getNORMAL_LIMB_HEAL_RATE();
         }
 
         if (stats.MuscleHeal&&!stats.shrapnell&&stats.infection<=0){
-            stats.muscleHealth += BOOSTED_LIMB_HEAL_RATE;
+            stats.muscleHealth += getBOOSTED_LIMB_HEAL_RATE();
         }else if (!stats.shrapnell&&stats.infection<=0){
-            stats.muscleHealth += NORMAL_LIMB_HEAL_RATE;
+            stats.muscleHealth += getNORMAL_LIMB_HEAL_RATE();
         }
         stats.skinHealth = Math.min(stats.skinHealth,100);
         stats.muscleHealth = Math.min(stats.muscleHealth,100);
@@ -400,14 +453,14 @@ public class PlayerHealthData {
         if (stats.infection > 0) {
             if (stats.desinfectionTimer > 0) {
                 stats.desinfectionTimer -= 1;
-                stats.infection -= DESINFECTION_RATE;
+                stats.infection -= getDISINFECTION_RATE();
             } else {
-                stats.infection = Math.min(100, stats.infection + INFECTION_RATE);
+                stats.infection = Math.min(100, stats.infection + getINFECTION_RATE());
             }
         }
 
         if (stats.skinHealth < 100 && stats.infection <= 0) {
-            float chance = ((100-stats.skinHealth) / 100f) * INFECTION_CHANCE;
+            float chance = ((100-stats.skinHealth) / 100f) * getINFECTION_CHANCE();
             if (Math.random() < chance) {
                 stats.infection += 1;
             }
@@ -416,19 +469,19 @@ public class PlayerHealthData {
         infectionSpread(limb);
 
         // Bleed Adjustment
-        stats.bleedRate = Math.min(stats.bleedRate,MAX_BLEED_RATE*(Math.abs((stats.skinHealth-100)/100)));
+        stats.bleedRate = Math.min(stats.bleedRate,getMAX_BLEED_RATE()*(Math.abs((stats.skinHealth-100)/100)));
 
         //Fract/Disl calculation
         stats.dislocatedTimer = Mth.clamp(
-                stats.dislocatedTimer-1,0,MAX_FRACT_DISL_TIME_T
+                stats.dislocatedTimer-1,0,getMAX_FRACT_DISL_TIME_T()
         );
         stats.fractureTimer = Mth.clamp(
-                stats.fractureTimer-1,0,MAX_FRACT_DISL_TIME_T
+                stats.fractureTimer-1,0,getMAX_FRACT_DISL_TIME_T()
         );
 
 
         if (stats.infection>=75){
-            stats.muscleHealth -= INFECTION_MUSCLE_DRAIN;
+            stats.muscleHealth -= getINFECTION_MUSCLE_DRAIN();
         }
 
 
@@ -441,18 +494,18 @@ public class PlayerHealthData {
         if (stats.Tourniquet) {
             // Pain ramps up towards 40
             if (stats.pain < 40) {
-                stats.pain = Math.min(40, stats.pain + TOURNIQUET_PAIN_PER_TICK);
+                stats.pain = Math.min(40, stats.pain + getTOURNIQUET_PAIN_PER_TICK());
             }
 
             // Timer ticks up
             stats.tourniquetTimer++;
-            if (stats.tourniquetTimer > TOURNIQUET_SAFE_TICKS) {
-                stats.muscleHealth = Math.max(0, stats.muscleHealth - TOURNIQUET_MUSCLE_DAMAGE);
+            if (stats.tourniquetTimer > getTOURNIQUET_SAFE_TICKS()) {
+                stats.muscleHealth = Math.max(0, stats.muscleHealth -  getTOURNIQUET_MUSCLE_DAMAGE());
                 switch (limb) {
-                    case LEFT_ARM -> limbStats.get(Limb.LEFT_HAND).muscleHealth =Math.max(0, limbStats.get(Limb.LEFT_HAND).muscleHealth - TOURNIQUET_MUSCLE_DAMAGE);
-                    case RIGHT_ARM -> limbStats.get(Limb.RIGHT_HAND).muscleHealth =Math.max(0, limbStats.get(Limb.RIGHT_HAND).muscleHealth - TOURNIQUET_MUSCLE_DAMAGE);
-                    case LEFT_LEG -> limbStats.get(Limb.LEFT_FOOT).muscleHealth =Math.max(0, limbStats.get(Limb.LEFT_FOOT).muscleHealth - TOURNIQUET_MUSCLE_DAMAGE);
-                    case RIGHT_LEG ->limbStats.get(Limb.RIGHT_FOOT).muscleHealth =Math.max(0, limbStats.get(Limb.RIGHT_FOOT).muscleHealth - TOURNIQUET_MUSCLE_DAMAGE) ;
+                    case LEFT_ARM -> limbStats.get(Limb.LEFT_HAND).muscleHealth =Math.max(0, limbStats.get(Limb.LEFT_HAND).muscleHealth -  getTOURNIQUET_MUSCLE_DAMAGE());
+                    case RIGHT_ARM -> limbStats.get(Limb.RIGHT_HAND).muscleHealth =Math.max(0, limbStats.get(Limb.RIGHT_HAND).muscleHealth -  getTOURNIQUET_MUSCLE_DAMAGE());
+                    case LEFT_LEG -> limbStats.get(Limb.LEFT_FOOT).muscleHealth =Math.max(0, limbStats.get(Limb.LEFT_FOOT).muscleHealth -  getTOURNIQUET_MUSCLE_DAMAGE());
+                    case RIGHT_LEG ->limbStats.get(Limb.RIGHT_FOOT).muscleHealth =Math.max(0, limbStats.get(Limb.RIGHT_FOOT).muscleHealth -  getTOURNIQUET_MUSCLE_DAMAGE()) ;
                 }
             }
         } else {
@@ -461,7 +514,7 @@ public class PlayerHealthData {
         }
         stats.skinHealth = Mth.clamp(stats.skinHealth,0,100);
         stats.muscleHealth = Mth.clamp(stats.muscleHealth,0,100);
-        stats.finalPain = Mth.clamp(stats.pain - Opioids * OPIATE_PAIN_REDUCTION,0,999);
+        stats.finalPain = (float) Mth.clamp(stats.pain - Opioids * getOPIATE_PAIN_REDUCTION(),0,999);
     }
 
     public void setLimbMuscleHeal(Limb limb,boolean value){
@@ -485,20 +538,20 @@ public class PlayerHealthData {
     }
 
     public float painFromDamage(float damage){
-        return damage * PAIN_PER_DAMAGE;
+        return (float) (damage * getPAIN_PER_DAMAGE());
     }
     public void applyPain(Limb limb, float value){
         limbStats.get(limb).pain+= value;
     }
     public void applySkinDamage(Limb limb,float damage){
-        limbStats.get(limb).skinHealth = Math.max(limbStats.get(limb).skinHealth-damage*DAMAGE_SCALE,0);
+        limbStats.get(limb).skinHealth = (float) Math.max(limbStats.get(limb).skinHealth-damage*getDAMAGE_SCALE(),0);
         limbStats.get(limb).SkinHeal = false;
         limbStats.get(limb).MuscleHeal = false;
 
     }
     public void applyMuscleDamage(Limb limb, float damage){
-        if (limbStats.get(limb).muscleHealth<100&&damage>5){
-            float bone_damage_chance = (100-limbStats.get(limb).muscleHealth)/100*FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE;
+        if (limbStats.get(limb).muscleHealth<100&&damage>2){
+            float bone_damage_chance = (float) ((100-limbStats.get(limb).muscleHealth)/100*getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE());
             if (Math.random()>0.5){
                 if (Math.random()<bone_damage_chance||damage>15){
                     setLimbFracture(limb,Math.max(getLimbFracture(limb),Math.max(1200,damage*500)));
@@ -509,12 +562,15 @@ public class PlayerHealthData {
                 }
             }
         }
-        limbStats.get(limb).muscleHealth =Math.max(limbStats.get(limb).muscleHealth-damage*DAMAGE_SCALE,0);
+        if (limb == Limb.CHEST&&Math.random()>0.5){
+            internalBleeding += (damage/15)* (getMAX_BLEED_RATE()/3);
+        }
+        limbStats.get(limb).muscleHealth = (float) Math.max(limbStats.get(limb).muscleHealth-damage*getDAMAGE_SCALE(),0);
         limbStats.get(limb).SkinHeal = false;
         limbStats.get(limb).MuscleHeal = false;
     }
     public void applyBleedDamage(Limb limb, float damage){
-        float bleed = (damage/15)* MAX_BLEED_RATE;
+        float bleed = (damage/15)* getMAX_BLEED_RATE();
         limbStats.get(limb).bleedRate += bleed;
     }
     private void applyDirectBleedRate(Limb limb,float value){
@@ -531,9 +587,8 @@ public class PlayerHealthData {
         isBreathing = true;
 
         // Death timer check
-        if (deathTimer > 80) {
-            player.hurt(player.damageSources().genericKill(), Float.MAX_VALUE);
-            player.kill();
+        if (deathTimer > 100) {
+            killPlayer(player,false);
             return;
         }
 
@@ -546,14 +601,15 @@ public class PlayerHealthData {
 
         // Bleeding — internal
         if (internalBleeding > 0) {
-            internalBleeding = (float) Math.max(0, internalBleeding - WUND_ANTIBLEED_RATE);
+            internalBleeding = (float) Math.max(0, internalBleeding - getWUND_ANTIBLEED_RATE());
+            internalBleeding = Mth.clamp(internalBleeding,0,getMAX_BLEED_RATE()/3);
         }
 
         // Hemothorax
         hemothorax += internalBleeding;
         if (hemothorax > 0) {
             hemothoraxpain = (float) ((4.0 / 15.0) * hemothorax);
-            hemothorax -= HEMOTHORAX_HEAL_RATE;
+            hemothorax -= getHEMOTHORAX_HEAL_RATE();
         }
 
         // Blood calculation
@@ -564,9 +620,9 @@ public class PlayerHealthData {
         if (blood > 5.25) contiousnessCap = 80;
 
         if (blood > 5) {
-            blood = Math.max(5, blood - (BLOOD_REGEN_RATE * getNutritionFactor()));
+            blood = Math.max(5, blood - (getBLOOD_REGEN_RATE() * getNutritionFactor()));
         } else if (blood < 5) {
-            blood = Math.min(5, blood + (BLOOD_REGEN_RATE * getNutritionFactor()));
+            blood = Math.min(5, blood + (getBLOOD_REGEN_RATE() * getNutritionFactor()));
         }
 
         // Respiratory arrest condition
@@ -574,20 +630,22 @@ public class PlayerHealthData {
 
         // Oxygen cap — based on blood volume and hemothorax
         OxygenCap = 100;
+        bloodViscosity = Math.max(0,bloodViscosity-getBLOOD_VISCOSITY_REGEN());
         if (blood < 4.375) {
-            OxygenCap += (-2.0f / 3.0f) * hemothorax;
             OxygenCap += (160f / 3) * blood - (700f / 3);
-            OxygenCap = Math.max(0, OxygenCap);
         }
+        OxygenCap += (-2.0f / 3.0f) * hemothorax;
+        OxygenCap -= bloodViscosity;
+        OxygenCap = Math.max(0, OxygenCap);
 
         // Breathing & oxygen change
         if (isUnderwater || respitoryArrest) {
             isBreathing = false;
-            Oxygen = Math.max(0, Oxygen - OXYGEN_DRAIN);
+            Oxygen = Math.max(0, Oxygen - getOXYGEN_DRAIN());
         }
 
         if (isBreathing) {
-            Oxygen = Math.min(100, Oxygen + OXYGEN_REPLENISH);
+            Oxygen = Math.min(100, Oxygen + getOXYGEN_REPLENISH());
             if (Oxygen > OxygenCap) Oxygen = OxygenCap;
         }
 
@@ -611,6 +669,7 @@ public class PlayerHealthData {
             return entry.getTicks() <= 0; // remove if done
         });
 
+
         boolean isUnc = getContiousness()<=4;
             if (isUnc){
                 player.zza = 0;
@@ -620,6 +679,14 @@ public class PlayerHealthData {
                 player.setPose(Pose.SWIMMING);
             }
 
+    }
+
+    public void setBloodViscosity(float bloodViscosity) {
+        this.bloodViscosity = bloodViscosity;
+    }
+
+    public float getBloodViscosity() {
+        return bloodViscosity;
     }
 
     public void applyPenalties(ServerPlayer player){
@@ -695,6 +762,7 @@ public class PlayerHealthData {
         nbt.putFloat("Opioids", Opioids);
         nbt.putInt("BPM", BPM);
         nbt.putBoolean("IsBreathing", isBreathing);
+        nbt.putFloat("BloodViscosity",bloodViscosity);
 
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
@@ -749,6 +817,7 @@ public class PlayerHealthData {
         this.Opioids = other.Opioids;
         this.BPM = other.BPM;
         this.isBreathing = other.isBreathing;
+        this.bloodViscosity = other.bloodViscosity;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -797,6 +866,7 @@ public class PlayerHealthData {
         Opioids = nbt.getFloat("Opioids");
         BPM = nbt.getInt("BPM");
         isBreathing = nbt.getBoolean("IsBreathing");
+        bloodViscosity = nbt.getFloat("BloodViscosity");
 
         changeEntries.clear();
         ListTag changeList = nbt.getList("ChangeList",10);
@@ -862,16 +932,17 @@ public class PlayerHealthData {
                 applySkinDamage(limb,damage);
                 applyMuscleDamage(limb,damage);
                 applyBleedDamage(limb,damage/6f);
-                if (random.nextFloat()<=MANUAL_SHRAPNEL_SUCCESS_CHANCE){
+                if (random.nextFloat()<=getMANUAL_SHRAPNEL_SUCCESS_CHANCE()){
                     setLimbShrapnell(limb,false);
                 }
             }
             case REMOVE_SPLINT -> {
                 setLimbSplint(limb,false);
+                source.getInventory().add(new ItemStack(ModItems.Splint.get()));
             }
             case FIX_DISLOCATION -> {
                 applyPain(limb,30);
-                if (random.nextFloat()<=DISLOCATION_FIX_CHANCE){
+                if (random.nextFloat()<=getDISLOCATION_FIX_CHANCE()){
                     setLimbDislocation(limb,Math.max(isLimbDislocated(limb)-20,0));
                 }
             }
@@ -941,6 +1012,32 @@ public class PlayerHealthData {
 
     }
 
+    public void handleMagicDamage(float damage){
+        for (Limb limb : limbStats.keySet()){
+            applyMuscleDamage(limb, (float) (damage*(Math.random()/4f)));
+            applyPain(limb, (float) (damage*(Math.random())));
+        }
+    }
+
+    public void handleFireDamage(float damage){
+        int i=0;
+        while (damage>1){
+            i++;
+            Limb randLimb = Limb.weigtedRandomLimb();
+            applyPain(randLimb,10);
+            applyMuscleDamage(randLimb,3);
+            applySkinDamage(randLimb,3);
+            if (Math.random()<i*0.2){
+                applyPain(randLimb,5);
+                applyMuscleDamage(randLimb,2);
+                applySkinDamage(randLimb,3);
+                applyBleedDamage(randLimb,5);
+                damage-=1;
+            }
+            damage-=1;
+        }
+    }
+
     public void handleExplosionDamage(float damage,boolean shrapnell){
         while (damage>2){
             float passDamage = Math.min(damage,6);
@@ -990,7 +1087,13 @@ public class PlayerHealthData {
         if (depth > 6) return;                   // hard cap so it never goes infinite
 
         // Pick a limb (first = random, then connected)
-        Limb target = (previousLimb == null) ? Limb.weigtedRandomLimb() : previousLimb.randomFromConectedLimb();
+        Limb target;
+        if (random.nextBoolean()){
+            target = (previousLimb == null) ? Limb.randomLimb() : previousLimb.randomFromConectedLimb();
+        }else {
+            target = (previousLimb == null) ? Limb.weigtedRandomLimb() : previousLimb.randomFromConectedLimb();
+        }
+
 
         // Decide: Muscle OR Skin
         if (random.nextBoolean()) {
@@ -1035,18 +1138,39 @@ public class PlayerHealthData {
     }
 
     public void onLegUse(){
-        float pain_per_tick = 0.4f*(
-                BooleanUtils.toInteger(getLimbFracture(Limb.LEFT_FOOT)>0||getLimbDislocated(Limb.LEFT_FOOT)>0)+
-                        BooleanUtils.toInteger(getLimbFracture(Limb.LEFT_LEG)>0||getLimbDislocated(Limb.LEFT_LEG)>0)+
-                        BooleanUtils.toInteger(getLimbFracture(Limb.RIGHT_FOOT)>0||getLimbDislocated(Limb.RIGHT_FOOT)>0)+
-                        BooleanUtils.toInteger(getLimbFracture(Limb.RIGHT_LEG)>0||getLimbDislocated(Limb.RIGHT_LEG)>0));
-
-        if (pain_per_tick>0){
+        float pain_per_tick = 0.5f;
             if (getLimbFracture(Limb.RIGHT_LEG)>0||getLimbDislocated(Limb.RIGHT_LEG)>0)applyPain(Limb.RIGHT_LEG,pain_per_tick);
             if (getLimbFracture(Limb.LEFT_LEG)>0||getLimbDislocated(Limb.LEFT_LEG)>0)applyPain(Limb.LEFT_LEG,pain_per_tick);
             if (getLimbFracture(Limb.RIGHT_FOOT)>0||getLimbDislocated(Limb.RIGHT_FOOT)>0)applyPain(Limb.RIGHT_FOOT,pain_per_tick);
             if (getLimbFracture(Limb.LEFT_FOOT)>0||getLimbDislocated(Limb.LEFT_FOOT)>0)applyPain(Limb.LEFT_FOOT,pain_per_tick);
-        }
     }
 
+    public void killPlayer(ServerPlayer player,boolean gaveUp){
+        boolean bleedout = blood<3.5f;
+        boolean internalBleed = hemothorax>50;
+        boolean overdose = Opioids>100;
+        boolean bleedoutHeavy = getCombinedBleed()>2f/20f/60f;
+
+        if (gaveUp){
+            player.hurt(ModDamageTypes.giveUp(player.serverLevel()), Float.MAX_VALUE);
+            return;
+        }
+        if (bleedoutHeavy) {
+            player.hurt(ModDamageTypes.heavy_bleed(player.serverLevel()), Float.MAX_VALUE);
+            return;
+        }
+        if (internalBleed) {
+            player.hurt(ModDamageTypes.internal(player.serverLevel()), Float.MAX_VALUE);
+            return;
+        }
+        if (bleedout) {
+            player.hurt(ModDamageTypes.bleed(player.serverLevel()), Float.MAX_VALUE);
+            return;
+        }
+        if (overdose) {
+            player.hurt(ModDamageTypes.opioids(player.serverLevel()), Float.MAX_VALUE);
+            return;
+        }
+        player.hurt(ModDamageTypes.oxygen(player.serverLevel()), Float.MAX_VALUE);
+    }
 }

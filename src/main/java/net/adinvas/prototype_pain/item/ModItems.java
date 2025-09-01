@@ -1,7 +1,16 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.minecraft.world.food.FoodProperties;
+import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
+import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
+import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
+import net.adinvas.prototype_pain.item.disinfecting.AlcoholItem;
+import net.adinvas.prototype_pain.item.disinfecting.AntibioticsItem;
+import net.adinvas.prototype_pain.item.dressings.*;
+import net.adinvas.prototype_pain.item.narcotics.*;
+import net.adinvas.prototype_pain.item.reusable.SplintItem;
+import net.adinvas.prototype_pain.item.reusable.TourniquetItem;
+import net.adinvas.prototype_pain.item.reusable.TweezersItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -11,17 +20,33 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, PrototypePain.MOD_ID);
 
-    public static final RegistryObject<Item> Dressing = ITEMS.register("dressing",()->new DressingItem(new Item.Properties()
-            .durability(3)
-    ));
-    public static final RegistryObject<Item> Tourniquet = ITEMS.register("tourniquet",()->new TourniquetItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> Dressing = ITEMS.register("dressing", DressingItem::new);
+    public static final RegistryObject<Item> PlasticDressing = ITEMS.register("plastic_dressing", PlasticDressingItem::new);
+    public static final RegistryObject<Item> SterilizedDressing = ITEMS.register("sterilized_dressing", SterilizedDressingItem::new);
 
-    public static final RegistryObject<Item> Alcohol = ITEMS.register("alcohol", ()-> new AlcoholItem(new Item.Properties().durability(4).food(new FoodProperties.Builder().alwaysEat().build())));
+    public static final RegistryObject<Item> Alcohol = ITEMS.register("alcohol", AlcoholItem::new);
 
-    public static final RegistryObject<Item> Ice_Pack = ITEMS.register("ice_pack",()->new IcePackItem(new Item.Properties().durability(4)));
+    public static final RegistryObject<Item> Ice_Pack = ITEMS.register("ice_pack", IcePackItem::new);
+
+    public static final RegistryObject<Item> Saline = ITEMS.register("saline", SalineItem::new);
 
     public static final  RegistryObject<Item> Opium = ITEMS.register("opium", OpiumItem::new);
+    public static final RegistryObject<Item> Morphine = ITEMS.register("morphine", MorphineItem::new);
+    public static final RegistryObject<Item> Heroin = ITEMS.register("heroin", HeroinItem::new);
+    public static final RegistryObject<Item> Fentanyl = ITEMS.register("fentanyl", FentanylItem::new);
+    public static final RegistryObject<Item> Naloxone = ITEMS.register("naloxone", NaloxoneItem::new);
 
-    public static final RegistryObject<Item> Saline = ITEMS.register("saline",()->new SalineItem(new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> PainKillers = ITEMS.register("painkillers", PainKillersItem::new);
+    public static final RegistryObject<Item> Antibiotics = ITEMS.register("antibiotics", AntibioticsItem::new);
+    public static final RegistryObject<Item> BloodClotting = ITEMS.register("blood_clotting", BloodClottingItem::new);
+    public static final RegistryObject<Item> BloodThiner = ITEMS.register("blood_thinner", BloodThinnerItem::new);
+
+    public static final RegistryObject<Item> Splint = ITEMS.register("splint", SplintItem::new);
+    public static final RegistryObject<Item> Tweezers = ITEMS.register("tweezers", TweezersItem::new);
+    public static final RegistryObject<Item> Tourniquet = ITEMS.register("tourniquet", TourniquetItem::new);
+
+    public static final RegistryObject<Item> SmallMedibag = ITEMS.register("small_medibag", SmallMedibagItem::new);
+    public static final RegistryObject<Item> MediumMedibag = ITEMS.register("medium_medibag", MediumMedibagItem::new);
+    public static final RegistryObject<Item> LargeMedibag = ITEMS.register("large_medibag", LargeMedibagItem::new);
 
 }

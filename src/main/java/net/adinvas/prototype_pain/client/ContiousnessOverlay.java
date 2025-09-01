@@ -4,12 +4,12 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class ContiousnessOverlay implements IOverlay{
     private float intensity= 1;
-    private final float power = 1;
 
     private float lastInt=0;
 
@@ -45,6 +45,10 @@ public class ContiousnessOverlay implements IOverlay{
         ms.setColor(1F, 1F, 1F, (float) Math.pow(intensity-0.1f,8));
         ms.fill(0,0,width,height,0xFF000000);
         ms.setColor(1F, 1F, 1F, 1);
+        if (intensity>0.95){
+            Component text = Component.translatable("prototype_pain.gui.give_up",Component.keybind("key.protoype_pain.give_up"));
+            ms.drawCenteredString(mc.font,text,width/2,height/2,0xFFFFFF);
+        }
     }
 
     @Override

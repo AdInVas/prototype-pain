@@ -7,28 +7,43 @@ import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
+import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.GiveUpPacket;
 import net.adinvas.prototype_pain.network.LegUsePacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.ViewportEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
+    static int GiveUpTime = 40;
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.ClientTickEvent event){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player==null)return;
         if (event.side== LogicalSide.CLIENT) {
-            if (Keybinds.OPEN_PAIN_GUI.isDown()) {
+            AtomicBoolean uncontious = new AtomicBoolean(false);
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                if (h.getContiousness()<=4){
+                    uncontious.set(true);
+                }
+            });
+            if (Keybinds.OPEN_PAIN_GUI.isDown()&&!uncontious.get()) {
                 Keybinds.OPEN_PAIN_GUI.consumeClick();
 
                 Player target = ModEvents.getLookedAtPlayer(player, 2);
@@ -40,6 +55,19 @@ public class ClientEvents {
                     Minecraft.getInstance().setScreen(new HealthScreen(target.getUUID()));
                 }
 
+            }
+
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                if (h.getContiousness()<=4){
+                    if (Keybinds.GIVE_UP.isDown()){
+                        GiveUpTime--;
+                    }else {
+                        GiveUpTime = 40;
+                    }
+                }
+            });
+            if (GiveUpTime<=0){
+                ModNetwork.CHANNEL.sendToServer(new GiveUpPacket());
             }
         }
 
@@ -80,6 +108,36 @@ public class ClientEvents {
                     ModNetwork.CHANNEL.sendToServer(new LegUsePacket());
                 }
             });
+        }
+    }
+    private static final ResourceLocation pain_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/pain.png");
+
+    static int tick =0;
+    @SubscribeEvent
+    public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
+        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()||event.getOverlay() == VanillaGuiOverlay.AIR_LEVEL.type()) {
+            // cancel rendering of the vanilla health bar
+            Minecraft mc = Minecraft.getInstance();
+            Player player = mc.player;
+            if (player == null) return;
+
+            float Oxygen = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
+                    .map(PlayerHealthData::getOxygen)
+                    .orElse(0f);
+
+            double Pain = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
+                            .map(PlayerHealthData::getTotalPain)
+                                    .orElse(0d);
+
+            GuiGraphics gui = event.getGuiGraphics();
+
+            int x = mc.getWindow().getGuiScaledWidth() / 2 - 91; // same place as hearts
+            int y = mc.getWindow().getGuiScaledHeight() - 39;
+
+            gui.drawString(mc.font,"O₂ "+(int)Oxygen+"%",x,y,0xFFFFFF);
+            gui.blit(pain_tex,x+50,y-2,0,0,10,10,10,10);
+            gui.drawString(mc.font,Integer.valueOf((int) Pain)+"%",x+60,y,0xFFFFFF);
+            event.setCanceled(true);
         }
     }
 }

@@ -6,7 +6,11 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.tags.ModDamageTypeTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
@@ -18,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -39,8 +44,10 @@ public class HitboxEvents {
     public static void onLivingDamage(LivingDamageEvent event){
         if (!(event.getEntity() instanceof Player player))return;
         float damageamount = event.getAmount();
+
+        if (event.getSource().is(ModDamageTypeTags.IGNORE))return;
         if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
-        if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)){
+        if (isAnyProjectile(event.getSource())){
             Entity directEntity = event.getSource().getDirectEntity();
             if (!(directEntity instanceof Projectile projectile)) return;
             Vec3 hitPos = projectile.position();
@@ -54,39 +61,35 @@ public class HitboxEvents {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 h.handleProjectileDamage(hit, finalDamage);
             });
-        }
-        else if (event.getSource().getEntity() instanceof LivingEntity attacker) {
-            HitResult result = raytraceMeleeHit(attacker, player);
-            if (result instanceof EntityHitResult entityResult && entityResult.getEntity() == player) {
-                Vec3 hitPos = entityResult.getLocation();
-                HitSector hit = detectHit(player, hitPos);
-                List<Limb> limbList = hit.getLimbsPerSector();
-                Random random = new Random();
-                Limb limb = limbList.get(random.nextInt(limbList.size()));
-                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                    h.applyPain(limb,h.painFromDamage(damageamount));
-                    h.applySkinDamage(limb,damageamount*0.8f);
-                    h.applyMuscleDamage(limb,damageamount*0.3f);
-                    if (random.nextBoolean()){
-                        h.applyBleedDamage(limb,damageamount);
-                    }
-                });
-
-            }
+            event.setAmount(0);
+            return;
         }
        else if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)){
            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                h.handleExplosionDamage(damageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL));
            });
-       }
-       else{
-           player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-               h.handleRandomDamage(damageamount);
-           });
+            event.setAmount(0);
+            return;
+       } else if (event.getSource().is(ModDamageTypeTags.MAGIC)) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleMagicDamage(damageamount);
+            });
+            event.setAmount(0);
+            return;
+       } else if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleFireDamage(damageamount);
+            });
+            event.setAmount(0);
+            return;
         }
-
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            h.handleRandomDamage(damageamount);
+        });
         event.setAmount(0);
     }
+    
+
 
     public static HitSector detectHit(Player player, Vec3 hitpos){
         AABB box = player.getBoundingBox();
@@ -153,6 +156,25 @@ public class HitboxEvents {
                });
             }
         }
+    }
+
+    public static boolean isAnyProjectile(DamageSource source) {
+        // 1. Vanilla tag check
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) return true;
+
+        // 2. Direct entity instanceof check
+        Entity direct = source.getDirectEntity();
+        if (direct instanceof Projectile) return true;
+
+        // 3. Ritchie's Projectile Lib precise-motion check
+        TagKey<DamageType> RPL_PRECISE = TagKey.create(
+                Registries.DAMAGE_TYPE,
+                new ResourceLocation("ritchiesprojectilelib", "precise_motion")
+        );
+
+        if (source.is(RPL_PRECISE)) return true;
+
+        return false;
     }
 
 }

@@ -1,17 +1,24 @@
-package net.adinvas.prototype_pain.item;
+package net.adinvas.prototype_pain.item.reusable;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TourniquetItem extends Item implements IMedUsable{
-    public TourniquetItem(Properties pProperties) {
-        super(pProperties);
+public class TourniquetItem extends Item implements IMedUsable {
+    public TourniquetItem() {
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override
@@ -30,5 +37,10 @@ public class TourniquetItem extends Item implements IMedUsable{
             }
         }
         return false;
+    }
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.tourniquet.discription").withStyle(ChatFormatting.GRAY));
     }
 }

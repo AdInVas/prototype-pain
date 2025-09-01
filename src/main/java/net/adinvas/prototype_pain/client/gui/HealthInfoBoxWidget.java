@@ -135,8 +135,30 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,0xFFFFFF);
         }
 
-        blitV = (float) Math.ceil(blood * 2);
-        guiGraphics.blit(bloodBag_tex,5,50,0,blitV*32,32,32,32,320);
+        if (blood>=5){
+            blitV = 10;
+        } else if (blood>=4.5) {
+            blitV = 9;
+        }else if (blood>=4) {
+            blitV = 8;
+        }else if (blood>=3.5) {
+            blitV = 7;
+        }else if (blood>=3) {
+            blitV = 6;
+        }else if (blood>=2.5) {
+            blitV = 5;
+        }else if (blood>=2) {
+            blitV = 4;
+        }else if (blood>=1.5) {
+            blitV = 3;
+        }else if (blood>=1) {
+            blitV = 2;
+        }else if (blood>=0.5) {
+            blitV = 1;
+        }else {
+            blitV = 0;
+        }
+        guiGraphics.blit(bloodBag_tex,5,50,0,(blitV-1)*32,32,32,32,320);
 
         guiGraphics.drawString(mc.font,String.format("%.2f",blood)+"L",40,52,0xFFFFFF);
 

@@ -9,7 +9,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class ModNetwork {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(PrototypePain.MOD_ID, "main"), // channel name (unique per mod)
+            new ResourceLocation(PrototypePain.MOD_ID, "prototype_pain_main"), // channel name (unique per mod)
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals
@@ -24,5 +24,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(3, MedicalActionPacket.class, MedicalActionPacket::write, MedicalActionPacket::new, MedicalActionPacket::handle);
         CHANNEL.registerMessage(4, UseNarcoticItemPacket.class,UseNarcoticItemPacket::write,UseNarcoticItemPacket::new,UseNarcoticItemPacket::handle);
         CHANNEL.registerMessage(5, LegUsePacket.class,LegUsePacket::toBytes,LegUsePacket::new,LegUsePacket::handle);
+        CHANNEL.registerMessage(6, GiveUpPacket.class,GiveUpPacket::toBytes,GiveUpPacket::new,GiveUpPacket::handle);
     }
 }

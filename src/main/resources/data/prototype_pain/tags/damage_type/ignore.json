@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "prototype_pain:give_up",
+    "prototype_pain:bleed",
+    "prototype_pain:heavy_bleed",
+    "prototype_pain:internal_bleed",
+    "prototype_pain:opioids",
+    "prototype_pain:oxygen"
+  ]
+}

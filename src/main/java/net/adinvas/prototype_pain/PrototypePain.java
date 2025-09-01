@@ -4,10 +4,16 @@ import com.mojang.logging.LogUtils;
 import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
+import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.events.ModEvents;
 import net.adinvas.prototype_pain.item.ModCreativeTab;
 import net.adinvas.prototype_pain.item.ModItems;
+import net.adinvas.prototype_pain.item.bags.large.LargeMedibagScreen;
+import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
+import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagScreen;
+import net.adinvas.prototype_pain.item.bags.small.SmallMedibagScreen;
 import net.adinvas.prototype_pain.network.ModNetwork;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +21,9 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -40,9 +48,11 @@ public class PrototypePain {
         MinecraftForge.EVENT_BUS.register(new ModEvents());
 
         ModItems.ITEMS.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
         OverlayController.registerOverlay(new PainOverlay());
         OverlayController.registerOverlay(new ContiousnessOverlay());
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -66,7 +76,9 @@ public class PrototypePain {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-
+            MenuScreens.register(ModMenus.SMALL_MEDIBAG.get(), SmallMedibagScreen::new);
+            MenuScreens.register(ModMenus.MEDIUM_MEDIBAG.get(), MediumMedibagScreen::new);
+            MenuScreens.register(ModMenus.LARGE_MEDIBAG.get(), LargeMedibagScreen::new);
         }
 
         @SubscribeEvent

@@ -1,0 +1,6 @@
+{
+  "exhaustion": 0.1,
+  "message_id": "opioids",
+  "scaling": "never",
+  "exhaustion_scaling": "always"
+}

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "prototype_pain.refmap.json",
   "mixins": [
+    "LivingEntityMixin",
     "PlayerMixin"
   ],
   "client": [
