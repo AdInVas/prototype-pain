@@ -23,10 +23,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -35,6 +32,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Mod.EventBusSubscriber
@@ -83,12 +81,28 @@ public class HitboxEvents {
             event.setAmount(0);
             return;
         }
+        if (event.getSource().getEntity() instanceof LivingEntity shooter) {
+
+            double range = 400.0;
+            EntityHitResult hitPos = rayTraceLivingEntity(shooter, range);
+            // Your custom hit sector logic
+            HitSector hit = detectHit(player, hitPos.getLocation());
+            // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
+            float finalDamage = event.getAmount();
+
+            // Call into your capability with final damage
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.handleProjectileDamage(hit, finalDamage);
+            });
+            event.setAmount(0);
+            return;
+        }
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.handleRandomDamage(damageamount);
         });
         event.setAmount(0);
     }
-    
+
 
 
     public static HitSector detectHit(Player player, Vec3 hitpos){
@@ -124,7 +138,7 @@ public class HitboxEvents {
     }
 
     private static HitResult raytraceMeleeHit(LivingEntity attacker, Entity target) {
-        double reach = 3.0D; // melee reach distance
+        double reach = 400.0D; // melee reach distance
         Vec3 eyePos = attacker.getEyePosition(1.0F);
         Vec3 lookVec = attacker.getLookAngle();
         Vec3 endVec = eyePos.add(lookVec.scale(reach));
@@ -135,6 +149,21 @@ public class HitboxEvents {
                 ClipContext.Fluid.NONE,
                 attacker
         ));
+    }
+    private static EntityHitResult raytraceEntity(LivingEntity shooter, double range) {
+        Vec3 eyePos = shooter.getEyePosition(1.0F);
+        Vec3 lookVec = shooter.getLookAngle();
+        Vec3 endVec = eyePos.add(lookVec.scale(range));
+        AABB searchBox = shooter.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D);
+
+        return net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
+                shooter.level(),
+                shooter,
+                eyePos,
+                endVec,
+                searchBox,
+                e -> e.isPickable() && !e.isSpectator() && e != shooter
+        );
     }
 
     @SubscribeEvent
@@ -175,6 +204,60 @@ public class HitboxEvents {
         if (source.is(RPL_PRECISE)) return true;
 
         return false;
+    }
+
+
+    public static EntityHitResult rayTraceLivingEntity(LivingEntity shooter, double range) {
+        Level world = shooter.level();
+        Vec3 start = shooter.getEyePosition(1.0F);
+        Vec3 direction = shooter.getViewVector(1.0F).normalize();
+        Vec3 end = start.add(direction.scale(range));
+
+        // Raytrace for blocks first
+        ClipContext blockContext = new ClipContext(
+                start,
+                end,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                shooter
+        );
+        BlockHitResult blockHit = world.clip(blockContext);
+
+        Vec3 finalEnd = end;
+        if (blockHit != null && blockHit.getType() == HitResult.Type.BLOCK) {
+            finalEnd = blockHit.getLocation();
+        }
+
+        // Build an AABB along the ray
+        AABB scanBox = shooter.getBoundingBox().expandTowards(direction.scale(range)).inflate(1.0);
+        List<LivingEntity> candidates = world.getEntitiesOfClass(
+                LivingEntity.class,
+                scanBox,
+                e -> e != shooter && e.isAlive()
+        );
+
+        LivingEntity nearest = null;
+        double nearestDistSq = Double.MAX_VALUE;
+        Vec3 hitPos = null;
+
+        for (LivingEntity target : candidates) {
+            AABB box = target.getBoundingBox().inflate(target.getPickRadius());
+            Optional<Vec3> optHit = box.clip(start, finalEnd);
+            if (optHit.isPresent()) {
+                double distSq = start.distanceToSqr(optHit.get());
+                if (distSq < nearestDistSq) {
+                    nearestDistSq = distSq;
+                    nearest = target;
+                    hitPos = optHit.get();
+                }
+            }
+        }
+
+        if (nearest != null && hitPos != null) {
+            return new EntityHitResult(nearest, hitPos);
+        }
+
+        return null; // No entity hit
     }
 
 }
