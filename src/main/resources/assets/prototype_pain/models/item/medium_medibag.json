@@ -1,0 +1,44 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "prototype_pain:item/medium_medibag"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [9, 3, 7],
+			"faces": {
+				"north": {"uv": [4.5, 0, 9, 1.5], "texture": "#0"},
+				"east": {"uv": [4.5, 3, 8, 4.5], "texture": "#0"},
+				"south": {"uv": [4.5, 1.5, 9, 3], "texture": "#0"},
+				"west": {"uv": [4.5, 4.5, 8, 6], "texture": "#0"},
+				"up": {"uv": [4.5, 3.5, 0, 0], "texture": "#0"},
+				"down": {"uv": [4.5, 3.5, 0, 7], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [-2.5, 6.75, 5]
+		},
+		"thirdperson_lefthand": {
+			"translation": [-9.5, 6.75, 5]
+		},
+		"firstperson_righthand": {
+			"translation": [2, 6, 1.5]
+		},
+		"firstperson_lefthand": {
+			"translation": [-5, 6, 1.5]
+		},
+		"ground": {
+			"translation": [4, 4.25, 4.75]
+		},
+		"gui": {
+			"rotation": [27.3, 38.85, 17.34],
+			"translation": [5, 6.25, 0],
+			"scale": [1.2, 1.2, 1.2]
+		}
+	}
+}

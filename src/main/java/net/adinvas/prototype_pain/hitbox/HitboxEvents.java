@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -104,28 +105,37 @@ public class HitboxEvents {
     }
 
 
-
-    public static HitSector detectHit(Player player, Vec3 hitpos){
+    public static HitSector detectHit(Player player, Vec3 hitpos) {
         AABB box = player.getBoundingBox();
 
+        // relative vertical position: 0 = feet, 1 = top of head
         double relY = (hitpos.y - box.minY) / box.getYsize();
-        Vec3 center = player.position().add(0, player.getBbHeight() / 2, 0);
+
+        // shift hit into player-local space (centered on body)
+        Vec3 center = new Vec3(
+                (box.minX + box.maxX) / 2.0,
+                box.minY + player.getBbHeight() / 2.0,
+                (box.minZ + box.maxZ) / 2.0
+        );
         Vec3 localHit = hitpos.subtract(center);
 
-        float yaw = player.getYRot(); // player rotation in degrees
+        // rotate into player-facing space so +Z = forward, +X = right
+        float yaw = player.getYRot(); // degrees
         double rad = Math.toRadians(-yaw);
-
         double localX = localHit.x * Math.cos(rad) - localHit.z * Math.sin(rad);
+        double localZ = localHit.x * Math.sin(rad) + localHit.z * Math.cos(rad);
 
+        // width for left/right detection
+        double halfWidth = player.getBbWidth() / 2.0;
 
         HitSector hitPart;
         if (relY > 0.8) {
             hitPart = HitSector.HEAD;
         } else if (relY > 0.3) {
-            // Torso region
-            if (localX < 0.3) {
+            // torso height band
+            if (localX < -0.2 * halfWidth) {
                 hitPart = HitSector.LEFT_ARM;
-            } else if (localX > 0.7) {
+            } else if (localX > 0.2 * halfWidth) {
                 hitPart = HitSector.RIGHT_ARM;
             } else {
                 hitPart = HitSector.TORSO;
@@ -137,33 +147,42 @@ public class HitboxEvents {
         return hitPart;
     }
 
-    private static HitResult raytraceMeleeHit(LivingEntity attacker, Entity target) {
-        double reach = 400.0D; // melee reach distance
-        Vec3 eyePos = attacker.getEyePosition(1.0F);
-        Vec3 lookVec = attacker.getLookAngle();
-        Vec3 endVec = eyePos.add(lookVec.scale(reach));
+    @SubscribeEvent
+    public static void onPlayerInteract(PlayerInteractEvent.EntityInteract event){
+        if (!(event.getTarget() instanceof Player target)) return;
+        Player actor = event.getEntity();
 
-        return target.level().clip(new ClipContext(
-                eyePos, endVec,
-                ClipContext.Block.OUTLINE,
-                ClipContext.Fluid.NONE,
-                attacker
-        ));
-    }
-    private static EntityHitResult raytraceEntity(LivingEntity shooter, double range) {
-        Vec3 eyePos = shooter.getEyePosition(1.0F);
-        Vec3 lookVec = shooter.getLookAngle();
-        Vec3 endVec = eyePos.add(lookVec.scale(range));
-        AABB searchBox = shooter.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D);
+        if (actor.level().isClientSide) return;
 
-        return net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(
-                shooter.level(),
-                shooter,
-                eyePos,
-                endVec,
-                searchBox,
-                e -> e.isPickable() && !e.isSpectator() && e != shooter
-        );
+        // Only when sneaking
+        if (!actor.isShiftKeyDown()) return;
+
+        target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+            if (h.getContiousness() <= 4) {
+                // Vector from target → actor
+                double dx = actor.getX() - target.getX();
+                double dz = actor.getZ() - target.getZ();
+                double dist = Math.sqrt(dx * dx + dz * dz);
+
+                if (dist > 0.001) {
+                    double strength = 0.25; // tweak to taste
+
+                    double dy = 0.0;
+
+                    // If dragger is at least 0.75 blocks higher than target → add bump
+                    if (actor.getY() - target.getY() >= 0.75) {
+                        dy = 0.25; // tweak to taste
+                    }
+
+                    target.setDeltaMovement(
+                            target.getDeltaMovement().add(dx / dist * strength, dy, dz / dist * strength)
+                    );
+                    target.hurtMarked = true; // force motion sync
+                }
+
+                event.setCanceled(true);
+            }
+        });
     }
 
     @SubscribeEvent

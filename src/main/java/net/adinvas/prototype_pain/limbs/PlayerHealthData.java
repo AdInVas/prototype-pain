@@ -1173,4 +1173,40 @@ public class PlayerHealthData {
         }
         player.hurt(ModDamageTypes.oxygen(player.serverLevel()), Float.MAX_VALUE);
     }
+
+    public void resetToDefaults() {
+        // clear & repopulate limb stats with fresh defaults
+        limbStats.clear();
+        for (Limb limb : Limb.values()) {
+            limbStats.put(limb, new LimbStatistics());
+        }
+
+        // clear delayed changes
+        changeEntries.clear();
+
+        // reset player-wide primitives to initial defaults (match the field initializers)
+        blood = 5f;
+        totalPain = 0f;
+        contiousness = 100f;
+        contiousnessCap = 100f;
+        hemothorax = 0f;
+        hemothoraxpain = 0f;
+        internalBleeding = 0f;
+        Oxygen = 100f;
+        OxygenCap = 100f;
+        Opioids = 0f;
+        BPM = 70;
+        isBreathing = true;
+        respitoryArrest = false;
+        deathTimer = 0f;
+        bloodViscosity = 0f;
+
+        // passthrough / player-state
+        hungerLevel = 20;
+        isUnderwater = false;
+
+        // derived values
+        recalcTotalPain();
+        recalculateContiousness();
+    }
 }

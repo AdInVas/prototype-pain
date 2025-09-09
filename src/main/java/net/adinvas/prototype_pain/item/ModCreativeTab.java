@@ -23,7 +23,6 @@ public class ModCreativeTab {
                     .displayItems((parameters, output) -> {
 
                         for (RegistryObject<Item> itemRegistryObject : ModItems.ITEMS.getEntries()){
-                            if (itemRegistryObject.get() instanceof MediumMedibagItem||itemRegistryObject.get() instanceof SmallMedibagItem||itemRegistryObject.get() instanceof LargeMedibagItem)continue;
                             output.accept(itemRegistryObject.get());
                         }
                     })
