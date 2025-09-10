@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 public class SubSprite {
     private final ResourceLocation txt;
     private final int txtWidth,txtHeight;
-    public float scale = 1f;
+    public float scale;
     private boolean visible=false;
 
     private float currentX, currentY;
@@ -26,6 +26,11 @@ public class SubSprite {
         this.txtHeight = 16;
         this.currentX = this.targetX = parentX;
         this.currentY = this.targetY = parentY;
+        this.scale = sprite.getBaseScale();
+    }
+
+    public float getScale() {
+        return scale;
     }
 
     public void setTargetScale(float scale) {

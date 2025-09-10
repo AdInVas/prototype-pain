@@ -586,6 +586,8 @@ public class PlayerHealthData {
         hungerLevel = player.getFoodData().getFoodLevel();
         isBreathing = true;
 
+
+
         // Death timer check
         if (deathTimer > 100) {
             killPlayer(player,false);
@@ -653,6 +655,7 @@ public class PlayerHealthData {
         Opioids = Math.max(0, Opioids - 0.02f);
 
         // Consciousness
+        float oldCont = this.contiousness;
         recalculateContiousness();
 
         // Death timer adjustments
@@ -670,6 +673,16 @@ public class PlayerHealthData {
         });
 
 
+        if (oldCont <= 4 && this.contiousness > 4){
+            if (player.level().isClientSide) return; // only server-side
+
+            for (ServerPlayer other : player.getServer().getPlayerList().getPlayers()) {
+                if (other.containerMenu == player.inventoryMenu) {
+                    other.closeContainer(); // kicks them out of target's inventory
+                }
+            }
+        }
+
         boolean isUnc = getContiousness()<=4;
             if (isUnc){
                 player.zza = 0;
@@ -678,6 +691,8 @@ public class PlayerHealthData {
                 player.xRotO = 0;
                 player.setPose(Pose.SWIMMING);
             }
+
+
 
     }
 

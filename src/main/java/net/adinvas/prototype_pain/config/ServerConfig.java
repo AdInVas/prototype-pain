@@ -42,6 +42,9 @@ public class ServerConfig {
     public static final ForgeConfigSpec.IntValue TOURNIQUET_SAFE_TICKS;             // 60s before muscle damage starts
     public static final ForgeConfigSpec.DoubleValue TOURNIQUET_MUSCLE_DAMAGE;
 
+    //Heavy Shit
+    public static final ForgeConfigSpec.BooleanValue TOGGLE_UNCONTIOUS_INVENTORY;
+
 
 
 
@@ -123,6 +126,10 @@ public class ServerConfig {
         DISLOCATION_FIX_CHANCE= BUILDER
                 .comment("Chance for Manualy fixing a dislocation")
                         .defineInRange("manualDislocationFixChance",0.7,0,1);
+
+        TOGGLE_UNCONTIOUS_INVENTORY = BUILDER
+                .comment("On/Off for other players opening uncontious players inventory")
+                        .define("toggleInventorySteal",false);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

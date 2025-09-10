@@ -150,7 +150,7 @@ public class LimbWidget extends AbstractWidget {
             int centerIndex = visibleSprites.size() / 2;
             for (int i = 0; i < visibleSprites.size(); i++) {
                 SubSprite s = visibleSprites.get(i);
-                int offset = (int) ((i - centerIndex) * spacing * s.scale);
+                int offset = (int) ((i - centerIndex) * spacing * s.getScale());
 
                 s.setTargetPosition(getX() + offset +this.width/2-8, getY()-1+this.height/2-8);
             }

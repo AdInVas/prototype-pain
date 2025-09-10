@@ -46,6 +46,35 @@ public enum StatusSprites {
         }
     }
 
+    public float getBaseScale(){
+        switch (this){
+            case SPLINT -> {
+                return 1.6f;
+            }
+            case FRACTURE -> {
+                return 1.5f;
+            }
+            case SHRAPNEL -> {
+                return 1.7f;
+            }
+            case INFECTION -> {
+                return 1.3f;
+            }
+            case TOURNIQUET -> {
+                return 2f;
+            }
+            case DISLOCATION -> {
+                return 1.5f;
+            }
+            case DISINFECTION -> {
+                return 1.5f;
+            }
+            default -> {
+                return 1f;
+            }
+        }
+    }
+
 
     public Component getTextComponents(){
         switch (this){

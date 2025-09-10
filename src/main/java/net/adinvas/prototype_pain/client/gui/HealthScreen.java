@@ -215,7 +215,7 @@ public class HealthScreen extends Screen {
                 widget.setBase_red(1 - (muscle / 100f));
 
                 if (isBleeding) {
-                    float scale = Math.max(0.7f, (bleed / health.getMAX_BLEED_RATE()) * 2f);
+                    float scale = Math.max(0.9f, (bleed / health.getMAX_BLEED_RATE()) * 2.5f);
                     widget.setScaleOf(StatusSprites.BLEED, scale);
                 }
                 widget.setSubSpriteVisible(StatusSprites.BLEED, isBleeding);
