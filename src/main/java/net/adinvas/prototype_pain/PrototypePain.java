@@ -79,6 +79,7 @@ public class PrototypePain {
             MenuScreens.register(ModMenus.SMALL_MEDIBAG.get(), SmallMedibagScreen::new);
             MenuScreens.register(ModMenus.MEDIUM_MEDIBAG.get(), MediumMedibagScreen::new);
             MenuScreens.register(ModMenus.LARGE_MEDIBAG.get(), LargeMedibagScreen::new);
+            MenuScreens.register(ModMenus.LOOT_PLAYER.get(),LootPlayerScreen::new);
         }
 
         @SubscribeEvent

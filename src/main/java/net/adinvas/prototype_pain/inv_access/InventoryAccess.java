@@ -1,13 +1,14 @@
 package net.adinvas.prototype_pain.inv_access;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = "prototype_pain", bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class InventoryAccess {
 
     @SubscribeEvent

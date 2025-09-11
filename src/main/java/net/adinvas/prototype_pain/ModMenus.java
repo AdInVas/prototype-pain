@@ -3,6 +3,7 @@ package net.adinvas.prototype_pain;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagMenu;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagMenu;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagMenu;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -37,4 +38,11 @@ public class ModMenus {
                         ItemStack stack = mainHand ? inv.player.getMainHandItem() : inv.player.getOffhandItem();
                         return new LargeMedibagMenu(id, inv, stack);
                     }));
+
+    public static final RegistryObject<MenuType<LootPlayerMenu>> LOOT_PLAYER =
+            MENUS.register("loot_player", () -> IForgeMenuType.create((id, inv, data) -> {
+                int targetId = data.readVarInt();
+                Player target = (Player) inv.player.level().getEntity(targetId);
+                return new LootPlayerMenu(id, inv, target);
+            }));
 }
