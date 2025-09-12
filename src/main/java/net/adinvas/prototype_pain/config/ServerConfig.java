@@ -33,6 +33,7 @@ public class ServerConfig {
     // Limb healing rates
     public static final ForgeConfigSpec.DoubleValue NORMAL_LIMB_HEAL_RATE;  // % per second
     public static final ForgeConfigSpec.DoubleValue BOOSTED_LIMB_HEAL_RATE;   // % per second
+    public static final ForgeConfigSpec.DoubleValue MAGICAL_HEAL_RATE;
 
     public static final ForgeConfigSpec.DoubleValue MANUAL_SHRAPNEL_SUCCESS_CHANCE;
     public static final ForgeConfigSpec.DoubleValue DISLOCATION_FIX_CHANCE;
@@ -126,6 +127,10 @@ public class ServerConfig {
         DISLOCATION_FIX_CHANCE= BUILDER
                 .comment("Chance for Manualy fixing a dislocation")
                         .defineInRange("manualDislocationFixChance",0.7,0,1);
+        MAGICAL_HEAL_RATE = BUILDER
+                .comment("the Heal Scalar of magical healing(potions,regenration)")
+                .defineInRange("magicalHealRate",0.5,0,Double.MAX_VALUE);
+
 
         TOGGLE_UNCONTIOUS_INVENTORY = BUILDER
                 .comment("On/Off for other players opening uncontious players inventory")

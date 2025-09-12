@@ -106,7 +106,7 @@ public class ClientEvents {
                     event.getInput().right =false;
                     event.getInput().shiftKeyDown = false;
                 }
-                if (event.getInput().leftImpulse!=0||event.getInput().forwardImpulse!=0){
+                if (event.getInput().leftImpulse!=0||event.getInput().forwardImpulse!=0||event.getInput().jumping){
                     ModNetwork.CHANNEL.sendToServer(new LegUsePacket());
                 }
             });

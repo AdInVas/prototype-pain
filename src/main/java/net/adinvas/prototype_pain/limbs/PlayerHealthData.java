@@ -13,6 +13,9 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -116,6 +119,9 @@ public class PlayerHealthData {
    }
    public float getTOURNIQUET_MUSCLE_DAMAGE(){
         return (float) (ServerConfig.TOURNIQUET_MUSCLE_DAMAGE.get()/20f);
+   }
+   public float getMAGICAL_HEAL(){
+        return (float) (ServerConfig.MAGICAL_HEAL_RATE.get()/1f);
    }
 
 
@@ -283,6 +289,9 @@ public class PlayerHealthData {
 
     public float getCombinedBleed() {
         float bleed_all= 0f;
+        if (limbStats==null){
+            return 0;
+        }
         for (Limb limb : limbStats.keySet()) {
             LimbStatistics stats = limbStats.get(limb);
             if (!stats.Tourniquet && !isOppositeToChestUnderTourniquet(limb)) {
@@ -581,11 +590,20 @@ public class PlayerHealthData {
             return ensureLimb(limb).dislocatedTimer;
     }
 
+    int tick=0;
+
     public void tickUpdate(ServerPlayer player) {
         isUnderwater = player.isUnderWater();
         hungerLevel = player.getFoodData().getFoodLevel();
         isBreathing = true;
 
+        if (player.hasEffect(MobEffects.REGENERATION)&&tick++>20){
+            tick=0;
+            MobEffectInstance inst = player.getEffect(MobEffects.REGENERATION);
+            if (inst!=null) {
+                handleMagicHeal(inst.getAmplifier()+1);
+            }
+        }
 
 
         // Death timer check
@@ -1223,5 +1241,22 @@ public class PlayerHealthData {
         // derived values
         recalcTotalPain();
         recalculateContiousness();
+    }
+
+    public void handleMagicHeal(float amount){
+        for (Limb limb : limbStats.keySet()){
+            if (limbStats.get(limb).bleedRate>0)
+                limbStats.get(limb).bleedRate = Math.max(0,limbStats.get(limb).bleedRate-amount*0.00005f*getMAGICAL_HEAL());
+            limbStats.get(limb).skinHealth = limbStats.get(limb).skinHealth+2*amount*getMAGICAL_HEAL();
+            limbStats.get(limb).muscleHealth = limbStats.get(limb).muscleHealth+2*amount*getMAGICAL_HEAL();
+        }
+        if (blood<5){
+            blood = Math.min(5,blood+0.02f*amount*getMAGICAL_HEAL());
+        }else if (blood>5){
+            blood = Math.max(5,blood-(0.02f*amount*getMAGICAL_HEAL()));
+        }
+        if (bloodViscosity >10){
+            bloodViscosity -=1*amount;
+        }
     }
 }

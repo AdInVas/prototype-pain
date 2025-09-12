@@ -55,7 +55,7 @@ public enum StatusSprites {
                 return 1.5f;
             }
             case SHRAPNEL -> {
-                return 1.7f;
+                return 1.2f;
             }
             case INFECTION -> {
                 return 1.3f;

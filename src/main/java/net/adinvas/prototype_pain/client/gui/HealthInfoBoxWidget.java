@@ -119,10 +119,12 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.blit(contiousness_tex,7,16,0,blitV*16,16,16,16,80);
         if(contiousness<40){
             if ((tickCounter % 10) < 5) {
-                guiGraphics.drawCenteredString(mc.font,(int)contiousness+"% CONS",7+32+15,22,0xFF0000);
+                guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,0xFF0000);
+                guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,0xFFFFFF);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font,(int)contiousness+"% CONS",7+32+15,22,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,0xFFFFFF);
+            guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,0xFFFFFF);
         }
 
         guiGraphics.blit(pain_tex,7,32,0,0,16,16,16,16);

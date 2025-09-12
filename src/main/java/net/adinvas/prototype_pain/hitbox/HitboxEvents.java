@@ -28,6 +28,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -69,7 +70,7 @@ public class HitboxEvents {
            });
             event.setAmount(0);
             return;
-       } else if (event.getSource().is(ModDamageTypeTags.MAGIC)) {
+       } else if (event.getSource().is(ModDamageTypeTags.MAGIC)||event.getSource().is(DamageTypes.MAGIC)) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 h.handleMagicDamage(damageamount);
             });
@@ -103,6 +104,20 @@ public class HitboxEvents {
         });
         event.setAmount(0);
     }
+
+    @SubscribeEvent
+    public static void onHeal(LivingHealEvent event){
+        if (event.getEntity() instanceof Player player) {
+            float amount = event.getAmount();
+            event.setAmount(0);
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleMagicHeal(amount);
+            });
+            PrototypePain.LOGGER.info("HEALED {}",amount);
+        }
+    }
+
+
 
 
     public static HitSector detectHit(Player player, Vec3 hitpos) {
