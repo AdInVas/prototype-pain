@@ -4,6 +4,7 @@ import net.adinvas.prototype_pain.limbs.Limb;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public enum HitSector {
     HEAD,
@@ -37,5 +38,19 @@ public enum HitSector {
             }
         }
         return limbList;
+    }
+
+    public static HitSector getCBCChances(){
+        List<HitSector> limbList = new ArrayList<>();
+        Random random = new Random();
+        limbList.add(HitSector.HEAD);
+        limbList.add(HitSector.TORSO);
+        limbList.add(HitSector.TORSO);
+        limbList.add(HitSector.TORSO);
+        limbList.add(HitSector.LEGS);
+        limbList.add(HitSector.LEGS);
+        limbList.add(HitSector.LEFT_ARM);
+        limbList.add(HitSector.RIGHT_ARM);
+        return limbList.get(random.nextInt(limbList.size()));
     }
 }

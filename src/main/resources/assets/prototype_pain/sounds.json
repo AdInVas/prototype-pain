@@ -1,0 +1,10 @@
+{
+  "heartbeat": {
+    "sounds": [
+      {
+        "name": "prototype_pain:heartbeat",
+        "stream": false
+      }
+    ]
+  }
+}

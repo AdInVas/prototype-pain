@@ -70,6 +70,7 @@ public class ClientEvents {
             });
             if (GiveUpTime<=0){
                 ModNetwork.CHANNEL.sendToServer(new GiveUpPacket());
+                GiveUpTime = 40;
             }
         }
 
@@ -132,7 +133,7 @@ public class ClientEvents {
     static int tick =0;
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
-        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()||event.getOverlay() == VanillaGuiOverlay.AIR_LEVEL.type()) {
+        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()||event.getOverlay() == VanillaGuiOverlay.AIR_LEVEL.type()||event.getOverlay() == VanillaGuiOverlay.ARMOR_LEVEL.type()) {
             // cancel rendering of the vanilla health bar
             Minecraft mc = Minecraft.getInstance();
             Player player = mc.player;

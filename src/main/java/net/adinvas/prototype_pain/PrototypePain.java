@@ -53,6 +53,7 @@ public class PrototypePain {
         OverlayController.registerOverlay(new ContiousnessOverlay());
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
+        ModSounds.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

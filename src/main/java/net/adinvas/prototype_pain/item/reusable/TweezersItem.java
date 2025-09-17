@@ -25,7 +25,7 @@ public class TweezersItem extends Item implements IMedUsable {
     public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
             AtomicBoolean used = new AtomicBoolean(false);
             target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                if (!h.hasLimbShrapnell(limb)){
+                if (h.hasLimbShrapnell(limb)){
                     h.setLimbShrapnell(limb, false);
                     used.set(true);
                 }

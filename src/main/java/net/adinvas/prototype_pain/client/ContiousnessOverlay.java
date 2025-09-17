@@ -23,7 +23,7 @@ public class ContiousnessOverlay implements IOverlay{
         Minecraft mc = Minecraft.getInstance();
         int width = mc.getWindow().getGuiScaledWidth();
         int height = mc.getWindow().getGuiScaledHeight();
-        intensity = (float) Mth.lerp(0.1,lastInt,intensity);
+        intensity = (float) Mth.lerp(0.25,lastInt,intensity);
         lastInt = intensity;
         if (intensity<1){
 

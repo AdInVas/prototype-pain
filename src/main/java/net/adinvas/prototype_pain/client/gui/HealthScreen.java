@@ -1,6 +1,9 @@
 package net.adinvas.prototype_pain.client.gui;
 
+import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
@@ -11,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -44,11 +48,16 @@ public class HealthScreen extends Screen {
 
     private boolean lastHandOffHand= false;
 
+    private HeartBeatSound heartBeatSound;
+
 
     public HealthScreen(UUID target) {
         super(Component.empty());
         this.target = Minecraft.getInstance().player.level().getPlayerByUUID(target);
+
     }
+
+
 
     @Override
     protected void init() {
@@ -100,6 +109,12 @@ public class HealthScreen extends Screen {
         ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(true,target.getUUID()));
         lastHovered = Head;
         healthbox.setName(Component.literal(target.getScoreboardName()));
+        Player player = Minecraft.getInstance().player;
+        if (player!=null){
+            target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                heartBeatSound = new HeartBeatSound(player,h.getBPM());
+            });
+        }
     }
 
     @Override
@@ -125,6 +140,13 @@ public class HealthScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
+        if (heartBeatSound != null && Minecraft.getInstance().player != null) {
+            target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                float bpm = h.getBPM();
+                heartBeatSound.setBPM(bpm);
+            });
+            heartBeatSound.tick();
+        }
         narcoticWidget.tick();
         if (target == null || !target.isAlive()) {
             onClose(); // target gone
@@ -233,6 +255,10 @@ public class HealthScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
+        if (heartBeatSound != null) {
+            PrototypePain.LOGGER.info("stop sound");
+            heartBeatSound = null;
+        }
         ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(false,target.getUUID()));
     }
 
@@ -240,6 +266,7 @@ public class HealthScreen extends Screen {
     public void renderBackground(GuiGraphics gui) {
         super.renderBackground(gui);
         gui.fill(0,0,this.width,this.height,0x000000FF);
+        
     }
 
     @Override

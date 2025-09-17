@@ -8,11 +8,15 @@ import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.network.MedicalAction;
+import net.adinvas.prototype_pain.tags.ModItemTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.CombatRules;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,7 +24,11 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraftforge.event.level.NoteBlockEvent;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
@@ -38,7 +46,7 @@ public class PlayerHealthData {
     private float Oxygen = 100f;
     private float OxygenCap = 100;
     private float Opioids = 0;
-    private int BPM = 70;
+    private float BPM = 70;
     private boolean isBreathing = true;
     private boolean respitoryArrest = false;
     private float deathTimer = 0;
@@ -607,7 +615,7 @@ public class PlayerHealthData {
 
 
         // Death timer check
-        if (deathTimer > 100) {
+        if (deathTimer > 100&& player.isAlive()) {
             killPlayer(player,false);
             return;
         }
@@ -683,6 +691,7 @@ public class PlayerHealthData {
         if (Oxygen > 0 && deathTimer > 0) {
             deathTimer -= 0.5f;
         }
+        calculateBPM();
         applyPenalties(player);
         changeEntries.removeIf(entry -> {
             entry.reduceTicks(1); // decrement by 1 tick
@@ -707,7 +716,6 @@ public class PlayerHealthData {
                 player.xxa = 0;
                 player.yRotO = 0; // Stop looking around
                 player.xRotO = 0;
-                player.setPose(Pose.SWIMMING);
             }
 
 
@@ -793,7 +801,7 @@ public class PlayerHealthData {
         nbt.putFloat("Oxygen", Oxygen);
         nbt.putFloat("OxygenCap", OxygenCap);
         nbt.putFloat("Opioids", Opioids);
-        nbt.putInt("BPM", BPM);
+        nbt.putFloat("BPM", BPM);
         nbt.putBoolean("IsBreathing", isBreathing);
         nbt.putFloat("BloodViscosity",bloodViscosity);
 
@@ -897,7 +905,7 @@ public class PlayerHealthData {
         Oxygen = nbt.getFloat("Oxygen");
         OxygenCap = nbt.getFloat("OxygenCap");
         Opioids = nbt.getFloat("Opioids");
-        BPM = nbt.getInt("BPM");
+        BPM = nbt.getFloat("BPM");
         isBreathing = nbt.getBoolean("IsBreathing");
         bloodViscosity = nbt.getFloat("BloodViscosity");
 
@@ -940,7 +948,9 @@ public class PlayerHealthData {
     public boolean tryUseItem(Limb limb, ItemStack itemstack, ServerPlayer source, ServerPlayer target,InteractionHand hand){
         if (itemstack.getItem() instanceof IMedUsable medItem){
             boolean used =  medItem.onMedicalUse(limb,source,target,itemstack,hand);
-            PrototypePain.LOGGER.info("{} USED BY {} ON {} | {}",itemstack,source,target,used);
+            if (used){
+                source.serverLevel().getLevel().playSound(null,source.getOnPos(),medItem.getUseSound(), SoundSource.PLAYERS);
+            }
             return used;
         }
         return false;
@@ -949,7 +959,9 @@ public class PlayerHealthData {
     public boolean tryUseItem(float value, ItemStack itemstack, ServerPlayer source, ServerPlayer target,InteractionHand hand){
         if (itemstack.getItem() instanceof INarcoticUsable medItem){
             boolean used =  medItem.onMedicalUse(value,source,target,itemstack,hand);
-            PrototypePain.LOGGER.info("{} USED BY {} ON {} | {}",itemstack,source,target,used);
+            if (used){
+                source.serverLevel().getLevel().playSound(null,source.getOnPos(),medItem.getUseSound(), SoundSource.PLAYERS);
+            }
             return used;
         }
         return false;
@@ -996,9 +1008,11 @@ public class PlayerHealthData {
 
 
 
-    public void handleFallDamage(float damageValue){
+    public void handleFallDamage(float damageValue,Player player){
         Random random = new Random();
         float remainingDamage = damageValue * 1;
+
+        remainingDamage = applyLocationalArmor(Limb.LEFT_FOOT,remainingDamage,player,false,false,false,true);
 
 
         float[][] stages = {
@@ -1035,7 +1049,7 @@ public class PlayerHealthData {
 
             // random damage
             if (randChance > 0f && random.nextFloat() < randChance) {
-                handleRandomDamage(remainingDamage * 0.5f);
+                handleRandomDamage(remainingDamage * 0.5f,player);
             }
 
             // decay for next pass
@@ -1052,29 +1066,122 @@ public class PlayerHealthData {
         }
     }
 
-    public void handleFireDamage(float damage){
+    public float applyLocationalArmor(Limb limb, float damage, Player player,boolean is_fire,boolean is_projectile,boolean is_explosion,boolean is_fall){
+        float armPoints=0,tough=0,prot=0,fprot =0,pprot=0,expprot=0,ff=0;
+        switch (limb){
+            case HEAD -> {
+                ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
+                if (item.getItem() instanceof ArmorItem armor){
+                    armPoints = armor.getDefense();
+                    tough = armor.getToughness();
+                    prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+                    fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
+                    pprot = item.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+                    expprot = item.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+                }
+            }
+            case LEFT_ARM,RIGHT_ARM,LEFT_HAND,RIGHT_HAND ->{
+                ItemStack item = player.getItemBySlot(EquipmentSlot.CHEST);
+                float scalar = 0.5f;
+                if (item.is(ModItemTags.ARMOR_CHEST_ONLY))
+                    scalar =0;
+                else if (item.is(ModItemTags.ARMOR_FULL_ARM))
+                    scalar = 1;
+                if (item.getItem() instanceof ArmorItem armor){
+                    armPoints = armor.getDefense()*scalar;
+                    tough = armor.getToughness();
+                    prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+                    fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
+                    pprot = item.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+                    expprot = item.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+                }
+            }
+            case CHEST -> {
+                ItemStack item = player.getItemBySlot(EquipmentSlot.CHEST);
+                if (item.getItem() instanceof ArmorItem armor){
+                    armPoints = armor.getDefense();
+                    tough = armor.getToughness();
+                    prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+                    fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
+                    pprot = item.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+                    expprot = item.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+                }
+            }
+            case RIGHT_LEG,LEFT_LEG ->{
+                ItemStack item = player.getItemBySlot(EquipmentSlot.LEGS);
+                if (item.getItem() instanceof ArmorItem armor){
+                    armPoints = armor.getDefense();
+                    tough = armor.getToughness();
+                    prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+                    fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
+                    pprot = item.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+                    expprot = item.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+                }
+            }
+            case RIGHT_FOOT,LEFT_FOOT -> {
+                ItemStack item = player.getItemBySlot(EquipmentSlot.FEET);
+                if (item.getItem() instanceof ArmorItem armor){
+                    armPoints = armor.getDefense();
+                    tough = armor.getToughness();
+                    prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+                    fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
+                    pprot = item.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+                    expprot = item.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+                    ff = item.getEnchantmentLevel(Enchantments.FALL_PROTECTION);
+                }
+            }
+            default -> {
+                return damage;
+            }
+        }
+        float d,r=0;
+        d= (float) Math.min(0.75f,0.14f+0.02f*Math.pow(armPoints-1,2));
+        r = 1.0f - Math.min(damage / (damage + (2 * tough + 8)), 0.5f);
+        float finalReduction = Mth.clamp(d*r,0,1);
+        float magic=0;
+        if (prot>0){
+            magic = 1f-prot*0.05f;
+        }else {
+            if (is_fire){
+                magic =1-fprot*0.10f;
+            }else if (is_projectile){
+                magic =1-pprot*0.10f;
+            } else if (is_fall) {
+                magic =1-ff*0.14f;
+            } else if (is_explosion) {
+                magic =1-expprot*0.10f;
+            }
+        }
+
+        return (damage*(1-finalReduction))*magic;
+    }
+
+    public void handleFireDamage(float damage,Player player){
         int i=0;
-        while (damage>1){
+        while (damage>0){
             i++;
             Limb randLimb = Limb.weigtedRandomLimb();
-            applyPain(randLimb,10);
-            applyMuscleDamage(randLimb,3);
-            applySkinDamage(randLimb,3);
+            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damage),player,true,false,false,false);
+            applyPain(randLimb,passDamage*5);
+            limbStats.get(randLimb).muscleHealth -= passDamage*3;
+            applySkinDamage(randLimb,passDamage*3);
             if (Math.random()<i*0.2){
-                applyPain(randLimb,5);
-                applyMuscleDamage(randLimb,2);
-                applySkinDamage(randLimb,3);
-                applyBleedDamage(randLimb,5);
+                applyPain(randLimb,passDamage*5);
+                limbStats.get(randLimb).muscleHealth -= passDamage*4;
+                applySkinDamage(randLimb,passDamage*1.5f);
+                applyBleedDamage(randLimb,passDamage*2.5f);
                 damage-=1;
             }
             damage-=1;
+            hurtArmor(randLimb,player,damage);
         }
     }
 
-    public void handleExplosionDamage(float damage,boolean shrapnell){
+    public void handleExplosionDamage(float damage,boolean shrapnell, Player player){
         while (damage>2){
             float passDamage = Math.min(damage,6);
             Limb rLimb = Limb.weigtedRandomLimb();
+            passDamage = applyLocationalArmor(rLimb,passDamage,player,false,false,true,false);
             applyMuscleDamage(rLimb,passDamage*0.2f);
             applySkinDamage(rLimb,passDamage*0.8f);
             applyPain(rLimb,painFromDamage(passDamage));
@@ -1084,17 +1191,34 @@ public class PlayerHealthData {
                 setLimbShrapnell(rLimb,true);
             }
             damage-=2;
+            hurtArmor(rLimb,player,damage);
         };
     }
 
-    public void handleProjectileDamage(HitSector hitSector,float damage) {
+    public void calculateBPM(){
+        int newBPM=70;
+        int painAdd = (int) (Math.pow((totalPain/100),1.2)*100);
+
+        newBPM =newBPM+painAdd;
+
+        if (blood<3){
+            newBPM = (int) (newBPM *(blood/3));
+        }
+        if (getOpioids()>50){
+            newBPM = (int) (newBPM*0.80);
+        }
+        this.BPM = Mth.clamp(newBPM,0,170);
+    }
+
+    public void handleProjectileDamage(HitSector hitSector,float damage, Player player) {
         Random random = new Random();
         List<Limb> limbList = hitSector.getLimbsPerSector();
         Limb randomLimb = limbList.get(random.nextInt(limbList.size()));
+        damage = applyLocationalArmor(randomLimb,damage,player,false,true,false,false);
 
-        applyMuscleDamage(randomLimb,damage*0.2f);
+        applyMuscleDamage(randomLimb,(float) (damage*(Math.random()/2f+0.5f)));
         applyPain(randomLimb,painFromDamage(damage));
-        applySkinDamage(randomLimb,damage*0.8f);
+        applySkinDamage(randomLimb, (float) (damage*(Math.random()/2f+0.5f)));
         applyBleedDamage(randomLimb,damage*0.9f);
         float chance;
 
@@ -1108,13 +1232,14 @@ public class PlayerHealthData {
         if (random.nextFloat()<chance){
             setLimbShrapnell(randomLimb,true);
         }
+        hurtArmor(randomLimb,player,damage);
     }
 
-    public void handleRandomDamage(float damageValue) {
-        applyRecursiveRandomDamage(damageValue, null, 0);
+    public void handleRandomDamage(float damageValue, Player player) {
+        applyRecursiveRandomDamage(damageValue, null, 0,player);
     }
 
-    private void applyRecursiveRandomDamage(float damage, Limb previousLimb, int depth) {
+    private void applyRecursiveRandomDamage(float damage, Limb previousLimb, int depth,Player player) {
         Random random = new Random();
         if (damage < 1f) return;                 // too small → stop
         if (depth > 6) return;                   // hard cap so it never goes infinite
@@ -1127,29 +1252,32 @@ public class PlayerHealthData {
             target = (previousLimb == null) ? Limb.weigtedRandomLimb() : previousLimb.randomFromConectedLimb();
         }
 
+        float pass_damage = applyLocationalArmor(target,damage,player,false,false,false,false);
+
 
         // Decide: Muscle OR Skin
         if (random.nextBoolean()) {
             // Muscle damage only
-            applyMuscleDamage(target, damage * 0.4f);
+            applyMuscleDamage(target, pass_damage * 0.4f);
         } else {
             // Skin damage (with bleed chance)
-            applySkinDamage(target, damage * 0.5f);
+            applySkinDamage(target, pass_damage * 0.5f);
 
             if (random.nextFloat() < 0.6f) { // 60% chance for bleed
-                applyBleedDamage(target, damage * 0.3f);
+                applyBleedDamage(target, pass_damage * 0.3f);
             }
         }
 
         // Pain always applied
-        applyPain(target, painFromDamage(damage * 0.25f));
+        applyPain(target, painFromDamage(pass_damage * 0.25f));
 
         // Recursive spread: chance grows with damage
-        float spreadChance = Math.min(0.9f, damage / 15f);
+        float spreadChance = Math.min(0.9f, pass_damage / 15f);
         if (random.nextFloat() < spreadChance) {
             // Spread to a connected limb with reduced strength
-            applyRecursiveRandomDamage(damage * 0.6f, target, depth + 1);
+            applyRecursiveRandomDamage(damage * 0.6f, target, depth + 1,player);
         }
+        hurtArmor(target,player,damage);
     }
 
 
@@ -1184,27 +1312,29 @@ public class PlayerHealthData {
         boolean overdose = Opioids>100;
         boolean bleedoutHeavy = getCombinedBleed()>2f/20f/60f;
 
+        DamageSource src = ModDamageTypes.oxygen(player.serverLevel());
         if (gaveUp){
-            player.hurt(ModDamageTypes.giveUp(player.serverLevel()), Float.MAX_VALUE);
-            return;
+            src = ModDamageTypes.giveUp(player.serverLevel());
+
         }
         if (bleedoutHeavy) {
-            player.hurt(ModDamageTypes.heavy_bleed(player.serverLevel()), Float.MAX_VALUE);
-            return;
+            src = ModDamageTypes.heavy_bleed(player.serverLevel());
+
         }
         if (internalBleed) {
-            player.hurt(ModDamageTypes.internal(player.serverLevel()), Float.MAX_VALUE);
-            return;
+            src = ModDamageTypes.internal(player.serverLevel());
+
         }
         if (bleedout) {
-            player.hurt(ModDamageTypes.bleed(player.serverLevel()), Float.MAX_VALUE);
-            return;
+            src = ModDamageTypes.bleed(player.serverLevel());
+
         }
         if (overdose) {
-            player.hurt(ModDamageTypes.opioids(player.serverLevel()), Float.MAX_VALUE);
-            return;
+            src = ModDamageTypes.opioids(player.serverLevel());
+
         }
-        player.hurt(ModDamageTypes.oxygen(player.serverLevel()), Float.MAX_VALUE);
+        player.setHealth(0.1f);
+        player.hurt(src, 1.0F); // just enough to push into death
     }
 
     public void resetToDefaults() {
@@ -1257,6 +1387,35 @@ public class PlayerHealthData {
         }
         if (bloodViscosity >10){
             bloodViscosity -=1*amount;
+        }
+    }
+
+    public void hurtArmor(Limb limb,Player player,float damage){
+        ItemStack item = null;
+        EquipmentSlot eq = null;
+        switch (limb){
+            case CHEST,LEFT_ARM,RIGHT_ARM,LEFT_HAND,RIGHT_HAND -> {
+                item = player.getItemBySlot(EquipmentSlot.CHEST);
+                eq = EquipmentSlot.CHEST;
+            }
+            case HEAD -> {
+                item = player.getItemBySlot(EquipmentSlot.HEAD);
+                eq = EquipmentSlot.HEAD;
+            }
+            case RIGHT_LEG,LEFT_LEG ->{
+                item = player.getItemBySlot(EquipmentSlot.LEGS);
+                eq = EquipmentSlot.LEGS;
+            }
+            case RIGHT_FOOT,LEFT_FOOT ->{
+                item = player.getItemBySlot(EquipmentSlot.FEET);
+                eq = EquipmentSlot.FEET;
+            }
+        }
+        if (item!=null){
+            int amount = (int) Math.max(1,damage/3f);
+            if (amount<-1)return;
+            EquipmentSlot finalEq = eq;
+            item.hurtAndBreak(amount,player, player1 -> player1.broadcastBreakEvent(finalEq));
         }
     }
 }
