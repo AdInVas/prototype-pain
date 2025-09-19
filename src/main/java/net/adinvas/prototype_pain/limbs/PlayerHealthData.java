@@ -1412,7 +1412,7 @@ public class PlayerHealthData {
             }
         }
         if (item!=null){
-            int amount = (int) Math.max(1,damage/3f);
+            int amount = (int) Math.max(0,damage/2f);
             if (amount<-1)return;
             EquipmentSlot finalEq = eq;
             item.hurtAndBreak(amount,player, player1 -> player1.broadcastBreakEvent(finalEq));

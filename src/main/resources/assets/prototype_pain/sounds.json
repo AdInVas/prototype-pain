@@ -6,5 +6,30 @@
         "stream": false
       }
     ]
+  },
+  "bandage": {
+    "sounds": [
+      {
+        "name": "prototype_pain:bandage",
+        "stream": false
+      }
+    ]
+  },
+  "syringe": {
+    "sounds": [
+      {
+        "name": "prototype_pain:syringe",
+        "stream": false
+      }
+    ]
+  },
+  "pill": {
+    "sounds": [
+      {
+        "name": "prototype_pain:pill",
+        "stream": false
+      }
+    ]
   }
 }
+

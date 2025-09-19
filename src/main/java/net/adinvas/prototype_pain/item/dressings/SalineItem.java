@@ -1,11 +1,13 @@
 package net.adinvas.prototype_pain.item.dressings;
 
+import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,5 +35,10 @@ public class SalineItem extends Item implements IMedUsable {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatable("item.prototype_pain.saline.discription").withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public SoundEvent getUseSound() {
+        return ModSounds.SYRINGE_USE.get();
     }
 }

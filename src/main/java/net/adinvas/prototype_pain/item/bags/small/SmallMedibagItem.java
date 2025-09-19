@@ -3,6 +3,8 @@ package net.adinvas.prototype_pain.item.bags.small;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -23,6 +25,7 @@ public class SmallMedibagItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
+        pPlayer.level().playSound(null,pPlayer.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS,1,1);
         if (!pLevel.isClientSide()) {
             NetworkHooks.openScreen((ServerPlayer) pPlayer,
                     new SimpleMenuProvider(
