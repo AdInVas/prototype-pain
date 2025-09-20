@@ -104,6 +104,9 @@ public class PlayerHealthData {
    public double getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE(){
         return ServerConfig.FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE.get();
    }
+   public double getContiousnessPerOpioid(){
+        return ServerConfig.CONS_PENALTY_PER_OPIOID.get();
+   }
    public int getMAX_FRACT_DISL_TIME_T(){
         return ServerConfig.MAX_FRACT_DISL_TIME_T.get();
    }
@@ -120,7 +123,7 @@ public class PlayerHealthData {
         return ServerConfig.DISLOCATION_FIX_CHANCE.get();
    }
    public float getTOURNIQUET_PAIN_PER_TICK(){
-        return (float) (ServerConfig.TOURNIQUET_PAIN_PER_TICK.get()/20f);
+        return (float) (ServerConfig.TOURNIQUET_PAIN_PER_TICK.get()/1f);
    }
    public int getTOURNIQUET_SAFE_TICKS(){
         return ServerConfig.TOURNIQUET_SAFE_TICKS.get();
@@ -130,6 +133,9 @@ public class PlayerHealthData {
    }
    public float getMAGICAL_HEAL(){
         return (float) (ServerConfig.MAGICAL_HEAL_RATE.get()/1f);
+   }
+   public double getContiousnessDelta(){
+        return ServerConfig.CONSIOUSNESS_DELTA.get();
    }
 
 
@@ -351,7 +357,7 @@ public class PlayerHealthData {
             finalcontiousness += 80-totalPain;
         }
         finalcontiousness = Math.min(contiousnessCap,finalcontiousness);
-        contiousness = (float) Math.max(0,Mth.lerp(0.5,contiousness,finalcontiousness));
+        contiousness = (float) Math.max(0,Mth.lerp(getContiousnessDelta(),contiousness,finalcontiousness));
     }
 
 
@@ -464,7 +470,13 @@ public class PlayerHealthData {
 
         // Pain Adjustment
         float decay = 0.05f * (float)Math.pow(stats.pain / 30f, 1.2f);
-        stats.pain = Math.max(stats.MinPain, stats.pain-decay);
+        if(stats.Tourniquet){
+            if (stats.pain>40){
+                stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(getOpioids()/40)));
+            }
+        }else{
+            stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(getOpioids()/40)));
+        }
 
         // Infection Adjustment
         if (stats.infection > 0) {
@@ -651,6 +663,10 @@ public class PlayerHealthData {
             blood = Math.max(5, blood - (getBLOOD_REGEN_RATE() * getNutritionFactor()));
         } else if (blood < 5) {
             blood = Math.min(5, blood + (getBLOOD_REGEN_RATE() * getNutritionFactor()));
+        }
+        if (Opioids>0){
+            float negativecons = (float) (Opioids*getContiousnessPerOpioid());
+            contiousnessCap = Math.min(contiousnessCap,100-negativecons);
         }
 
         // Respiratory arrest condition
@@ -1197,7 +1213,7 @@ public class PlayerHealthData {
 
     public void calculateBPM(){
         int newBPM=70;
-        int painAdd = (int) (Math.pow((totalPain/100),1.2)*100);
+        int painAdd = (int) (Math.pow((totalPain/100),1.4)*100);
 
         newBPM =newBPM+painAdd;
 
@@ -1333,8 +1349,17 @@ public class PlayerHealthData {
             src = ModDamageTypes.opioids(player.serverLevel());
 
         }
+        for (Limb limb: limbStats.keySet()){
+            LimbStatistics lstat = limbStats.get(limb);
+            if (lstat.Tourniquet){
+                player.getInventory().add(new ItemStack(ModItems.Tourniquet.get()));
+            }
+            if (lstat.hasSplint){
+                player.getInventory().add(new ItemStack(ModItems.Splint.get()));
+            }
+        }
         player.setHealth(0.1f);
-        player.hurt(src, 1.0F); // just enough to push into death
+        player.hurt(src, 1.0F);
     }
 
     public void resetToDefaults() {

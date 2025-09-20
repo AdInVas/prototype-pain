@@ -56,7 +56,7 @@ public class HeartBeatSound {
 
             // update bpm smoothly
             bpm = (float) Mth.lerp(0.5, bpm, targetBPM);
-
+            pitch = 1f +(((bpm-70)/100)*0.5f);
             // reset delay based on the *new* bpm
             tickDelay = Math.max(1, (int) (1200 / bpm)); // 20 ticks/sec * 60 sec/min
         }

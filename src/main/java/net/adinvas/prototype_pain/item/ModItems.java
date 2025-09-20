@@ -6,6 +6,7 @@ import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
 import net.adinvas.prototype_pain.item.disinfecting.AlcoholItem;
 import net.adinvas.prototype_pain.item.disinfecting.AntibioticsItem;
+import net.adinvas.prototype_pain.item.disinfecting.ReliefGel;
 import net.adinvas.prototype_pain.item.dressings.*;
 import net.adinvas.prototype_pain.item.narcotics.*;
 import net.adinvas.prototype_pain.item.reusable.SplintItem;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import net.adinvas.prototype_pain.item.disinfecting.ReliefGel;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
@@ -23,6 +25,7 @@ public class ModItems {
     public static final RegistryObject<Item> Dressing = ITEMS.register("dressing", DressingItem::new);
     public static final RegistryObject<Item> PlasticDressing = ITEMS.register("plastic_dressing", PlasticDressingItem::new);
     public static final RegistryObject<Item> SterilizedDressing = ITEMS.register("sterilized_dressing", SterilizedDressingItem::new);
+    public static final RegistryObject<Item> BandAids = ITEMS.register("band_aids", BandAidItem::new);
 
     public static final RegistryObject<Item> Alcohol = ITEMS.register("alcohol", AlcoholItem::new);
 
@@ -40,6 +43,7 @@ public class ModItems {
     public static final RegistryObject<Item> Antibiotics = ITEMS.register("antibiotics", AntibioticsItem::new);
     public static final RegistryObject<Item> BloodClotting = ITEMS.register("blood_clotting", BloodClottingItem::new);
     public static final RegistryObject<Item> BloodThiner = ITEMS.register("blood_thinner", BloodThinnerItem::new);
+    public static final RegistryObject<Item> ReliefGel = ITEMS.register("relief_gel", ReliefGel::new);
 
     public static final RegistryObject<Item> Splint = ITEMS.register("splint", SplintItem::new);
     public static final RegistryObject<Item> Tweezers = ITEMS.register("tweezers", TweezersItem::new);

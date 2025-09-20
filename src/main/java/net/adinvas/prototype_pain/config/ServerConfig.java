@@ -42,6 +42,8 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue TOURNIQUET_PAIN_PER_TICK;
     public static final ForgeConfigSpec.IntValue TOURNIQUET_SAFE_TICKS;             // 60s before muscle damage starts
     public static final ForgeConfigSpec.DoubleValue TOURNIQUET_MUSCLE_DAMAGE;
+    public static final ForgeConfigSpec.DoubleValue CONS_PENALTY_PER_OPIOID;
+    public static final ForgeConfigSpec.DoubleValue CONSIOUSNESS_DELTA;
 
     //Heavy Shit
     public static final ForgeConfigSpec.BooleanValue TOGGLE_UNCONTIOUS_INVENTORY;
@@ -135,6 +137,15 @@ public class ServerConfig {
         TOGGLE_UNCONTIOUS_INVENTORY = BUILDER
                 .comment("On/Off for other players opening uncontious players inventory")
                         .define("toggleInventorySteal",false);
+
+        CONS_PENALTY_PER_OPIOID = BUILDER
+                .comment("How much contiousness is penalized by one point of Opiodis (optiod max is 100)")
+                        .defineInRange("consPenaltyPerOpiod",0.2,0,Double.MAX_VALUE);
+        CONSIOUSNESS_DELTA = BUILDER
+                .comment("How fast contiousness resores itself(keep in mind that contiousness is also capped by things such as:")
+                        .comment("Oxygen,Opioids,High Pain,Head Health ...")
+                                .comment("(1 = instantly when it can ; 0.01 almost doesnt increase)")
+                                        .defineInRange("consiousnessDelta",0.75,0.01,1);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

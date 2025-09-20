@@ -2,7 +2,15 @@
   "heartbeat": {
     "sounds": [
       {
-        "name": "prototype_pain:heartbeat",
+        "name": "prototype_pain:heartbeat-01",
+        "stream": false
+      },
+      {
+        "name": "prototype_pain:heartbeat-02",
+        "stream": false
+      },
+      {
+        "name": "prototype_pain:heartbeat-03",
         "stream": false
       }
     ]
