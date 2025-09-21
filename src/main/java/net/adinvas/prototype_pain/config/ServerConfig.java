@@ -66,8 +66,8 @@ public class ServerConfig {
                         .defineInRange("disinfectionRate",3d,0,100);
 
         WUND_ANTIBLEED_RATE = BUILDER
-                .comment("The rate at which internal Bleeding heals (L/s)")
-                        .defineInRange("wundAntiBleed",0.02,0,10);
+                .comment("The rate at which internal Bleeding heals (L/min)")
+                        .defineInRange("wundAntiBleed",0.00025,0,10);
 
         INFECTION_CHANCE=BUILDER
                 .comment("Chance of an infection at 0% skin health (%/s)")
@@ -77,7 +77,7 @@ public class ServerConfig {
                         .defineInRange("infectionMuscleDrain",0.4,0,100);
         HEMOTHORAX_HEAL_RATE = BUILDER
                 .comment("The rate at which Hemothorax is healed (pts/s)")
-                        .defineInRange("hemothoraxHealRate",0.1,0,100);
+                        .defineInRange("hemothoraxHealRate",0.05,0,100);
         OXYGEN_REPLENISH = BUILDER
                 .comment("The rate at which Oxygen Replenishies (%/s)")
                         .defineInRange("oxygenReplenish",8d,0,100);

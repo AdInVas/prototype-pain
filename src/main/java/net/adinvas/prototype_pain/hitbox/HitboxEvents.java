@@ -89,7 +89,6 @@ public class HitboxEvents {
                     h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
                 });
             }
-
             event.setAmount(0);
             return;
     } else if (isAnyProjectile(event.getSource())){
@@ -115,6 +114,7 @@ public class HitboxEvents {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 h.handleProjectileDamage(hit, finalDamage,player);
             });
+            player.sendSystemMessage(Component.literal("stop at projectile"));
             event.setAmount(0);
             return;
         }
@@ -148,7 +148,6 @@ public class HitboxEvents {
             HitSector hit = detectHit(player, hitPos.getLocation());
             // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
             float finalDamage = event.getAmount();
-
             // Call into your capability with final damage
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 h.handleProjectileDamage(hit, finalDamage,player);
@@ -157,9 +156,13 @@ public class HitboxEvents {
             return;
         }
         float finalDamageamount = damageamount;
+
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            player.sendSystemMessage(Component.literal("dmg "+finalDamageamount+" scr "+event.getSource()+"direct entity"+event.getSource().getDirectEntity()));
             h.handleRandomDamage(finalDamageamount,player);
+            player.sendSystemMessage(Component.literal("end"));
         });
+
         event.setAmount(0);
     }
 

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "prototype_pain:opium"
+    },
+    {
+      "item": "prototype_pain:opium"
+    },
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ],
+  "result": {
+    "item": "prototype_pain:morphine",
+    "count": 1
+  }
+}

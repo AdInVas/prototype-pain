@@ -11,6 +11,7 @@ import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.tags.ModItemTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -31,7 +32,9 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.event.level.NoteBlockEvent;
 import org.apache.commons.lang3.BooleanUtils;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class PlayerHealthData {
     private final Map<Limb,LimbStatistics> limbStats = new EnumMap<>(Limb.class);
@@ -52,6 +55,26 @@ public class PlayerHealthData {
     private float deathTimer = 0;
     private float bloodViscosity = 0;
 
+    public String baseToString() {
+        return "PlayerHealthData{" +
+                "blood=" + blood +
+                ", totalPain=" + totalPain +
+                ", contiousness=" + contiousness +
+                ", contiousnessCap=" + contiousnessCap +
+                ", hemothorax=" + hemothorax +
+                ", hemothoraxpain=" + hemothoraxpain +
+                ", internalBleeding=" + internalBleeding +
+                ", oxygen=" + Oxygen +
+                ", oxygenCap=" + OxygenCap +
+                ", opioids=" + Opioids +
+                ", bpm=" + BPM +
+                ", isBreathing=" + isBreathing +
+                ", respiratoryArrest=" + respitoryArrest +
+                ", deathTimer=" + deathTimer +
+                ", bloodViscosity=" + bloodViscosity +
+                '}';
+    }
+
     //passtrough values
     private int hungerLevel = 20;
     private boolean isUnderwater = false;
@@ -66,7 +89,7 @@ public class PlayerHealthData {
         return (float) (ServerConfig.DISINFECTION_RATE.get()/20f);
     }
     public double getWUND_ANTIBLEED_RATE(){
-        return ServerConfig.WUND_ANTIBLEED_RATE.get()/20f;
+        return ServerConfig.WUND_ANTIBLEED_RATE.get()/(20f*60);
     }
     public float getINFECTION_CHANCE(){
         return (float) (ServerConfig.INFECTION_CHANCE.get()/20f);
@@ -280,6 +303,10 @@ public class PlayerHealthData {
         ensureLimb(limb).desinfectionTimer = desinfection;
     }
 
+    public Component getLimbDataText(Limb limb){
+        return Component.literal(limbStats.get(limb).toString());
+    }
+
 
     public boolean hasLimbSplint(Limb limb) {
         return ensureLimb(limb).hasSplint;
@@ -371,16 +398,6 @@ public class PlayerHealthData {
     }
 
 
-    public float getLungBloodRate() {
-        return internalBleeding;
-    }
-
-
-    public void setLungBloodRate(float value) {
-        internalBleeding = value;
-    }
-
-
     public float getOpioids() {
         return Opioids;
     }
@@ -442,6 +459,7 @@ public class PlayerHealthData {
 
     public void recalcTotalPain() {
         totalPain = limbStats.values().stream().mapToDouble(ls -> ls.finalPain).max().orElse(0f);
+        totalPain = Math.max(totalPain,hemothoraxpain);
     }
 
     private void UpdateLimb(Limb limb){
@@ -642,7 +660,7 @@ public class PlayerHealthData {
         // Bleeding — internal
         if (internalBleeding > 0) {
             internalBleeding = (float) Math.max(0, internalBleeding - getWUND_ANTIBLEED_RATE());
-            internalBleeding = Mth.clamp(internalBleeding,0,getMAX_BLEED_RATE()/3);
+            internalBleeding = Mth.clamp(internalBleeding,0,getMAX_BLEED_RATE());
         }
 
         // Hemothorax
@@ -1252,49 +1270,26 @@ public class PlayerHealthData {
     }
 
     public void handleRandomDamage(float damageValue, Player player) {
-        applyRecursiveRandomDamage(damageValue, null, 0,player);
-    }
-
-    private void applyRecursiveRandomDamage(float damage, Limb previousLimb, int depth,Player player) {
-        Random random = new Random();
-        if (damage < 1f) return;                 // too small → stop
-        if (depth > 6) return;                   // hard cap so it never goes infinite
-
-        // Pick a limb (first = random, then connected)
-        Limb target;
-        if (random.nextBoolean()){
-            target = (previousLimb == null) ? Limb.randomLimb() : previousLimb.randomFromConectedLimb();
-        }else {
-            target = (previousLimb == null) ? Limb.weigtedRandomLimb() : previousLimb.randomFromConectedLimb();
-        }
-
-        float pass_damage = applyLocationalArmor(target,damage,player,false,false,false,false);
-
-
-        // Decide: Muscle OR Skin
-        if (random.nextBoolean()) {
-            // Muscle damage only
-            applyMuscleDamage(target, pass_damage * 0.4f);
-        } else {
-            // Skin damage (with bleed chance)
-            applySkinDamage(target, pass_damage * 0.5f);
-
-            if (random.nextFloat() < 0.6f) { // 60% chance for bleed
-                applyBleedDamage(target, pass_damage * 0.3f);
+        int i=0;
+        while (damageValue>0){
+            i++;
+            Limb randLimb = Limb.weigtedRandomLimb();
+            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damageValue),player,true,false,false,false);
+            applyPain(randLimb,passDamage*9);
+            limbStats.get(randLimb).muscleHealth -= passDamage*3;
+            applySkinDamage(randLimb,passDamage*3);
+            if (Math.random()<i*0.2){
+                applyPain(randLimb,passDamage*9);
+                limbStats.get(randLimb).muscleHealth -= passDamage*4;
+                applySkinDamage(randLimb,passDamage*1.5f);
+                applyBleedDamage(randLimb,passDamage*2.5f);
+                damageValue-=1;
             }
+            damageValue-=1;
+            hurtArmor(randLimb,player,passDamage);
         }
-
-        // Pain always applied
-        applyPain(target, painFromDamage(pass_damage * 0.25f));
-
-        // Recursive spread: chance grows with damage
-        float spreadChance = Math.min(0.9f, pass_damage / 15f);
-        if (random.nextFloat() < spreadChance) {
-            // Spread to a connected limb with reduced strength
-            applyRecursiveRandomDamage(damage * 0.6f, target, depth + 1,player);
-        }
-        hurtArmor(target,player,damage);
     }
+
 
 
     public void addDelayedChange(float totalBleedAmount,int timeInTicks,Limb limb){

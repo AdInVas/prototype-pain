@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,6 @@ public class BandAidItem extends Item implements IMedUsable {
 
     @Override
     public SoundEvent getUseSound() {
-        return ModSounds.BANDAGE_USE.get();
+        return SoundEvents.BONE_MEAL_USE;
     }
 }

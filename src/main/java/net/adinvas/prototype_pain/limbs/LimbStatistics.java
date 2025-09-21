@@ -20,4 +20,26 @@ public class LimbStatistics {
 
 
     LimbStatistics(){}
+
+    @Override
+    public String toString() {
+        return "LimbStatistics{" +
+                "skinHealth=" + skinHealth +
+                ", muscleHealth=" + muscleHealth +
+                ", pain=" + pain +
+                ", infection=" + infection +
+                ", fractureTimer=" + fractureTimer +
+                ", dislocatedTimer=" + dislocatedTimer +
+                ", shrapnell=" + shrapnell +
+                ", hasSplint=" + hasSplint +
+                ", bleedRate=" + bleedRate +
+                ", desinfectionTimer=" + desinfectionTimer +
+                ", minPain=" + MinPain +
+                ", finalPain=" + finalPain +
+                ", skinHeal=" + SkinHeal +
+                ", muscleHeal=" + MuscleHeal +
+                ", tourniquet=" + Tourniquet +
+                ", tourniquetTimer=" + tourniquetTimer +
+                '}';
+    }
 }
