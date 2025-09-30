@@ -1,6 +1,9 @@
 package net.adinvas.prototype_pain.limbs;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +109,32 @@ public enum Limb { HEAD, CHEST, LEFT_ARM, RIGHT_ARM,RIGHT_HAND,LEFT_HAND, LEFT_L
             case RIGHT_HAND -> Component.translatable("prototype_pain.limb.rhand");
             default -> Component.empty();
         };
+    }
+
+
+    static InteractionHand getRightHand(Player player){
+        if (player.getMainArm()== HumanoidArm.RIGHT){
+            return InteractionHand.MAIN_HAND;
+        }
+        return InteractionHand.OFF_HAND;
+    }
+
+    static InteractionHand getLeftHand(Player player){
+        if (player.getMainArm()== HumanoidArm.LEFT){
+            return InteractionHand.MAIN_HAND;
+        }
+        return InteractionHand.OFF_HAND;
+    }
+
+    public static HumanoidArm getFromHand(InteractionHand hand, Player player){
+        HumanoidArm mainArm = player.getMainArm();
+        if (hand == InteractionHand.MAIN_HAND) {
+            // MAIN_HAND always uses the player's dominant arm
+            return mainArm;
+        } else {
+            // OFF_HAND is always the opposite of the main arm
+            return (mainArm == HumanoidArm.RIGHT) ? HumanoidArm.LEFT : HumanoidArm.RIGHT;
+        }
     }
 
 }

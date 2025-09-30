@@ -55,6 +55,14 @@ public class HitboxEvents {
         }
         if (event.getSource().is(ModDamageTypeTags.IGNORE))return;
         if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
+        if (event.getSource().is(DamageTypes.FALL)){
+            float finalDamage = damageamount;
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleFallDamage(finalDamage,player);
+            });
+            event.setAmount(0);
+            return;
+        }
         if (event.getSource().is(CBCgrape)||event.getSource().is(CBCshrap)){
             float finalDamage = damageamount;
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
@@ -114,7 +122,6 @@ public class HitboxEvents {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 h.handleProjectileDamage(hit, finalDamage,player);
             });
-            player.sendSystemMessage(Component.literal("stop at projectile"));
             event.setAmount(0);
             return;
         }
@@ -140,8 +147,7 @@ public class HitboxEvents {
             event.setAmount(0);
             return;
         }
-        else if (event.getSource().getEntity() instanceof LivingEntity shooter) {
-
+        else if (event.getSource().getEntity() instanceof Player shooter) {
             double range = 400.0;
             EntityHitResult hitPos = rayTraceLivingEntity(shooter, range);
             // Your custom hit sector logic
@@ -158,13 +164,12 @@ public class HitboxEvents {
         float finalDamageamount = damageamount;
 
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            player.sendSystemMessage(Component.literal("dmg "+finalDamageamount+" scr "+event.getSource()+"direct entity"+event.getSource().getDirectEntity()));
             h.handleRandomDamage(finalDamageamount,player);
-            player.sendSystemMessage(Component.literal("end"));
         });
 
         event.setAmount(0);
     }
+
 
     @SubscribeEvent
     public static void onHeal(LivingHealEvent event){
@@ -284,26 +289,6 @@ public class HitboxEvents {
         });
     }
 
-    @SubscribeEvent
-    public static void onFall(LivingFallEvent event){
-        if (event.getEntity() instanceof Player player) {
-            float distance = event.getDistance();
-            float damageMultiplier = event.getDamageMultiplier();
-
-            // Calculate vanilla fall damage
-            float damage = (distance - 3.0F) * damageMultiplier;
-
-            if (damage > 0) {
-                // Cancel vanilla damage
-                event.setCanceled(true);
-
-                // Call your custom fall damage handler
-                   player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                   h.handleFallDamage(damage,player);
-               });
-            }
-        }
-    }
 
     public static boolean isAnyProjectile(DamageSource source) {
         // 1. Vanilla tag check
@@ -312,7 +297,6 @@ public class HitboxEvents {
         // 2. Direct entity instanceof check
         Entity direct = source.getDirectEntity();
         if (direct instanceof Projectile) return true;
-
 
         return false;
     }

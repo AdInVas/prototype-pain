@@ -3,8 +3,11 @@ package net.adinvas.prototype_pain.network;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+
+import java.util.Optional;
 
 public class ModNetwork {
     private static final String PROTOCOL_VERSION = "1";

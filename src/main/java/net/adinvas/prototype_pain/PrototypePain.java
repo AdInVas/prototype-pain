@@ -13,9 +13,12 @@ import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagScreen;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagScreen;
 import net.adinvas.prototype_pain.network.ModNetwork;
+import net.adinvas.prototype_pain.visual.particles.BloodParticle;
+import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -54,6 +57,7 @@ public class PrototypePain {
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
         ModSounds.register(modEventBus);
+        ModParticles.register(modEventBus);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -86,6 +90,11 @@ public class PrototypePain {
         @SubscribeEvent
         public static void registerKeybindings(RegisterKeyMappingsEvent event){
             Keybinds.register(event);
+        }
+
+        @SubscribeEvent
+        public static void registerParticleProvider(RegisterParticleProvidersEvent event){
+            event.registerSpriteSet(ModParticles.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
         }
     }
 }

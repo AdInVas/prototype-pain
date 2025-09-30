@@ -1,6 +1,5 @@
 package net.adinvas.prototype_pain.client.gui;
 
-import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
@@ -14,8 +13,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,8 +32,8 @@ public class HealthScreen extends Screen {
     private LimbWidget R_Leg;
     private LimbWidget Chest;
     private LimbWidget Head;
-    private ItemWidget MainHand;
-    private ItemWidget OffHand;
+    private ItemWidget RightItem;
+    private ItemWidget LeftItem;
     private HealthInfoBoxWidget healthbox;
     private NarcoticWidget narcoticWidget;
 
@@ -78,8 +78,31 @@ public class HealthScreen extends Screen {
         R_Foot = new LimbWidget(start_x,start_y+32+64+48,16,16,Component.empty(),Limb.RIGHT_FOOT);
         healthbox = new HealthInfoBoxWidget(0,0,128,196,Component.empty());
 
-        MainHand = new ItemWidget(start_x-48-16-8,start_y+8, Minecraft.getInstance().player.getMainHandItem());
-        OffHand = new ItemWidget(start_x+32+48+8,start_y+8, Minecraft.getInstance().player.getOffhandItem());
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = player.getItemInHand(hand);
+
+                // Which arm is this hand using? (LEFT or RIGHT)
+                HumanoidArm arm = Limb.getFromHand(hand, player);
+
+                if (arm == HumanoidArm.RIGHT) {
+                    // Draw right-hand item on the right side of HUD
+                    RightItem = new ItemWidget(
+                            start_x - 48 - 16 - 8,
+                            start_y + 8,
+                            stack
+                    );
+                } else {
+                    // Draw left-hand item on the left side of HUD
+                    LeftItem = new ItemWidget(
+                            start_x + 32 + 48 + 8,
+                            start_y + 8,
+                            stack
+                    );
+                }
+            }
+        }
         narcoticWidget = new NarcoticWidget(this.width/2-64,this.height/2-32,128,64,Component.empty());
         addRenderableWidget(Head);
         addRenderableWidget(Chest);
@@ -91,8 +114,8 @@ public class HealthScreen extends Screen {
         addRenderableWidget(R_Foot);
         addRenderableWidget(R_Hand);
         addRenderableWidget(R_Leg);
-        addRenderableWidget(OffHand);
-        addRenderableWidget(MainHand);
+        addRenderableWidget(LeftItem);
+        addRenderableWidget(RightItem);
         addRenderableWidget(healthbox);
         addRenderableWidget(narcoticWidget);
         Head.populate_sprites();
@@ -109,7 +132,6 @@ public class HealthScreen extends Screen {
         ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(true,target.getUUID()));
         lastHovered = Head;
         healthbox.setName(Component.literal(target.getScoreboardName()));
-        Player player = Minecraft.getInstance().player;
         if (player!=null){
             target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 heartBeatSound = new HeartBeatSound(player,h.getBPM());
@@ -199,8 +221,20 @@ public class HealthScreen extends Screen {
     }
 
     public void updateScreen(){
-        MainHand.setStack(Minecraft.getInstance().player.getMainHandItem());
-        OffHand.setStack(Minecraft.getInstance().player.getOffhandItem());
+        Player player = Minecraft.getInstance().player;
+        if (player != null) {
+            for (InteractionHand hand : InteractionHand.values()) {
+                ItemStack stack = player.getItemInHand(hand);
+
+                HumanoidArm arm = Limb.getFromHand(hand, player);
+
+                if (arm == HumanoidArm.RIGHT) {
+                    RightItem.setStack(stack);
+                } else {
+                    LeftItem.setStack(stack);
+                }
+            }
+        }
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
             for (Limb limb : Limb.values()) {
                 LimbWidget widget = switch (limb) {
@@ -271,12 +305,12 @@ public class HealthScreen extends Screen {
 
     @Override
     public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        if (MainHand.isDragging()){
+        if (RightItem.isDragging()){
             narcoticWidget.setNull();
             LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
             if (widget!=null) {
                 Limb limb = widget.getLimb();
-                ItemStack itemstack = Minecraft.getInstance().player.getMainHandItem();
+                ItemStack itemstack = getItemstackForHand(HumanoidArm.RIGHT, minecraft.player);
                 if (itemstack.getItem() instanceof INarcoticUsable){
                     float damage = ((100-itemstack.getDamageValue())/100f);
                     narcoticWidget.setDisplay(damage,itemstack);
@@ -285,12 +319,12 @@ public class HealthScreen extends Screen {
                     ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), false));
                 }
             }
-        }else if (OffHand.isDragging()){
+        }else if (LeftItem.isDragging()){
             narcoticWidget.setNull();
             LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
             if (widget!=null) {
                 Limb limb = widget.getLimb();
-                ItemStack itemstack = Minecraft.getInstance().player.getOffhandItem();
+                ItemStack itemstack = getItemstackForHand(HumanoidArm.LEFT, minecraft.player);
                 if (itemstack.getItem() instanceof INarcoticUsable){
                     float damage = ((itemstack.getMaxDamage()-itemstack.getDamageValue())/100f);
                     narcoticWidget.setDisplay(damage,itemstack);
@@ -300,9 +334,21 @@ public class HealthScreen extends Screen {
                 }
             }
         }
-        MainHand.onRelease(pMouseX,pMouseY);
-        OffHand.onRelease(pMouseX,pMouseY);
+        RightItem.onRelease(pMouseX,pMouseY);
+        LeftItem.onRelease(pMouseX,pMouseY);
         return super.mouseReleased(pMouseX, pMouseY, pButton);
+    }
+
+    private ItemStack getItemstackForHand(HumanoidArm arm, Player player) {
+        HumanoidArm mainArm = player.getMainArm();
+
+        // If we're asking for the player's dominant arm → MAIN_HAND
+        if (arm == mainArm) {
+            return player.getItemInHand(InteractionHand.MAIN_HAND);
+        } else {
+            // Otherwise it's the opposite → OFF_HAND
+            return player.getItemInHand(InteractionHand.OFF_HAND);
+        }
     }
 
     private LimbWidget getHoveringWidget(double pMouseX,double pMouseY){

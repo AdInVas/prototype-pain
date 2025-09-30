@@ -8,7 +8,9 @@ import net.adinvas.prototype_pain.item.IMedUsable;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.network.MedicalAction;
+import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.tags.ModItemTags;
+import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -16,28 +18,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraftforge.event.level.NoteBlockEvent;
-import org.apache.commons.lang3.BooleanUtils;
+import net.minecraftforge.network.PacketDistributor;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class PlayerHealthData {
-    private final Map<Limb,LimbStatistics> limbStats = new EnumMap<>(Limb.class);
+    private Map<Limb,LimbStatistics> limbStats = new EnumMap<>(Limb.class);
     private List<DelayedChangeEntry> changeEntries = new ArrayList<>();
     private float blood = 5f;
     private double totalPain = 0f;
@@ -159,6 +156,14 @@ public class PlayerHealthData {
    }
    public double getContiousnessDelta(){
         return ServerConfig.CONSIOUSNESS_DELTA.get();
+   }
+   public double[] getArmorScaling(){
+        double[] list = new double[4];
+        list[0] = ServerConfig.HELMET_ARMOR_SCALE.get();
+       list[1] = ServerConfig.CHESTPLATE_ARMOR_SCALE.get();
+       list[2] = ServerConfig.LEGS_ARMOR_SCALE.get();
+       list[3] = ServerConfig.BOOTS_ARMOR_SCALE.get();
+       return list;
    }
 
 
@@ -616,9 +621,10 @@ public class PlayerHealthData {
         limbStats.get(limb).SkinHeal = false;
         limbStats.get(limb).MuscleHeal = false;
     }
-    public void applyBleedDamage(Limb limb, float damage){
+    public void applyBleedDamage(Limb limb, float damage,Player player){
         float bleed = (damage/15)* getMAX_BLEED_RATE();
         limbStats.get(limb).bleedRate += bleed;
+        //spawnParticleFromDamage((ServerPlayer) player,damage);
     }
     private void applyDirectBleedRate(Limb limb,float value){
         limbStats.get(limb).bleedRate = Mth.clamp(limbStats.get(limb).bleedRate-value,0,100);
@@ -753,7 +759,6 @@ public class PlayerHealthData {
             }
 
 
-
     }
 
     public void setBloodViscosity(float bloodViscosity) {
@@ -794,36 +799,37 @@ public class PlayerHealthData {
         Objects.requireNonNull(player.getAttribute(Attributes.ATTACK_SPEED))
                 .setBaseValue(baseAttackSpeed * attackMultiplier);
 
+        for (InteractionHand hand : InteractionHand.values()) {
+            ItemStack stack = player.getItemInHand(hand);
 
-        ItemStack offhand = player.getItemBySlot(EquipmentSlot.OFFHAND);
-        ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
+            if (!stack.isEmpty()) {
+                // Which physical arm is this hand using?
+                HumanoidArm arm = Limb.getFromHand(hand, player);
 
+                // Map arm to your Limb system
+                Limb limb = (arm == HumanoidArm.LEFT) ? Limb.LEFT_HAND : Limb.RIGHT_HAND;
 
-        boolean offHandBroken = getLimbMuscleHealth(Limb.LEFT_HAND)<10||getLimbFracture(Limb.LEFT_HAND)>0;
-        boolean mainHandBroken = getLimbMuscleHealth(Limb.RIGHT_HAND)<10||getLimbFracture(Limb.RIGHT_HAND)>0;
-        if (!offhand.isEmpty()&&offHandBroken){
-                if (player.getInventory().add(offhand)) {
-                    player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
-                } else {
-                    player.drop(offhand, false);
-                    player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+                // Check if this limb is "broken"
+                boolean broken = getLimbMuscleHealth(limb) < 10 || getLimbFracture(limb) > 0;
+
+                if (broken) {
+                    // Try to move item into inventory
+                    if (player.getInventory().add(stack)) {
+                        player.setItemInHand(hand, ItemStack.EMPTY);
+                    } else {
+                        // Drop if inventory is full
+                        player.drop(stack, false);
+                        player.setItemInHand(hand, ItemStack.EMPTY);
+                    }
                 }
-        }
-        if (!mainHand.isEmpty()&&mainHandBroken){
-            if (player.getInventory().add(mainHand)){
-                player.setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);
-            }else {
-                player.drop(mainHand,false);
-                player.setItemSlot(EquipmentSlot.MAINHAND,ItemStack.EMPTY);
             }
         }
-
 
       
     }
 
     public CompoundTag serializeNBT(CompoundTag nbt) {
-
+        ensureDefaults();
         // Player-wide values
         nbt.putFloat("Blood", blood);
         nbt.putDouble("TotalPain", totalPain);
@@ -860,7 +866,6 @@ public class PlayerHealthData {
             limbTag.putFloat("Dislocated", stats.dislocatedTimer);
             limbTag.putBoolean("Shrapnell", stats.shrapnell);
             limbTag.putBoolean("HasSplint", stats.hasSplint);
-            if ((Float)(stats.bleedRate)==null)stats.bleedRate=0;
             limbTag.putFloat("BleedRate", stats.bleedRate);
             limbTag.putFloat("DesinfectionTimer", stats.desinfectionTimer);
             limbTag.putFloat("MinPain", stats.MinPain);
@@ -876,10 +881,50 @@ public class PlayerHealthData {
         return nbt;
     }
 
+    private void ensureDefaults() {
+        // Player-wide values
+        if (Float.isNaN(blood)) blood = 100f; // example default
+        if (Double.isNaN(totalPain)) totalPain = 0.0d;
+        if (Float.isNaN(contiousness)) contiousness = 100f;
+        if (Float.isNaN(contiousnessCap)) contiousnessCap = 100f;
+        if (Float.isNaN(hemothorax)) hemothorax = 0f;
+        if (Float.isNaN(hemothoraxpain)) hemothoraxpain = 0f;
+        if (Float.isNaN(internalBleeding)) internalBleeding = 0f;
+        if (Float.isNaN(Oxygen)) Oxygen = 100f;
+        if (Float.isNaN(OxygenCap)) OxygenCap = 100f;
+        if (Float.isNaN(Opioids)) Opioids = 0f;
+        if (Float.isNaN(BPM)) BPM = 60f;
+        if (bloodViscosity == 0) bloodViscosity = 1f; // safe baseline
+
+        if (changeEntries == null) changeEntries = new ArrayList<>();
+        if (limbStats == null) limbStats = new HashMap<>();
+
+        // Ensure limb defaults
+        for (Map.Entry<Limb, LimbStatistics> entry : limbStats.entrySet()) {
+            LimbStatistics stats = entry.getValue();
+            if (stats == null) {
+                entry.setValue(new LimbStatistics());
+                continue;
+            }
+            if (Float.isNaN(stats.skinHealth)) stats.skinHealth = 100f;
+            if (Float.isNaN(stats.muscleHealth)) stats.muscleHealth = 100f;
+            if (Float.isNaN(stats.pain)) stats.pain = 0f;
+            if (Float.isNaN(stats.infection)) stats.infection = 0f;
+            if (Float.isNaN(stats.fractureTimer)) stats.fractureTimer = 0f;
+            if (Float.isNaN(stats.dislocatedTimer)) stats.dislocatedTimer = 0f;
+            if (Float.isNaN(stats.bleedRate)) stats.bleedRate = 0f;
+            if (Float.isNaN(stats.desinfectionTimer)) stats.desinfectionTimer = 0f;
+            if (Float.isNaN(stats.MinPain)) stats.MinPain = 0f;
+            if (Float.isNaN(stats.finalPain)) stats.finalPain = 0f;
+            // Booleans default to false, so we usually don't need to reset them
+        }
+    }
+
 
 
 
     public void copyFrom(PlayerHealthData other) {
+        ensureDefaults();
         this.blood = other.blood;
         this.totalPain = other.totalPain;
         this.contiousness = other.contiousness;
@@ -1010,7 +1055,7 @@ public class PlayerHealthData {
                 int damage = random.nextInt(3);
                 applySkinDamage(limb,damage);
                 applyMuscleDamage(limb,damage);
-                applyBleedDamage(limb,damage/6f);
+                applyBleedDamage(limb,damage/6f,source);
                 if (random.nextFloat()<=getMANUAL_SHRAPNEL_SUCCESS_CHANCE()){
                     setLimbShrapnell(limb,false);
                 }
@@ -1102,11 +1147,12 @@ public class PlayerHealthData {
 
     public float applyLocationalArmor(Limb limb, float damage, Player player,boolean is_fire,boolean is_projectile,boolean is_explosion,boolean is_fall){
         float armPoints=0,tough=0,prot=0,fprot =0,pprot=0,expprot=0,ff=0;
+        double[] armorScale = getArmorScaling();
         switch (limb){
             case HEAD -> {
                 ItemStack item = player.getItemBySlot(EquipmentSlot.HEAD);
                 if (item.getItem() instanceof ArmorItem armor){
-                    armPoints = armor.getDefense();
+                    armPoints = (float) (armor.getDefense() * armorScale[0]);
                     tough = armor.getToughness();
                     prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
                     fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
@@ -1122,7 +1168,7 @@ public class PlayerHealthData {
                 else if (item.is(ModItemTags.ARMOR_FULL_ARM))
                     scalar = 1;
                 if (item.getItem() instanceof ArmorItem armor){
-                    armPoints = armor.getDefense()*scalar;
+                    armPoints = (float) (armor.getDefense()*scalar* armorScale[1]);
                     tough = armor.getToughness();
                     prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
                     fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
@@ -1133,7 +1179,7 @@ public class PlayerHealthData {
             case CHEST -> {
                 ItemStack item = player.getItemBySlot(EquipmentSlot.CHEST);
                 if (item.getItem() instanceof ArmorItem armor){
-                    armPoints = armor.getDefense();
+                    armPoints = (float) (armor.getDefense()* armorScale[1]);
                     tough = armor.getToughness();
                     prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
                     fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
@@ -1144,7 +1190,7 @@ public class PlayerHealthData {
             case RIGHT_LEG,LEFT_LEG ->{
                 ItemStack item = player.getItemBySlot(EquipmentSlot.LEGS);
                 if (item.getItem() instanceof ArmorItem armor){
-                    armPoints = armor.getDefense();
+                    armPoints = (float) (armor.getDefense()* armorScale[2]);
                     tough = armor.getToughness();
                     prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
                     fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
@@ -1155,7 +1201,7 @@ public class PlayerHealthData {
             case RIGHT_FOOT,LEFT_FOOT -> {
                 ItemStack item = player.getItemBySlot(EquipmentSlot.FEET);
                 if (item.getItem() instanceof ArmorItem armor){
-                    armPoints = armor.getDefense();
+                    armPoints = (float) (armor.getDefense()* armorScale[3]);
                     tough = armor.getToughness();
                     prot = item.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
                     fprot = item.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
@@ -1195,19 +1241,21 @@ public class PlayerHealthData {
         while (damage>0){
             i++;
             Limb randLimb = Limb.weigtedRandomLimb();
-            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damage),player,true,false,false,false);
+            float damage_pass = (float) (Math.random() * 4);
+            if (damage_pass>damage) damage_pass = damage;
+            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damage_pass),player,true,false,false,false);
             applyPain(randLimb,passDamage*5);
             limbStats.get(randLimb).muscleHealth -= passDamage*3;
             applySkinDamage(randLimb,passDamage*3);
             if (Math.random()<i*0.2){
                 applyPain(randLimb,passDamage*5);
-                limbStats.get(randLimb).muscleHealth -= passDamage*4;
+                limbStats.get(randLimb).muscleHealth -= passDamage*5;
                 applySkinDamage(randLimb,passDamage*1.5f);
-                applyBleedDamage(randLimb,passDamage*2.5f);
+                applyBleedDamage(randLimb,passDamage*2.5f,player);
                 damage-=1;
             }
-            damage-=1;
-            hurtArmor(randLimb,player,damage);
+            damage-=damage_pass;
+            hurtArmor(randLimb,player,damage_pass);
         }
     }
 
@@ -1219,7 +1267,7 @@ public class PlayerHealthData {
             applyMuscleDamage(rLimb,passDamage*0.2f);
             applySkinDamage(rLimb,passDamage*0.8f);
             applyPain(rLimb,painFromDamage(passDamage));
-            applyBleedDamage(rLimb,passDamage*0.7f);
+            applyBleedDamage(rLimb,passDamage*0.7f,player);
             float chance = passDamage/6+0.2f;
             if (Math.random()<chance&&shrapnell){
                 setLimbShrapnell(rLimb,true);
@@ -1250,10 +1298,11 @@ public class PlayerHealthData {
         Limb randomLimb = limbList.get(random.nextInt(limbList.size()));
         damage = applyLocationalArmor(randomLimb,damage,player,false,true,false,false);
 
+
         applyMuscleDamage(randomLimb,(float) (damage*(Math.random()/2f+0.5f)));
         applyPain(randomLimb,painFromDamage(damage));
         applySkinDamage(randomLimb, (float) (damage*(Math.random()/2f+0.5f)));
-        applyBleedDamage(randomLimb,damage*0.9f);
+        applyBleedDamage(randomLimb,damage*0.9f,player);
         float chance;
 
         if (damage <= 2f || damage >= 10f) {
@@ -1269,24 +1318,26 @@ public class PlayerHealthData {
         hurtArmor(randomLimb,player,damage);
     }
 
-    public void handleRandomDamage(float damageValue, Player player) {
+    public void handleRandomDamage(float damage, Player player) {
         int i=0;
-        while (damageValue>0){
+        while (damage>0){
             i++;
             Limb randLimb = Limb.weigtedRandomLimb();
-            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damageValue),player,true,false,false,false);
-            applyPain(randLimb,passDamage*9);
-            limbStats.get(randLimb).muscleHealth -= passDamage*3;
-            applySkinDamage(randLimb,passDamage*3);
+            float damage_pass = (float) (Math.random() * 4);
+            if (damage_pass>damage) damage_pass = damage;
+            float passDamage = applyLocationalArmor(randLimb,Math.min(2,damage_pass),player,true,false,false,false);
+            applyPain(randLimb,painFromDamage((float) (passDamage*(Math.random()/2+1f))));
+            applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.5f)));
+            applySkinDamage(randLimb,(float) (passDamage*(Math.random()/2+0.5f)));
             if (Math.random()<i*0.2){
-                applyPain(randLimb,passDamage*9);
-                limbStats.get(randLimb).muscleHealth -= passDamage*4;
-                applySkinDamage(randLimb,passDamage*1.5f);
-                applyBleedDamage(randLimb,passDamage*2.5f);
-                damageValue-=1;
+                applyPain(randLimb,painFromDamage((float) (passDamage*(Math.random()/2+1.5f))));
+                applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.7f)));
+                applySkinDamage(randLimb,(float) (passDamage*(Math.random()/2+0.7f)));
+                applyBleedDamage(randLimb,(float) (passDamage*(Math.random()/2+0.7f)),player);
+                damage-=damage_pass;
             }
-            damageValue-=1;
-            hurtArmor(randLimb,player,passDamage);
+            damage-=damage_pass;
+            hurtArmor(randLimb,player,damage_pass);
         }
     }
 
@@ -1297,10 +1348,10 @@ public class PlayerHealthData {
         changeEntries.add(new DelayedChangeEntry(bleed,timeInTicks,limb));
     }
 
-    public void onArmUse(InteractionHand hand){
-        boolean left = hand == InteractionHand.OFF_HAND;
+    public void onArmUse(InteractionHand hand,Player player){
+        HumanoidArm arm = Limb.getFromHand(hand,player);
 
-        if (left){
+        if (arm ==HumanoidArm.LEFT){
             if ((getLimbFracture(Limb.LEFT_HAND)>0||getLimbDislocated(Limb.LEFT_HAND)>0))applyPain(Limb.LEFT_HAND,0.5f);
             if ((getLimbFracture(Limb.LEFT_ARM)>0||getLimbDislocated(Limb.LEFT_ARM)>0))applyPain(Limb.LEFT_ARM,0.5f);
         }else{
@@ -1355,6 +1406,10 @@ public class PlayerHealthData {
         }
         player.setHealth(0.1f);
         player.hurt(src, 1.0F);
+        if (player.isAlive()) {
+            player.setHealth(0.1f);
+            player.hurt(src, 1.0F);
+        }
     }
 
     public void resetToDefaults() {
@@ -1438,4 +1493,13 @@ public class PlayerHealthData {
             item.hurtAndBreak(amount,player, player1 -> player1.broadcastBreakEvent(finalEq));
         }
     }
+
+    //Visuals
+
+    public void spawnParticleFromDamage(ServerPlayer player,float damage){
+        int count = (int) (damage*5);
+        float height = player.getBbHeight()/2;
+        player.serverLevel().sendParticles(ModParticles.BLOOD_PARTICLE.get(),player.getX(),player.getY()+height,player.getZ(),count,0.1f,0.1f,0.1f,2f);
+    }
+
 }

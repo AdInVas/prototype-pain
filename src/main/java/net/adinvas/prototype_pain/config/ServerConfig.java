@@ -48,6 +48,11 @@ public class ServerConfig {
     //Heavy Shit
     public static final ForgeConfigSpec.BooleanValue TOGGLE_UNCONTIOUS_INVENTORY;
 
+    public static final ForgeConfigSpec.DoubleValue HELMET_ARMOR_SCALE;
+    public static final ForgeConfigSpec.DoubleValue CHESTPLATE_ARMOR_SCALE;
+    public static final ForgeConfigSpec.DoubleValue LEGS_ARMOR_SCALE;
+    public static final ForgeConfigSpec.DoubleValue BOOTS_ARMOR_SCALE;
+    //public static final ForgeConfigSpec.DoubleValue INSTANT_DEATH_MIN_DAMAGE;
 
 
 
@@ -139,7 +144,7 @@ public class ServerConfig {
                         .define("toggleInventorySteal",false);
 
         CONS_PENALTY_PER_OPIOID = BUILDER
-                .comment("How much contiousness is penalized by one point of Opiodis (optiod max is 100)")
+                .comment("How much consiousness is penalized by one point of Opioids (opioids max is 100)")
                         .defineInRange("consPenaltyPerOpiod",0.2,0,Double.MAX_VALUE);
         CONSIOUSNESS_DELTA = BUILDER
                 .comment("How fast contiousness resores itself(keep in mind that contiousness is also capped by things such as:")
@@ -147,6 +152,19 @@ public class ServerConfig {
                                 .comment("(1 = instantly when it can ; 0.01 almost doesnt increase)")
                                         .defineInRange("consiousnessDelta",0.75,0.01,1);
 
+        HELMET_ARMOR_SCALE = BUILDER
+                .comment("Scaling of Armor values")
+                        .defineInRange("helmetArmorScale",3,0,Double.MAX_VALUE);
+        CHESTPLATE_ARMOR_SCALE = BUILDER.defineInRange("chestplateArmorScale",1.1,0,Double.MAX_VALUE);
+        LEGS_ARMOR_SCALE = BUILDER.defineInRange("leggingsArmorScale",1.5,0,Double.MAX_VALUE);
+        BOOTS_ARMOR_SCALE = BUILDER.defineInRange("bootsArmorScale",2.5,0,Double.MAX_VALUE);
+/*
+        INSTANT_DEATH_MIN_DAMAGE = BUILDER
+                .comment("At or above what damage will the player die instantly")
+                        .defineInRange("instantDeathMinDamage",20,0,Double.MAX_VALUE);
+
+
+ */
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

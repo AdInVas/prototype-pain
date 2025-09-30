@@ -71,7 +71,7 @@ public class ModEvents {
                     boolean usingArm = player.isUsingItem();
                     if (usingArm){
                         InteractionHand hand = player.getUsedItemHand();
-                        playerHealthData.onArmUse(hand);
+                        playerHealthData.onArmUse(hand,player);
                     }
                 });
             }
