@@ -100,10 +100,12 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         this.dislocated = dislocated;
     }
 
-    int tickCounter=-20;
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
-        tickCounter++;
+
+        float time = (Minecraft.getInstance().level.getGameTime() + v) / 20f; // seconds
+        boolean blink = (int)(time * 6) % 2 == 0; // toggle every 0.5s
+
         int startoffset = 0;
         guiGraphics.blit(main_tex,getX()+startoffset,getY(),0,0,128,196,128,196);
         Minecraft mc = Minecraft.getInstance();
@@ -118,7 +120,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         else blitV = 0;
         guiGraphics.blit(contiousness_tex,7,16,0,blitV*16,16,16,16,80);
         if(contiousness<40){
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,0xFF0000);
                 guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,0xFFFFFF);
             }
@@ -130,7 +132,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.blit(pain_tex,7,32,0,0,16,16,16,16);
 
         if(pain>60){
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,0xFF0000);
             }
         }else {
@@ -166,7 +168,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
 
         if (bleed>0.2f/20f/60f){
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawString(mc.font,String.format("%.2f",bleed*20*60)+"L/m",40,66,0xFF0000);
                 guiGraphics.setColor(1,0,0,1);
                 guiGraphics.blit(blood_tex,76,64,0,0,16,16,16,16);
@@ -181,7 +183,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         if (opiates>0){
             guiGraphics.blit(opiate_tex,100,64,0,0,16,32,16,32);
             if (opiates>100){
-                if ((tickCounter % 10) < 5) {
+                if (blink) {
                     guiGraphics.fill(106,72,109,72+(int)((Math.min(opiates,100)/100)*18),0xFFFFFFFF);
                 }
             }else {
@@ -202,7 +204,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
 
         if (bleed2>0.2f/20/60){
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawString(mc.font,String.format("%.2f",bleed2*20*60) +"L/m",126,260,0xFF0000);
             }
         }else {
@@ -212,7 +214,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
         if (infection>25){
             if (infection>80){
-                if ((tickCounter % 10) < 5) {
+                if (blink) {
                     guiGraphics.drawCenteredString(mc.font, (int) infection +"",111,260,0xFF0000);
                 }
             }else {
@@ -220,7 +222,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             }
         }
         if (pain2>50){
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawCenteredString(mc.font,String.valueOf((int)pain2),111,247,0xFF0000);
             }
         }else {
@@ -237,14 +239,14 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             guiGraphics.drawCenteredString(mc.font,"----",77,261,0xFFFFFF);
         }
         if (skin<10) {
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, 0xFF0000);
             }
         }else {
             guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, 0xFFFFFF);
         }
         if (muscle<10) {
-            if ((tickCounter % 10) < 5) {
+            if (blink) {
                 guiGraphics.drawCenteredString(mc.font, String.valueOf((int) muscle), 77, 235, 0xFF0000);
             }
         }else {
@@ -255,9 +257,6 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.fill(65,158, (int) (66+(41*(skin/100))),160, 0xFFFFFFFF);
         guiGraphics.fill(65,166, (int) (66+(41*(muscle/100))),168, 0xFFFFFFFF);
 
-
-
-        if (tickCounter>20)tickCounter=0;
     }
 
     @Override

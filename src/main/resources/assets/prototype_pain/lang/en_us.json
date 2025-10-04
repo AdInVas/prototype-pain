@@ -75,5 +75,7 @@
 "key.categories.prototype_pain": "Prototype: Pain",
 "itemGroup.prototype_pain_tab": "Prototype: Pain",
 "key.protoype_pain.give_up": "Give Up",
-"item.prototype_pain.band_aid.discription": "Simple adhesive bandages. Usualy used on small cuts and bruises"
+"item.prototype_pain.band_aid.discription": "Simple adhesive bandages. Usualy used on small cuts and bruises",
+"item.prototype_pain.glow_fruit": "Glow Fruit",
+"item.prototype_pain.glow_fruit.discription": "Bioluminescent plant found often in caves. Counteracts infections. Highly toxic when ingested."
 }

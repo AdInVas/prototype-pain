@@ -12,50 +12,55 @@ import java.util.Random;
 public enum Limb { HEAD, CHEST, LEFT_ARM, RIGHT_ARM,RIGHT_HAND,LEFT_HAND, LEFT_LEG, RIGHT_LEG, LEFT_FOOT, RIGHT_FOOT;
 
     public Limb randomFromConectedLimb(){
-        List<Limb> temp_Limb_list= new ArrayList<>();
-        switch (this){
-            case CHEST -> {
-                temp_Limb_list.add(Limb.HEAD);
-                temp_Limb_list.add(Limb.LEFT_ARM);
-                temp_Limb_list.add(Limb.LEFT_LEG);
-                temp_Limb_list.add(Limb.RIGHT_ARM);
-                temp_Limb_list.add(Limb.RIGHT_LEG);
-            }
-            case LEFT_ARM -> {
-                temp_Limb_list.add(Limb.CHEST);
-                temp_Limb_list.add(Limb.LEFT_HAND);
-            }
-            case LEFT_HAND -> {
-                return Limb.LEFT_ARM;
-            }
-            case RIGHT_ARM -> {
-                temp_Limb_list.add(Limb.CHEST);
-                temp_Limb_list.add(Limb.RIGHT_HAND);
-            }
-            case RIGHT_HAND -> {
-                return Limb.RIGHT_ARM;
-            }
-            case LEFT_LEG -> {
-                temp_Limb_list.add(Limb.CHEST);
-                temp_Limb_list.add(Limb.LEFT_FOOT);
-            }
-            case RIGHT_LEG -> {
-                temp_Limb_list.add(Limb.CHEST);
-                temp_Limb_list.add(Limb.RIGHT_FOOT);
-            }
-            case LEFT_FOOT -> {
-                return Limb.LEFT_LEG;
-            }
-            case RIGHT_FOOT -> {
-                return  Limb.RIGHT_LEG;
-            }
-            case HEAD -> {
-                return Limb.CHEST;
-            }
-        }
+        List<Limb> temp_Limb_list= this.getConnectedLimbs();
         Limb[] limb_list = temp_Limb_list.toArray(new Limb[]{});
         Random rand = new Random();
         return limb_list[rand.nextInt(limb_list.length)];
+    }
+
+    public List<Limb> getConnectedLimbs(){
+            List<Limb> temp_Limb_list= new ArrayList<>();
+            switch (this){
+                case CHEST -> {
+                    temp_Limb_list.add(Limb.HEAD);
+                    temp_Limb_list.add(Limb.LEFT_ARM);
+                    temp_Limb_list.add(Limb.LEFT_LEG);
+                    temp_Limb_list.add(Limb.RIGHT_ARM);
+                    temp_Limb_list.add(Limb.RIGHT_LEG);
+                }
+                case LEFT_ARM -> {
+                    temp_Limb_list.add(Limb.CHEST);
+                    temp_Limb_list.add(Limb.LEFT_HAND);
+                }
+                case LEFT_HAND -> {
+                    temp_Limb_list.add(Limb.LEFT_ARM);
+                }
+                case RIGHT_ARM -> {
+                    temp_Limb_list.add(Limb.CHEST);
+                    temp_Limb_list.add(Limb.RIGHT_HAND);
+                }
+                case RIGHT_HAND -> {
+                    temp_Limb_list.add(Limb.RIGHT_ARM);
+                }
+                case LEFT_LEG -> {
+                    temp_Limb_list.add(Limb.CHEST);
+                    temp_Limb_list.add(Limb.LEFT_FOOT);
+                }
+                case RIGHT_LEG -> {
+                    temp_Limb_list.add(Limb.CHEST);
+                    temp_Limb_list.add(Limb.RIGHT_FOOT);
+                }
+                case LEFT_FOOT -> {
+                    temp_Limb_list.add(Limb.LEFT_LEG);
+                }
+                case RIGHT_FOOT -> {
+                    temp_Limb_list.add(Limb.RIGHT_LEG);
+                }
+                case HEAD -> {
+                    temp_Limb_list.add(Limb.CHEST);
+                }
+            }
+            return temp_Limb_list;
     }
 
     static Limb randomLimb(){

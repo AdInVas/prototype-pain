@@ -2,6 +2,8 @@ package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.client.moodles.AbstractMoodleVisual;
+import net.adinvas.prototype_pain.client.moodles.MoodleController;
 import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
@@ -153,7 +155,33 @@ public class HealthScreen extends Screen {
         L_Leg.renderSprites(pGuiGraphics);
         R_Foot.renderSprites(pGuiGraphics);
         L_Foot.renderSprites(pGuiGraphics);
+
+        // render moodles for this target (ignoring hotbar constraints!)
+        if (target != null) {
+            List<AbstractMoodleVisual> visible = MoodleController.getVisibleMoodles(target);
+
+            int startX = this.width / 2 - ((visible.size() * 20) / 2)+68; // center moodles
+            int y = this.height - 40; // fixed height above bottom
+
+            int x = startX;
+            AbstractMoodleVisual hovered = null;
+
+            for (AbstractMoodleVisual moodle : visible) {
+                moodle.render(target, pGuiGraphics, pPartialTick, x, y);
+
+                if (moodle.isMouseOver(pMouseX, pMouseY, x, y)) {
+                    hovered = moodle;
+                }
+
+                x += 20;
+            }
+
+            if (hovered != null) {
+                pGuiGraphics.renderTooltip(minecraft.font,hovered.getTooltip(minecraft.player), Optional.empty(),pMouseX,pMouseY);
+            }
+        }
         LimbWidget h = getHoveringWidget(pMouseX,pMouseY);
+
         if (h!=null){
             lastHovered = h;
         }

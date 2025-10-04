@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain;
 
 import com.mojang.logging.LogUtils;
+import net.adinvas.prototype_pain.blocks.ModBlocks;
 import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
@@ -52,6 +53,7 @@ public class PrototypePain {
 
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
+        ModBlocks.BLOCKS.register(modEventBus);
         OverlayController.registerOverlay(new PainOverlay());
         OverlayController.registerOverlay(new ContiousnessOverlay());
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);

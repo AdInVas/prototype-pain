@@ -8,6 +8,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -22,7 +24,11 @@ import java.util.List;
 
 public class AlcoholItem extends Item implements IMedUsable {
     public AlcoholItem() {
-        super(new Item.Properties().durability(4).food(new FoodProperties.Builder().alwaysEat().build()));
+        super(new Item.Properties().durability(4)
+                .food(new FoodProperties.Builder()
+                        .alwaysEat()
+                        .effect(()-> new MobEffectInstance(MobEffects.POISON,300,0),1f)
+                        .build()));
     }
 
     @Override

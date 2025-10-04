@@ -6,6 +6,7 @@ import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
 import net.adinvas.prototype_pain.item.disinfecting.AlcoholItem;
 import net.adinvas.prototype_pain.item.disinfecting.AntibioticsItem;
+import net.adinvas.prototype_pain.item.disinfecting.GlowFruitItem;
 import net.adinvas.prototype_pain.item.disinfecting.ReliefGel;
 import net.adinvas.prototype_pain.item.dressings.*;
 import net.adinvas.prototype_pain.item.narcotics.*;
@@ -16,7 +17,6 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import net.adinvas.prototype_pain.item.disinfecting.ReliefGel;
 
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
@@ -53,4 +53,5 @@ public class ModItems {
     public static final RegistryObject<Item> MediumMedibag = ITEMS.register("medium_medibag", MediumMedibagItem::new);
     public static final RegistryObject<Item> LargeMedibag = ITEMS.register("large_medibag", LargeMedibagItem::new);
 
+    public static final RegistryObject<Item> GLOW_FRUIT = ITEMS.register("glow_fruit", GlowFruitItem::new);
 }

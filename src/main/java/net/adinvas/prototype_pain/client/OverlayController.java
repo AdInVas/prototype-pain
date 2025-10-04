@@ -8,6 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -30,8 +31,9 @@ public class OverlayController {
         return null;
     }
 
-    @SubscribeEvent
+   @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
+
         // Example: only render our overlays after the HOTBAR
         GuiGraphics ms = event.getGuiGraphics();
         float pt = event.getPartialTick();
