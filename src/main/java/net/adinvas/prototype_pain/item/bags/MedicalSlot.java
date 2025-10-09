@@ -1,6 +1,6 @@
 package net.adinvas.prototype_pain.item.bags;
 
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
@@ -13,6 +13,6 @@ public class MedicalSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack pStack) {
-        return pStack.getItem() instanceof IMedUsable||pStack.getItem() instanceof INarcoticUsable;
+        return pStack.getItem() instanceof ISimpleMed ||pStack.getItem() instanceof INarcoticUsable;
     }
 }

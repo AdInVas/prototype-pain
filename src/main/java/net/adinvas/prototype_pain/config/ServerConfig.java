@@ -53,6 +53,10 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue LEGS_ARMOR_SCALE;
     public static final ForgeConfigSpec.DoubleValue BOOTS_ARMOR_SCALE;
     //public static final ForgeConfigSpec.DoubleValue INSTANT_DEATH_MIN_DAMAGE;
+    public static final ForgeConfigSpec.BooleanValue PERNAMENT_DAMAGE;
+    public static final ForgeConfigSpec.DoubleValue BRAIN_DRAIN;
+    public static final ForgeConfigSpec.DoubleValue BRAIN_HEALTH_REGEN;
+
 
 
 
@@ -164,7 +168,21 @@ public class ServerConfig {
                         .defineInRange("instantDeathMinDamage",20,0,Double.MAX_VALUE);
 
 
+
+
  */
+        PERNAMENT_DAMAGE = BUILDER
+                .comment("True/False Pernament Damage(until death)")
+                        .define("pernamentDamage",true);
+
+
+        BRAIN_DRAIN = BUILDER
+                .comment("How much the Brain health is drain per s when dying")
+                        .defineInRange("deathBrainDrain",1.5,0.01,100);
+
+        BRAIN_HEALTH_REGEN = BUILDER
+                .comment("Brain health Regeneration per min (only works in Pernament Damage mode")
+                        .defineInRange("brainRegen",0.3,0,Double.MAX_VALUE);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

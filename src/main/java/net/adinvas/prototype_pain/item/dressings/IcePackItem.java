@@ -1,7 +1,7 @@
 package net.adinvas.prototype_pain.item.dressings;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class IcePackItem extends Item implements IMedUsable {
+public class IcePackItem extends Item implements ISimpleMed {
     public IcePackItem() {
         super(new Item.Properties().durability(4));
     }

@@ -1,7 +1,7 @@
 package net.adinvas.prototype_pain.item.reusable;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SplintItem extends Item implements IMedUsable {
+public class SplintItem extends Item implements ISimpleMed {
     public SplintItem() {
         super(new Properties().stacksTo(1));
     }

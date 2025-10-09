@@ -2,11 +2,13 @@ package net.adinvas.prototype_pain.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 
 public class PainOverlay implements IOverlay{
 
@@ -61,5 +63,16 @@ public class PainOverlay implements IOverlay{
     @Override
     public boolean shouldRender() {
         return baseIntensity > 0f;
+    }
+
+
+    public void calculate(Player player) {
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            if (h.getContiousness()>5){
+                setIntensity((float) (h.getTotalPain()/100f));
+            }else {
+                setIntensity(0);
+            }
+        });
     }
 }

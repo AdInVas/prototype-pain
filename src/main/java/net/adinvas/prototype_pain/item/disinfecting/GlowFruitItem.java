@@ -2,9 +2,8 @@ package net.adinvas.prototype_pain.item.disinfecting;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.limbs.Limb;
-import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class GlowFruitItem extends Item implements IMedUsable {
+public class GlowFruitItem extends Item implements ISimpleMed {
 
     public GlowFruitItem() {
         super(new Item.Properties()

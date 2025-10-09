@@ -13,7 +13,7 @@ public class NotBreathMoodle extends AbstractMoodleVisual{
     @Override
     MoodleStatus calculateStatus(Player player) {
         Optional<Boolean> isbreathing = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::isRespitoryArrest);
-        if (isbreathing.get()){
+        if (isbreathing.orElse(false)){
             return MoodleStatus.CRITICAL;
         }else {
             return MoodleStatus.NONE;

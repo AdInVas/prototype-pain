@@ -17,6 +17,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float bleed;
     private float oxygen;
     private float opiates;
+    private float brain;
 
     private Component limbname =Component.empty();
     private float skin=100;
@@ -27,6 +28,16 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float bleed2;
     private float infection = 100;
 
+    private boolean BGMode = false;
+
+    public void setBGMode(boolean BGMode) {
+        this.BGMode = BGMode;
+    }
+
+    public void setBrain(float brain) {
+        this.brain = brain;
+    }
+
     private final ResourceLocation main_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/info_box.png");
     private final ResourceLocation blood_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/blood_drop.png");
     private final ResourceLocation pain_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/pain.png");
@@ -34,7 +45,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private final ResourceLocation bloodBag_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/blood_bag.png");
     private final ResourceLocation contiousness_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/conc_sprites.png");
     private final ResourceLocation opiate_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/opiate_meter.png");
-
+    private final ResourceLocation brain_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/brain.png");
 
     public HealthInfoBoxWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage) {
         super(pX, pY, pWidth, pHeight, pMessage);
@@ -102,6 +113,12 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
+        int colorWhite = 0xFFFFFF;
+        int colorRed = 0xFF0000;
+        if (BGMode){
+            colorWhite = 0x777777;
+            colorRed = 0x770000;
+        }
 
         float time = (Minecraft.getInstance().level.getGameTime() + v) / 20f; // seconds
         boolean blink = (int)(time * 6) % 2 == 0; // toggle every 0.5s
@@ -110,8 +127,13 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.blit(main_tex,getX()+startoffset,getY(),0,0,128,196,128,196);
         Minecraft mc = Minecraft.getInstance();
         guiGraphics.pose().pushPose();
-        guiGraphics.drawCenteredString(mc.font,name,64,6,0xFFFFFF);
-        guiGraphics.drawCenteredString(mc.font,limbname,64,146,0xFFFFFF);
+        guiGraphics.drawCenteredString(mc.font,name,64,6,colorWhite);
+        guiGraphics.drawCenteredString(mc.font,limbname,64,146,colorWhite);
+
+        guiGraphics.blit(brain_tex,4,123,0,0,16,16,16,16);
+        guiGraphics.fill(23,133, (int) (23+(85*(brain/100))),137,0xFFFFFFFF);
+
+
         float blitV = 5;
         if (contiousness<=0) blitV = 4;
         else if (contiousness<=25) blitV = 3;
@@ -121,22 +143,22 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.blit(contiousness_tex,7,16,0,blitV*16,16,16,16,80);
         if(contiousness<40){
             if (blink) {
-                guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,0xFF0000);
-                guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,0xFFFFFF);
+                guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,colorRed);
+                guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,colorWhite);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,0xFFFFFF);
-            guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,(int)contiousness+"%",7+32,22,colorWhite);
+            guiGraphics.drawString(mc.font,"CONSCIOUS",7+32+15,22,colorWhite);
         }
 
         guiGraphics.blit(pain_tex,7,32,0,0,16,16,16,16);
 
         if(pain>60){
             if (blink) {
-                guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,0xFF0000);
+                guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,colorRed);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,(int)pain+"% PAIN",7+32+15,36,colorWhite);
         }
 
         if (blood>=5){
@@ -164,21 +186,21 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
         guiGraphics.blit(bloodBag_tex,5,50,0,(blitV-1)*32,32,32,32,320);
 
-        guiGraphics.drawString(mc.font,String.format("%.2f",blood)+"L",40,52,0xFFFFFF);
+        guiGraphics.drawString(mc.font,String.format("%.2f",blood)+"L",40,52,colorWhite);
 
 
         if (bleed>0.2f/20f/60f){
             if (blink) {
-                guiGraphics.drawString(mc.font,String.format("%.2f",bleed*20*60)+"L/m",40,66,0xFF0000);
+                guiGraphics.drawString(mc.font,String.format("%.2f",bleed*20*60)+"L/m",40,66,colorRed);
                 guiGraphics.setColor(1,0,0,1);
                 guiGraphics.blit(blood_tex,76,64,0,0,16,16,16,16);
                 guiGraphics.setColor(1,1,1,1);
             }
         }else if (bleed>0f){
-            guiGraphics.drawString(mc.font,String.format("%.2f",bleed*20*60)+"L/m",40,66,0xFFFFFF);
+            guiGraphics.drawString(mc.font,String.format("%.2f",bleed*20*60)+"L/m",40,66,colorWhite);
             guiGraphics.blit(blood_tex,76,64,0,0,10,10,10,10);
         }
-        guiGraphics.drawString(mc.font,"O₂ "+(int)(oxygen)+"%",5,85,0xFFFFFF);
+        guiGraphics.drawString(mc.font,"O₂ "+(int)(oxygen)+"%",5,85,colorWhite);
 
         if (opiates>0){
             guiGraphics.blit(opiate_tex,100,64,0,0,16,32,16,32);
@@ -193,10 +215,11 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
 
         guiGraphics.pose().scale(0.7f,0.7f,1);
-        guiGraphics.drawString(mc.font,"SKIN",7,224,0xFFFFFF);
-        guiGraphics.drawString(mc.font,"MUSCLE",7  ,235,0xFFFFFF);
-        guiGraphics.drawString(mc.font,"FRACT",7,249,0xFFFFFF);
-        guiGraphics.drawString(mc.font,"DISL",7  ,261,0xFFFFFF);
+        guiGraphics.drawString(mc.font,String.valueOf((int)brain),33,177,colorWhite);
+        guiGraphics.drawString(mc.font,"SKIN",7,224,colorWhite);
+        guiGraphics.drawString(mc.font,"MUSCLE",7  ,235,colorWhite);
+        guiGraphics.drawString(mc.font,"FRACT",7,249,colorWhite);
+        guiGraphics.drawString(mc.font,"DISL",7  ,261,colorWhite);
         guiGraphics.blit(pain_tex,93,246,0,0,10,10,10,10);
         guiGraphics.blit(infection_tex,93,258,0,0,10,10,10,10);
         guiGraphics.blit(blood_tex,164,258,0,0,10,10,10,10);
@@ -205,52 +228,52 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
         if (bleed2>0.2f/20/60){
             if (blink) {
-                guiGraphics.drawString(mc.font,String.format("%.2f",bleed2*20*60) +"L/m",126,260,0xFF0000);
+                guiGraphics.drawString(mc.font,String.format("%.2f",bleed2*20*60) +"L/m",126,260,colorRed);
             }
         }else {
-            guiGraphics.drawString(mc.font, String.format("%.2f",bleed2*20*60)+"L/m",126,260,0xFFFFFF);
+            guiGraphics.drawString(mc.font, String.format("%.2f",bleed2*20*60)+"L/m",126,260,colorWhite);
         }
 
 
         if (infection>25){
             if (infection>80){
                 if (blink) {
-                    guiGraphics.drawCenteredString(mc.font, (int) infection +"",111,260,0xFF0000);
+                    guiGraphics.drawCenteredString(mc.font, (int) infection +"",111,260,colorRed);
                 }
             }else {
-                guiGraphics.drawCenteredString(mc.font, (int) infection +"",111,260,0xFFFFFF);
+                guiGraphics.drawCenteredString(mc.font, (int) infection +"",111,260,colorWhite);
             }
         }
         if (pain2>50){
             if (blink) {
-                guiGraphics.drawCenteredString(mc.font,String.valueOf((int)pain2),111,247,0xFF0000);
+                guiGraphics.drawCenteredString(mc.font,String.valueOf((int)pain2),111,247,colorRed);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font,String.valueOf((int)pain2),111,247,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,String.valueOf((int)pain2),111,247,colorWhite);
         }
         if (fracture>0){
-            guiGraphics.drawCenteredString(mc.font,(int)(fracture)+"%",77,249,0xFF0000);
+            guiGraphics.drawCenteredString(mc.font,(int)(fracture)+"%",77,249,colorRed);
         }else {
-            guiGraphics.drawCenteredString(mc.font,"----",77,249,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,"----",77,249,colorWhite);
         }
         if (fracture>0){
-            guiGraphics.drawCenteredString(mc.font,(int)dislocated+"%",77,261,0xFF0000);
+            guiGraphics.drawCenteredString(mc.font,(int)dislocated+"%",77,261,colorRed);
         }else {
-            guiGraphics.drawCenteredString(mc.font,"----",77,261,0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font,"----",77,261,colorWhite);
         }
         if (skin<10) {
             if (blink) {
-                guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, 0xFF0000);
+                guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, colorRed);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, 0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font, String.valueOf((int) skin), 77, 224, colorWhite);
         }
         if (muscle<10) {
             if (blink) {
-                guiGraphics.drawCenteredString(mc.font, String.valueOf((int) muscle), 77, 235, 0xFF0000);
+                guiGraphics.drawCenteredString(mc.font, String.valueOf((int) muscle), 77, 235, colorRed);
             }
         }else {
-            guiGraphics.drawCenteredString(mc.font, String.valueOf((int) muscle), 77, 235, 0xFFFFFF);
+            guiGraphics.drawCenteredString(mc.font, String.valueOf((int) muscle), 77, 235, colorWhite);
         }
         guiGraphics.pose().popPose();
 

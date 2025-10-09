@@ -1,10 +1,11 @@
 package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.moodles.AbstractMoodleVisual;
 import net.adinvas.prototype_pain.client.moodles.MoodleController;
 import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
+import net.adinvas.prototype_pain.fluid_system.items.SyringeItem;
+import net.adinvas.prototype_pain.fluid_system.gui.InjectMingameScreen;
 import net.adinvas.prototype_pain.item.INarcoticUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
@@ -51,6 +52,8 @@ public class HealthScreen extends Screen {
     private boolean lastHandOffHand= false;
 
     private HeartBeatSound heartBeatSound;
+
+    public boolean BGmode = false;
 
 
     public HealthScreen(UUID target) {
@@ -155,6 +158,9 @@ public class HealthScreen extends Screen {
         L_Leg.renderSprites(pGuiGraphics);
         R_Foot.renderSprites(pGuiGraphics);
         L_Foot.renderSprites(pGuiGraphics);
+        healthbox.setBGMode(BGmode);
+        LeftItem.setBGMode(BGmode);
+        RightItem.setBGMode(BGmode);
 
         // render moodles for this target (ignoring hotbar constraints!)
         if (target != null) {
@@ -228,6 +234,7 @@ public class HealthScreen extends Screen {
             healthbox.setOxygen(health.getOxygen());
             healthbox.setDislocated((health.getLimbDislocated(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
             healthbox.setFracture((health.getLimbFracture(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
+            healthbox.setBrain(health.getBrainHealth());
         });
         if (narcoticWidget.getReleased()>1){
             ItemStack itemstack = narcoticWidget.getRememberItemstack();
@@ -237,10 +244,12 @@ public class HealthScreen extends Screen {
             ModNetwork.CHANNEL.sendToServer(new UseNarcoticItemPacket(itemstack,amountUsed,target.getUUID(),lastHandOffHand));
             narcoticWidget.setNull();
         }
-        Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            if (h.getContiousness()<=4)
-                Minecraft.getInstance().setScreen(null);
-        });
+        if (!BGmode) {
+            Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                if (h.getContiousness() <= 4)
+                    onClose();
+            });
+        }
     }
 
     @Override
@@ -318,7 +327,6 @@ public class HealthScreen extends Screen {
     public void onClose() {
         super.onClose();
         if (heartBeatSound != null) {
-            PrototypePain.LOGGER.info("stop sound");
             heartBeatSound = null;
         }
         ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(false,target.getUUID()));
@@ -339,6 +347,9 @@ public class HealthScreen extends Screen {
             if (widget!=null) {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = getItemstackForHand(HumanoidArm.RIGHT, minecraft.player);
+                if (itemstack.getItem() instanceof SyringeItem){
+                    Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player)));
+                }
                 if (itemstack.getItem() instanceof INarcoticUsable){
                     float damage = ((100-itemstack.getDamageValue())/100f);
                     narcoticWidget.setDisplay(damage,itemstack);
@@ -376,6 +387,18 @@ public class HealthScreen extends Screen {
         } else {
             // Otherwise it's the opposite → OFF_HAND
             return player.getItemInHand(InteractionHand.OFF_HAND);
+        }
+    }
+
+    private InteractionHand getHand(HumanoidArm arm, Player player) {
+        HumanoidArm mainArm = player.getMainArm();
+
+        // If we're asking for the player's dominant arm → MAIN_HAND
+        if (arm == mainArm) {
+            return InteractionHand.MAIN_HAND;
+        } else {
+            // Otherwise it's the opposite → OFF_HAND
+            return InteractionHand.OFF_HAND;
         }
     }
 
@@ -431,4 +454,5 @@ public class HealthScreen extends Screen {
             lastClicked = widget;
         }
     }
+
 }

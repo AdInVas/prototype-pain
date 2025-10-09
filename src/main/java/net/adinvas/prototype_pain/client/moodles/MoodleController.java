@@ -4,6 +4,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.IOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
@@ -34,6 +35,13 @@ public class MoodleController {
         registerMoodle(new HighBloodMoodle());
         registerMoodle(new PainMoodle());
         registerMoodle(new OxygenMoodle());
+        registerMoodle(new LungFaliureMoodle());
+        registerMoodle(new NotBreathMoodle());
+        registerMoodle(new OpiateMoodle());
+        registerMoodle(new InfectionMoodle());
+        registerMoodle(new FractureMoodle());
+        registerMoodle(new DislocationMoodle());
+        registerMoodle(new ConsiousnessMoodle());
     }
 
     /** Collects all visible moodles for given player */
@@ -66,12 +74,16 @@ public class MoodleController {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onRenderOverlay(RenderGuiOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        ProfilerFiller profiler = mc.getProfiler();
+
+        profiler.push("prototype_pain:moodles");
         if (mc.player == null) return;
         renderOnHud(event.getGuiGraphics(), event.getPartialTick(), mc.player,
                 mc.getWindow().getGuiScaledWidth(),
                 mc.getWindow().getGuiScaledHeight());
+        profiler.pop();
     }
 }

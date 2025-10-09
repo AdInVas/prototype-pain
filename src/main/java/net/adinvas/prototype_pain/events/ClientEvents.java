@@ -7,21 +7,26 @@ import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
+import net.adinvas.prototype_pain.fluid_system.items.IMedicalFluidContainer;
+import net.adinvas.prototype_pain.fluid_system.gui.FluidExchangeScreen;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.GiveUpPacket;
 import net.adinvas.prototype_pain.network.LegUsePacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +42,9 @@ public class ClientEvents {
     public static void onPlayerTick(TickEvent.ClientTickEvent event){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
+        ProfilerFiller profiler = mc.getProfiler();
+
+        profiler.push("prototype_pain:client_misc");
         if (player==null)return;
         if (event.side== LogicalSide.CLIENT) {
             AtomicBoolean uncontious = new AtomicBoolean(false);
@@ -59,6 +67,8 @@ public class ClientEvents {
 
             }
 
+
+
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 if (h.getContiousness()<=4){
                     if (Keybinds.GIVE_UP.isDown()){
@@ -72,24 +82,44 @@ public class ClientEvents {
                 ModNetwork.CHANNEL.sendToServer(new GiveUpPacket());
                 GiveUpTime = 40;
             }
+            profiler.pop();
         }
+        PainOverlay overlay = OverlayController.getOverlay(PainOverlay.class);
+        ContiousnessOverlay conc = OverlayController.getOverlay(ContiousnessOverlay.class);
+
+        overlay.calculate(player);
+        conc.calculate(player);
 
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                double pain = h.getTotalPain();
                 float contiousness = (100-h.getContiousness())/100;
-                pain = pain/100;
-                if (contiousness>99){
-                    pain = 0;
-                }
-                PainOverlay overlay = OverlayController.getOverlay(PainOverlay.class);
-                overlay.setIntensity((float) pain);
-                ContiousnessOverlay conc = OverlayController.getOverlay(ContiousnessOverlay.class);
-                conc.setIntensity(contiousness);
+
                 if (contiousness<=4){
                     mc.player.setYRot(mc.player.yRotO); // reset yaw
                     mc.player.setXRot(mc.player.xRotO); // reset pitch
                 }
             });
+    }
+
+    @SubscribeEvent
+    public static void onScreenKey(ScreenEvent.KeyPressed.Post event){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+
+        // Check if the current screen is an inventory or container
+        if (event.getScreen() instanceof AbstractContainerScreen<?> screen) {
+            if (Keybinds.OPEN_FLUID_SCREEN.matches(event.getKeyCode(), event.getScanCode())) {
+                ItemStack carried = screen.getMenu().getCarried();
+                Slot hovered = screen.getSlotUnderMouse();
+
+                if (hovered != null &&
+                        carried.getItem() instanceof IMedicalFluidContainer &&
+                        hovered.getItem().getItem() instanceof IMedicalFluidContainer) {
+
+                    mc.setScreen(new FluidExchangeScreen(hovered.getItem(), carried,hovered.getSlotIndex()));
+                    event.setCanceled(true); // prevent the inventory from also handling it
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -128,6 +158,21 @@ public class ClientEvents {
                 event.setCanceled(true); // block opening inventory
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void onContainerDraw(ScreenEvent.Render event){
+        if (!(event.getScreen() instanceof AbstractContainerScreen<?> screen))return;
+        Slot hovered = screen.getSlotUnderMouse();
+
+        ItemStack carried = screen.getMenu().getCarried();
+        if (hovered!=null &&carried.getItem() instanceof IMedicalFluidContainer from && hovered.getItem().getItem() instanceof IMedicalFluidContainer to){
+            GuiGraphics guiGraphics = event.getGuiGraphics();
+            int mouseX = event.getMouseX();
+            int mouseY = event.getMouseY();
+            Component text = Component.translatable("prototype_pain.gui.fluid_screen",Component.keybind("key.prototype_pain.fluid_screen"));
+            guiGraphics.renderTooltip(Minecraft.getInstance().font, text,mouseX,mouseY);
+        }
     }
 
     static int tick =0;

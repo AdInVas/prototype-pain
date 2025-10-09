@@ -2,7 +2,7 @@ package net.adinvas.prototype_pain.item.narcotics;
 
 import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class BloodThinnerItem extends Item implements IMedUsable {
+public class BloodThinnerItem extends Item implements ISimpleMed {
     public BloodThinnerItem() {
         super(new Properties().stacksTo(1).durability(4));
     }

@@ -14,11 +14,15 @@ public class ItemWidget extends AbstractWidget {
     private ItemStack stack;
     private int stack_x,stack_y;
     private boolean dragging;
+    private boolean BGMode = false;
+
+    public void setBGMode(boolean BGMode) {
+        this.BGMode = BGMode;
+    }
 
     public boolean isDragging() {
         return dragging;
     }
-
     public ItemWidget(int x, int y, ItemStack itemstack){
         super(x, y, 16, 16, Component.empty());
         this.stack = itemstack;
@@ -47,7 +51,7 @@ public class ItemWidget extends AbstractWidget {
         guiGraphics.blit(new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/icons/item_bg.png"),this.getX(),getY(),0,0,16,16,16,16);
         guiGraphics.renderItem(this.stack,stack_x,stack_y);
         guiGraphics.renderItemDecorations(Minecraft.getInstance().font,this.stack,stack_x,stack_y);
-        if (!dragging&&isHovered()){
+        if (!dragging&&isHovered()&&!BGMode){
             guiGraphics.renderTooltip(Minecraft.getInstance().font,this.stack,mouseX,mouseY);
             guiGraphics.renderComponentTooltip(Minecraft.getInstance().font,this.stack.getTooltipLines(Minecraft.getInstance().player, TooltipFlag.NORMAL),mouseX,mouseY);
         }

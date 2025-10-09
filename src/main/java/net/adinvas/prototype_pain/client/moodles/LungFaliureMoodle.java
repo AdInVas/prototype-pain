@@ -14,7 +14,7 @@ public class LungFaliureMoodle extends AbstractMoodleVisual{
     @Override
     MoodleStatus calculateStatus(Player player) {
         Optional<Float> lung = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->(h.getLimbMuscleHealth(Limb.CHEST)));
-        if (lung.get()<=4){
+        if (lung.orElse(100f)<=4){
             return MoodleStatus.CRITICAL;
         }else {
             return MoodleStatus.NONE;

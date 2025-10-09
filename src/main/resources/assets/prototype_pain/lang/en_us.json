@@ -77,5 +77,13 @@
 "key.protoype_pain.give_up": "Give Up",
 "item.prototype_pain.band_aid.discription": "Simple adhesive bandages. Usualy used on small cuts and bruises",
 "item.prototype_pain.glow_fruit": "Glow Fruit",
-"item.prototype_pain.glow_fruit.discription": "Bioluminescent plant found often in caves. Counteracts infections. Highly toxic when ingested."
+"item.prototype_pain.glow_fruit.discription": "Bioluminescent plant found often in caves. Counteracts infections. Highly toxic when ingested.",
+"prototype_pain.gui.fluid_screen": "Press %1$s to Open Fluid GUI",
+"prototype_pain.fluid.opium": "Opium",
+"prototype_pain.fluid.fentanyl": "Fentanyl",
+"prototype_pain.fluid.heroin": "Heroin",
+"prototype_pain.fluid.morphine": "Morphine",
+"prototype_pain.fluid.water": "Water",
+"prototype_pain.gui.syringe_instruction": "Push the syringe down to inject. Make sure to check the dosage.",
+"prototype_pain.gui.minigame_exit": "Press ESC to exit"
 }

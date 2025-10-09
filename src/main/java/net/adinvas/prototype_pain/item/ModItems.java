@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.fluid_system.items.*;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
@@ -54,4 +55,13 @@ public class ModItems {
     public static final RegistryObject<Item> LargeMedibag = ITEMS.register("large_medibag", LargeMedibagItem::new);
 
     public static final RegistryObject<Item> GLOW_FRUIT = ITEMS.register("glow_fruit", GlowFruitItem::new);
+
+
+    public static final RegistryObject<Item> MedicineVial = ITEMS.register("medicine_vial", MedicalVial::new);
+
+    public static final RegistryObject<Item> OpiumVial = ITEMS.register("opium_vial", OpiumVialItem::new);
+    public static final RegistryObject<Item> FentanylVial = ITEMS.register("fentanyl_vial", FentVialItem::new);
+    public static final RegistryObject<Item> HeroinVial = ITEMS.register("heroin_vial", HeroinVialItem::new);
+    public static final RegistryObject<Item> MorphineVial = ITEMS.register("morphine_vial", MorphineVialItem::new);
+    public static final RegistryObject<Item> Syringe = ITEMS.register("syringe", SyringeItem::new);
 }

@@ -1,7 +1,7 @@
 package net.adinvas.prototype_pain.item.disinfecting;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.ISimpleMed;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AlcoholItem extends Item implements IMedUsable {
+public class AlcoholItem extends Item implements ISimpleMed {
     public AlcoholItem() {
         super(new Item.Properties().durability(4)
                 .food(new FoodProperties.Builder()

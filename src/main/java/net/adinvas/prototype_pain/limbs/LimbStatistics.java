@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.limbs;
 
 public class LimbStatistics {
+    public enum Shrapnells {ARROW, NEEDLE,NONE,SMALL_MANY,SMALL_ONE}
     float skinHealth = 100f;//
     float muscleHealth = 100f;//
     float pain = 0f;//
@@ -17,6 +18,7 @@ public class LimbStatistics {
     boolean MuscleHeal = false;
     boolean Tourniquet = false;
     int tourniquetTimer = 0;
+    boolean amputated = false;
 
 
     LimbStatistics(){}
