@@ -12,6 +12,7 @@ public class ModItemTags {
 
     public static TagKey<Item> ARMOR_FULL_ARM = tag("armorfullarm");
     public static TagKey<Item> ARMOR_CHEST_ONLY = tag("armorchestonly");
+    public static TagKey<Item> ARMOR_INSULATION = tag("armor_insulation");
 
 
 

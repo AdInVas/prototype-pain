@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "prototype_pain:item/auto_injector",
+    "layer1": "prototype_pain:item/auto_injector_fill"
+  }
+}

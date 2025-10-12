@@ -7,8 +7,7 @@ public class ServerConfig {
     public static final ForgeConfigSpec SPEC;
 
 
-    public static final ForgeConfigSpec.DoubleValue INFECTION_RATE;
-    public static final ForgeConfigSpec.DoubleValue DISINFECTION_RATE;
+    public static final ForgeConfigSpec.DoubleValue DISINFECTION_SCALE;
     public static final ForgeConfigSpec.DoubleValue WUND_ANTIBLEED_RATE;
     public static final ForgeConfigSpec.DoubleValue INFECTION_CHANCE;
     public static final ForgeConfigSpec.DoubleValue INFECTION_MUSCLE_DRAIN;
@@ -43,7 +42,7 @@ public class ServerConfig {
     public static final ForgeConfigSpec.IntValue TOURNIQUET_SAFE_TICKS;             // 60s before muscle damage starts
     public static final ForgeConfigSpec.DoubleValue TOURNIQUET_MUSCLE_DAMAGE;
     public static final ForgeConfigSpec.DoubleValue CONS_PENALTY_PER_OPIOID;
-    public static final ForgeConfigSpec.DoubleValue CONSIOUSNESS_DELTA;
+    public static final ForgeConfigSpec.DoubleValue CONSIOUSNESS_REGEN;
 
     //Heavy Shit
     public static final ForgeConfigSpec.BooleanValue TOGGLE_UNCONTIOUS_INVENTORY;
@@ -52,10 +51,10 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue CHESTPLATE_ARMOR_SCALE;
     public static final ForgeConfigSpec.DoubleValue LEGS_ARMOR_SCALE;
     public static final ForgeConfigSpec.DoubleValue BOOTS_ARMOR_SCALE;
-    //public static final ForgeConfigSpec.DoubleValue INSTANT_DEATH_MIN_DAMAGE;
     public static final ForgeConfigSpec.BooleanValue PERNAMENT_DAMAGE;
     public static final ForgeConfigSpec.DoubleValue BRAIN_DRAIN;
     public static final ForgeConfigSpec.DoubleValue BRAIN_HEALTH_REGEN;
+    public static final ForgeConfigSpec.DoubleValue IMMUNITY_SCALE;
 
 
 
@@ -66,13 +65,9 @@ public class ServerConfig {
     static {
         BUILDER.push("Prototype Pain Server Config");
 
-        INFECTION_RATE = BUILDER
-                .comment("The rate of infection build up (%/s)")
-                        .defineInRange("infectionRate",0.25d,0,100);
-
-        DISINFECTION_RATE = BUILDER
-                .comment("The rate of infection removal when disinfection is applied (%/s)")
-                        .defineInRange("disinfectionRate",3d,0,100);
+        DISINFECTION_SCALE = BUILDER
+                .comment("The scale of strenght of Disinfectants")
+                        .defineInRange("disinfectionScale",1d,0,100);
 
         WUND_ANTIBLEED_RATE = BUILDER
                 .comment("The rate at which internal Bleeding heals (L/min)")
@@ -150,11 +145,11 @@ public class ServerConfig {
         CONS_PENALTY_PER_OPIOID = BUILDER
                 .comment("How much consiousness is penalized by one point of Opioids (opioids max is 100)")
                         .defineInRange("consPenaltyPerOpiod",0.2,0,Double.MAX_VALUE);
-        CONSIOUSNESS_DELTA = BUILDER
+        CONSIOUSNESS_REGEN = BUILDER
                 .comment("How fast contiousness resores itself(keep in mind that contiousness is also capped by things such as:")
                         .comment("Oxygen,Opioids,High Pain,Head Health ...")
-                                .comment("(1 = instantly when it can ; 0.01 almost doesnt increase)")
-                                        .defineInRange("consiousnessDelta",0.75,0.01,1);
+                                .comment("(%/s)")
+                                        .defineInRange("consiousnessDelta",4,0,Double.MAX_VALUE);
 
         HELMET_ARMOR_SCALE = BUILDER
                 .comment("Scaling of Armor values")
@@ -183,6 +178,10 @@ public class ServerConfig {
         BRAIN_HEALTH_REGEN = BUILDER
                 .comment("Brain health Regeneration per min (only works in Pernament Damage mode")
                         .defineInRange("brainRegen",0.3,0,Double.MAX_VALUE);
+
+        IMMUNITY_SCALE = BUILDER
+                .comment("Scalar of Immunity value")
+                        .defineInRange("immunityScale",1,0,Double.MAX_VALUE);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

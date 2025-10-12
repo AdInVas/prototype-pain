@@ -4,18 +4,18 @@ import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
-import net.adinvas.prototype_pain.item.ISimpleMed;
-import net.adinvas.prototype_pain.item.INarcoticUsable;
+import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.tags.ModItemTags;
-import net.adinvas.prototype_pain.visual.particles.ModParticles;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,6 +28,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 import java.util.List;
@@ -49,16 +51,19 @@ public class PlayerHealthData {
     private boolean isBreathing = true;
     private boolean respitoryArrest = false;
     private float bloodViscosity = 0;
-
-    //NEW VALUES TODO
+    
     private float immunity=100;
+    private float antibiotic_timer=0;
+    private float drug_addition = 0;
     private float brainHealth =100;
     private float Shock =0;
+    private float dirtyness = 0;
+    private float temperature = 36.6f;
 
+
+    private float painscale = 1;
     /*
     TODO: - Make:
-        -MAKE BrainHealth
-        -MAKE Immunity
         -MAKE Amputations
      */
 
@@ -79,12 +84,51 @@ public class PlayerHealthData {
                 ", isBreathing=" + isBreathing +
                 ", respiratoryArrest=" + respitoryArrest +
                 ", bloodViscosity=" + bloodViscosity +
+                ", immunity=" + immunity +
+                ", drug_addiction=" + drug_addition +
+                ", brainHealth=" + brainHealth +
+                ", Shock=" + Shock +
+                ", dirtyness=" + dirtyness +
+                ", temperature=" + temperature +
                 '}';
     }
 
     //passtrough values
     private int hungerLevel = 20;
     private boolean isUnderwater = false;
+
+
+    public void setAntibiotic_timer(float antibiotic_timer) {
+        this.antibiotic_timer = antibiotic_timer;
+    }
+
+    public float getDrug_addition() {
+        return drug_addition;
+    }
+
+    public void setDrug_addition(float drug_addition) {
+        this.drug_addition = drug_addition;
+    }
+
+    public float getAntibiotic_timer() {
+        return antibiotic_timer;
+    }
+
+    public void setTemperature(float temperature) {
+        this.temperature = temperature;
+    }
+
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public void setDirtyness(float dirtyness) {
+        this.dirtyness = dirtyness;
+    }
+
+    public float getDirtyness() {
+        return dirtyness;
+    }
 
 
 
@@ -123,11 +167,8 @@ public class PlayerHealthData {
     public float getBRAIN_REGEN_RATE(){
         return (float) (ServerConfig.BRAIN_HEALTH_REGEN.get()/20f/60f);
     }
-    public float getINFECTION_RATE(){
-        return (float) (ServerConfig.INFECTION_RATE.get()/20f);
-    }
-    public float getDISINFECTION_RATE(){
-        return (float) (ServerConfig.DISINFECTION_RATE.get()/20f);
+    public float getDISINFECTION_STRENGTH(){
+        return (float) (ServerConfig.DISINFECTION_SCALE.get()/20f);
     }
     public double getWUND_ANTIBLEED_RATE(){
         return ServerConfig.WUND_ANTIBLEED_RATE.get()/(20f*60);
@@ -198,8 +239,11 @@ public class PlayerHealthData {
    public float getMAGICAL_HEAL(){
         return (float) (ServerConfig.MAGICAL_HEAL_RATE.get()/1f);
    }
-   public double getContiousnessDelta(){
-        return ServerConfig.CONSIOUSNESS_DELTA.get();
+   public double getContiousnessregen(){
+        return ServerConfig.CONSIOUSNESS_REGEN.get();
+   }
+   public double getIMMUNITY_STRENGTH(){
+        return ServerConfig.IMMUNITY_SCALE.get();
    }
    public double[] getArmorScaling(){
         double[] list = new double[4];
@@ -424,16 +468,39 @@ public class PlayerHealthData {
     }
 
 
-    public void recalculateContiousness() {
-        double finalcontiousness = Oxygen;
-        if (Shock>0.66||limbStats.get(Limb.HEAD).muscleHealth<30){
-            limbStats.get(Limb.HEAD).MuscleHeal = true;
-            finalcontiousness = 0;
-        }else if (totalPain>50){
-            finalcontiousness += 50-totalPain;
+    public void recalculateConsciousness() {
+        // Base consciousness target from oxygen
+        double target = Oxygen;
+
+        // Hard knockout conditions
+        if (Shock > 0.66 || limbStats.get(Limb.HEAD).muscleHealth < 30) {
+            limbStats.get(Limb.HEAD).MuscleHeal = true; // probably should be 'MuscleHeal' → 'muscleHeal'
+            target = 0;
         }
-        finalcontiousness = Math.min(contiousnessCap,finalcontiousness);
-        contiousness = (float) Math.max(0,Mth.lerp(getContiousnessDelta(),contiousness,finalcontiousness));
+        // Pain reduces target consciousness
+        else if (totalPain > 50) {
+            target += (50 - totalPain);
+        }
+
+        // Clamp to max cap
+        target = Math.min(contiousnessCap, target);
+
+        // Calculate difference
+        double diff = target - contiousness;
+
+        // Apply regeneration rate (getContiousnessRegen = %/s)
+        float regenPerSecond = (float) getContiousnessregen(); // e.g. 0.5 means 0.5% per second
+        float regenPerTick = regenPerSecond / 20f;     // assuming 20 ticks per second
+
+        // Smoothly move toward target
+        if (Math.abs(diff) > regenPerTick) {
+            contiousness += Math.signum(diff) * regenPerTick;
+        } else {
+            contiousness = (float) target; // close enough, snap to target
+        }
+
+        // Clamp final value
+        contiousness = Mth.clamp(contiousness, 0f, contiousnessCap);
     }
 
 
@@ -454,6 +521,10 @@ public class PlayerHealthData {
 
     public void setOpioids(float value) {
         Opioids = value;
+    }
+
+    public float getNetOpiodids(){
+        return Opioids-drug_addition;
     }
 
 
@@ -560,22 +631,14 @@ public class PlayerHealthData {
         float decay = 0.05f + 0.1f * (float)Math.pow(x, 1.2f);
         if(stats.Tourniquet){
             if (stats.pain>40){
-                stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(getOpioids()/40)));
+                stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(Math.max(0,getNetOpiodids()/40))));
             }
         }else{
-            stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(getOpioids()/40)));
+            stats.pain = Math.max(stats.MinPain, stats.pain-decay*(1+(Math.max(0,getNetOpiodids())/40)));
         }
 
         // Infection Adjustment
-        if (stats.infection > 0) {
-            if (stats.desinfectionTimer > 0) {
-                stats.desinfectionTimer -= 1;
-                stats.infection -= getDISINFECTION_RATE();
-            } else {
-                stats.infection = Math.min(100, stats.infection + getINFECTION_RATE());
-            }
-        }
-
+        calculateInfectionForLimb(limb);
         if (stats.skinHealth < 100 && stats.infection <= 0) {
             float chance = ((100-stats.skinHealth) / 100f) * getINFECTION_CHANCE();
             if (Math.random() < chance) {
@@ -631,7 +694,8 @@ public class PlayerHealthData {
         }
         stats.skinHealth = Mth.clamp(stats.skinHealth,0,100);
         stats.muscleHealth = Mth.clamp(stats.muscleHealth,0,100);
-        stats.finalPain = (float) Mth.clamp(stats.pain - Opioids * getOPIATE_PAIN_REDUCTION(),0,999);
+        stats.finalPain = stats.pain;
+        if (Float.isNaN(stats.pain))stats.pain=0;
     }
 
     public void setLimbMuscleHeal(Limb limb,boolean value){
@@ -658,7 +722,7 @@ public class PlayerHealthData {
         return (float) (damage * getPAIN_PER_DAMAGE());
     }
     public void applyPain(Limb limb, float value){
-        limbStats.get(limb).pain+= value;
+        limbStats.get(limb).pain+= value*painscale;
     }
     public void applySkinDamage(Limb limb,float damage){
         limbStats.get(limb).skinHealth = (float) Math.max(limbStats.get(limb).skinHealth-damage*getDAMAGE_SCALE(),0);
@@ -702,6 +766,9 @@ public class PlayerHealthData {
     int tick=0;
 
     public void tickUpdate(ServerPlayer player) {
+        updateTemperature(player);
+        calculateImmunity();
+        updateDirtyness(player);
         isUnderwater = player.isUnderWater();
         hungerLevel = player.getFoodData().getFoodLevel();
         isBreathing = true;
@@ -762,14 +829,22 @@ public class PlayerHealthData {
         } else if (blood < 5) {
             blood = Math.min(5, blood + (getBLOOD_REGEN_RATE() * getNutritionFactor()));
         }
-        if (Opioids>0){
-            float negativecons = (float) (Opioids*getContiousnessPerOpioid());
+        if (getNetOpiodids()>0){
+            float negativecons = (float) (getNetOpiodids()*getContiousnessPerOpioid());
             contiousnessCap = Math.min(contiousnessCap,100-negativecons);
+        } else if (getNetOpiodids()<-40) {
+            brainHealth -= 0.01f/20f;
         }
 
+        if (Opioids>0){
+            drug_addition+= 0.1f/20f;
+        }else {
+            drug_addition+= -0.1f/20f;
+        }
+        drug_addition = Math.max(0,drug_addition);
 
         // Respiratory arrest condition
-        respitoryArrest = Opioids > 100 || blood >= 5.7 || limbStats.get(Limb.CHEST).muscleHealth < 5||getTourniquet(Limb.HEAD);
+        respitoryArrest = isFreezing||getNetOpiodids() > 100 || blood >= 5.7 || limbStats.get(Limb.CHEST).muscleHealth < 5||getTourniquet(Limb.HEAD);
 
         // Oxygen cap — based on blood volume and hemothorax
         OxygenCap = 100;
@@ -797,15 +872,13 @@ public class PlayerHealthData {
 
         // Consciousness
         float oldCont = this.contiousness;
-        recalculateContiousness();
+        recalculateConsciousness();
 
         // Death timer adjustments
         if (Oxygen <= 5) {
             brainHealth -=getBRAIN_DRAIN();
         }
         calculateBrain();
-        PrototypePain.LOGGER.info("BRAin {}",brainHealth);
-
         calculateBPM();
         applyPenalties(player);
         changeEntries.removeIf(entry -> {
@@ -858,6 +931,7 @@ public class PlayerHealthData {
         return bloodViscosity;
     }
 
+    public boolean isFreezing= false;
     public void applyPenalties(ServerPlayer player){
         double baseMoveSpeed = 0.1;
         double baseAttackDamage = 1.0;
@@ -879,6 +953,35 @@ public class PlayerHealthData {
 
 // Apply attributes (scaling base value)
         double moveMultiplier = 1.0 - moveReduction;
+        isFreezing = false;
+        painscale = 1f;
+        if (temperature>42){
+            for (Limb limb:Limb.values()){
+                applyPain(limb,0.1f/20f);
+            }
+            brainHealth -= 0.5f/20f;
+            moveMultiplier -=0.1f;
+        } else if (temperature>41) {
+            moveMultiplier -=0.05f;
+        } else if (temperature<27) {
+            moveMultiplier -=0.2f;
+            contiousness -= (float) ((getContiousnessregen()+0.25f)/20f);
+            if (contiousness>1){
+                isFreezing = true;
+            }
+            painscale=1.5f;
+        }else if (temperature<32){
+            painscale = 1.3f;
+            moveMultiplier -=0.1f;
+        } else if (temperature<33) {
+            painscale = 1.1f;
+            moveMultiplier -=0.07f;
+        }else if (temperature<35){
+            moveMultiplier -=0.05f;
+        }
+
+
+
         Objects.requireNonNull(player.getAttribute(Attributes.MOVEMENT_SPEED))
                 .setBaseValue(baseMoveSpeed * Math.max(0.0, moveMultiplier));
 
@@ -933,6 +1036,11 @@ public class PlayerHealthData {
         nbt.putBoolean("IsBreathing", isBreathing);
         nbt.putFloat("BloodViscosity",bloodViscosity);
         nbt.putFloat("BrainHealth",brainHealth);
+        nbt.putFloat("Immunity",immunity);
+        nbt.putFloat("Drug_addition",drug_addition);
+        nbt.putFloat("Shock",Shock);
+        nbt.putFloat("Dirty",dirtyness);
+        nbt.putFloat("Temp",temperature);
 
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
@@ -987,6 +1095,12 @@ public class PlayerHealthData {
         this.isBreathing = other.isBreathing;
         this.bloodViscosity = other.bloodViscosity;
         this.brainHealth = other.brainHealth;
+        this.immunity = other.immunity;
+        this.antibiotic_timer = other.antibiotic_timer;
+        this.drug_addition = other.drug_addition;
+        this.Shock = other.Shock;
+        this.dirtyness = other.dirtyness;
+        this.temperature = other.temperature;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -1053,6 +1167,17 @@ public class PlayerHealthData {
         if (nbt.contains("BrainHealth"))
             brainHealth = nbt.getFloat("BrainHealth");
 
+        if (nbt.contains("Immunity"))
+            immunity = nbt.getFloat("Immunity");
+        if (nbt.contains("Drug_addition"))
+            drug_addition = nbt.getFloat("Drug_addition");
+        if (nbt.contains("Shock"))
+            Shock = nbt.getFloat("Shock");
+        if (nbt.contains("Dirty"))
+            dirtyness = nbt.getFloat("Dirty");
+        if (nbt.contains("Temp"))
+            temperature = nbt.getFloat("Temp");
+
         changeEntries.clear();
         ListTag changeList = nbt.getList("ChangeList", 10);
         for (int i = 0; i < changeList.size(); i++) {
@@ -1091,19 +1216,8 @@ public class PlayerHealthData {
 
 
     public boolean tryUseItem(Limb limb, ItemStack itemstack, ServerPlayer source, ServerPlayer target,InteractionHand hand){
-        if (itemstack.getItem() instanceof ISimpleMed medItem){
+        if (itemstack.getItem() instanceof ISimpleMedicalUsable medItem){
             boolean used =  medItem.onMedicalUse(limb,source,target,itemstack,hand);
-            if (used){
-                source.serverLevel().getLevel().playSound(null,source.getOnPos(),medItem.getUseSound(), SoundSource.PLAYERS);
-            }
-            return used;
-        }
-        return false;
-    }
-
-    public boolean tryUseItem(float value, ItemStack itemstack, ServerPlayer source, ServerPlayer target,InteractionHand hand){
-        if (itemstack.getItem() instanceof INarcoticUsable medItem){
-            boolean used =  medItem.onMedicalUse(value,source,target,itemstack,hand);
             if (used){
                 source.serverLevel().getLevel().playSound(null,source.getOnPos(),medItem.getUseSound(), SoundSource.PLAYERS);
             }
@@ -1352,7 +1466,7 @@ public class PlayerHealthData {
         if (blood<3){
             newBPM = (int) (newBPM *(blood/3));
         }
-        if (getOpioids()>50){
+        if (getNetOpiodids()>50){
             newBPM = (int) (newBPM*0.80);
         }
         this.BPM = Mth.clamp(newBPM,0,170);
@@ -1437,7 +1551,7 @@ public class PlayerHealthData {
     public void killPlayer(ServerPlayer player,boolean gaveUp){
         boolean bleedout = blood<3.5f;
         boolean internalBleed = hemothorax>50;
-        boolean overdose = Opioids>100;
+        boolean overdose = getNetOpiodids()>100;
         boolean bleedoutHeavy = getCombinedBleed()>2f/20f/60f;
 
         DamageSource src = ModDamageTypes.oxygen(player.serverLevel());
@@ -1504,6 +1618,12 @@ public class PlayerHealthData {
         respitoryArrest = false;
         bloodViscosity = 0f;
         brainHealth = 100;
+        drug_addition = 0;
+        temperature = 36.6f;
+        Shock =0 ;
+        dirtyness = 0;
+        antibiotic_timer = 0;
+        immunity = 100;
 
         // passthrough / player-state
         hungerLevel = 20;
@@ -1511,7 +1631,7 @@ public class PlayerHealthData {
 
         // derived values
         recalcTotalPain();
-        recalculateContiousness();
+        recalculateConsciousness();
     }
 
     public void handleMagicHeal(float amount){
@@ -1558,6 +1678,123 @@ public class PlayerHealthData {
             EquipmentSlot finalEq = eq;
             item.hurtAndBreak(amount,player, player1 -> player1.broadcastBreakEvent(finalEq));
         }
+    }
+
+
+    public void updateTemperature(Player player){
+        float biomeTemp = player.level().getBiome(player.blockPosition())
+                .value().getBaseTemperature();
+
+        float envTemp = 32.5f + (biomeTemp * 7f);
+
+        int seaLevel = player.level().getSeaLevel();
+        double heightDiff = player.getY() - seaLevel;
+
+        float heightModifier = (float) Mth.clamp(-heightDiff * 0.05f, -6f, 6f);
+        envTemp += heightModifier;
+
+        BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
+        float blockheatBonus = 0f;
+
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dy = -2; dy <= 2; dy++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    checkPos.set(player.blockPosition().offset(dx, dy, dz));
+                    BlockState state = player.level().getBlockState(checkPos);
+
+                    float base = 0f;
+
+                    if (state.is(Blocks.LAVA)) base += 8f;
+                    else if (state.is(Blocks.FIRE)) base += 6f;
+                    else if (state.is(Blocks.TORCH)) base += 2f;
+                    else if (state.is(Blocks.MAGMA_BLOCK)) base += 4f;
+                    else if (state.is(Blocks.CAMPFIRE)) base += 5f;
+                    else if (state.is(Blocks.ICE)) base -= 3f;
+                    else if (state.is(Blocks.POWDER_SNOW)) base -= 5f;
+
+                    if (base != 0f) {
+                        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                        float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
+                        blockheatBonus += base * falloff;
+                    }
+                }
+            }
+        }
+        float generalheatbonus = 0f;
+
+        if (player.isInWater()) generalheatbonus -= 3f; // cold water
+        if (player.isOnFire()) generalheatbonus += 10f;
+
+        float armorInsulation = 0f;
+        for (ItemStack piece : player.getArmorSlots()) {
+            if (piece.is(ModItemTags.ARMOR_INSULATION)){
+                armorInsulation += 2f;
+            }
+        }
+
+        boolean skyVisible = player.level().canSeeSkyFromBelowWater(player.blockPosition());
+        if (!skyVisible) {
+            blockheatBonus *= 0.5f; // less effect indoors
+        }
+
+        if (player.level().isRainingAt(player.blockPosition())) blockheatBonus -= 2f;
+        if (player.level().isThundering()) blockheatBonus -= 3f;
+        if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) blockheatBonus += 1f;
+
+        envTemp += (blockheatBonus+generalheatbonus) - armorInsulation * 0.5f;
+
+        float targetTemp = envTemp;
+        float current = temperature;
+        float delta = (targetTemp - current) * (0.002f/20f); // smooth change
+        temperature += delta;
+    }
+
+
+    public void calculateImmunity(){
+        float temp_bonus = -36.6f+temperature;
+        float blood_bonus = blood>5?(-5+blood)*5:0;
+        float dirtiness_bonus = -Math.max(0,dirtyness-50);
+        float antibiotics_bonus = antibiotic_timer>0?60:0;
+        float hunder_bonus = hungerLevel-10;
+        antibiotic_timer = Math.max(antibiotic_timer-1,0);
+        immunity = 100+temp_bonus+blood_bonus+dirtiness_bonus+antibiotics_bonus+hunder_bonus;
+    }
+
+    public void calculateInfectionForLimb(Limb limb){
+        float infection_progress = (float) ((immunity*getIMMUNITY_STRENGTH()) * -0.001188f +0.18f);
+        if (getLimbDesinfected(limb)>0){
+            infection_progress -= 0.125f* getDISINFECTION_STRENGTH();
+            limbStats.get(limb).desinfectionTimer -= 1;
+        }
+        float infection = limbStats.get(limb).infection;
+        if (infection>0){
+            infection +=infection_progress/20;
+            infection = Mth.clamp(infection,0,100);
+            limbStats.get(limb).infection = infection;
+            infectionSpread(limb);
+        }
+    }
+
+    public void updateDirtyness(Player player) {
+        float passiveIncrease = 0.000666f;
+        if (player.isSprinting())passiveIncrease *=3;
+
+        // Dirt accumulates faster if player is hurt or bleeding
+        if (getCombinedBleed()>0) passiveIncrease += 0.02f;
+        BlockPos blockPosBelow = player.blockPosition().below();
+        BlockState blockStateBelow = player.level().getBlockState(blockPosBelow);
+        if (blockStateBelow.is(Blocks.MUD)||blockStateBelow.is(BlockTags.SAND)) passiveIncrease += 0.05f;
+        if (player.isOnFire()) passiveIncrease += 0.01f;  // smoke/ash
+
+        // Rain and clean water slowly reduce dirt
+        float passiveDecrease = 0f;
+        if (player.isUnderWater()) passiveDecrease += 1f;
+        else if (player.level().isRainingAt(player.blockPosition())) passiveDecrease += 0.05f;
+
+        dirtyness += (passiveIncrease - passiveDecrease) /20;
+
+        // Clamp between 0 and 100
+        dirtyness = Mth.clamp(dirtyness, 0f, 100f);
     }
 
     //Visuals

@@ -1,89 +1,190 @@
-{  "prototype_pain.gui.tourniquet_button": "Remove Tourniquet",
-"prototype_pain.gui.dislocation_button": "Fix Dislocation",
-"prototype_pain.gui.shrapnel_button": "Remove Shrapnel",
-"prototype_pain.gui.splint_button": "Remove Splint",
-"prototype_pain.limb.chest": "Torso",
-"prototype_pain.limb.lfoot": "Left Foot",
-"prototype_pain.limb.head": "Head",
-"prototype_pain.limb.rleg": "Right Leg",
-"prototype_pain.limb.rfoot": "Right Foot",
-"prototype_pain.limb.lleg": "Left Leg",
-"prototype_pain.limb.larm": "Left Arm",
-"prototype_pain.limb.lhand": "Left Hand",
-"prototype_pain.limb.rarm": "Right Arm",
-"prototype_pain.limb.rhand": "Right Hand",
-"prototype_pain.gui.inject": "Inject",
-"prototype_pain.gui.give_up": "Press %1$s to Give Up.",
-"death.attack.give_up": "%1$s gave up",
-"death.attack.bleed": "%1$s lost too much blood",
-"death.attack.heavy_bleed": "%1$s got emptied of blood",
-"death.attack.internal_bleed": "%1$s found out the hard way that blood isn’t meant to be *literally everywhere inside your body*.",
-"death.attack.opioids": "%1$s took too much pain medication",
-"death.attack.oxygen": "%1$s forgot to breathe",
-"death.attack.give_up.player": "%1$s gave up, with some encouragement from %2$s",
-"death.attack.bleed.player": "%1$s bled out thanks to %2$s",
-"death.attack.heavy_bleed.player": "%1$s was drained dry after meeting %2$s",
-"death.attack.internal_bleed.player": "%1$s discovered misplaced blood, courtesy of %2$s",
-"death.attack.opioids.player": "%1$s overdosed with a little help from %2$s",
-"death.attack.oxygen.player": "%1$s forgot to breathe, while fighting %2$s",
-"item.prototype_pain.dressing": "Bandage",
-"item.prototype_pain.plastic_dressing": "Occlusive Dressing",
-"item.prototype_pain.sterilized_dressing": "Sterilized Dressing",
-"item.prototype_pain.alcohol": "Disinfecting Alcohol",
-"item.prototype_pain.ice_pack": "Ice Pack",
-"item.prototype_pain.relief_gel": "Relief Gel",
-"item.prototype_pain.saline": "Saline",
-"item.prototype_pain.opium": "Poppy Extract",
-"item.prototype_pain.morphine": "Morphine",
-"item.prototype_pain.heroin": "Heroin",
-"item.prototype_pain.fentanyl": "Fentanyl",
-"item.prototype_pain.naloxone": "Naloxone",
-"item.prototype_pain.painkillers": "Painkillers",
-"item.prototype_pain.antibiotics": "Antibiotics",
-"item.prototype_pain.blood_clotting": "Hemostatic Agent",
-"item.prototype_pain.blood_thinner": "Anticoagulant",
-"item.prototype_pain.splint": "Splint",
-"item.prototype_pain.tweezers": "Tweezers",
-"item.prototype_pain.tourniquet": "Tourniquet",
-"item.prototype_pain.small_medibag": "Small Medical Bag",
-"item.prototype_pain.medium_medibag": "Medium Medical Bag",
-"item.prototype_pain.large_medibag": "Large Medical Bag",
-"item.prototype_pain.band_aids": "Band Aids",
-"item.prototype_pain.relief_gel.discription": "Crudely made gel for Aiding sore limbs",
-"item.prototype_pain.large_medibag.discription": "A spacious medical kit that can hold up to 12 items.",
-"item.prototype_pain.medium_medibag.discription": "A balanced pack with room for 8 items.",
-"item.prototype_pain.small_medibag.discription": "A compact pouch for 4 medical items.",
-"item.prototype_pain.alcohol.discription": "Used to disinfect wounds before treatment.",
-"item.prototype_pain.antibiotics.discription": "Helps fight off infections and speed up recovery.",
-"item.prototype_pain.dressing.discription": "Basic bandage for covering and protecting wounds.",
-"item.prototype_pain.ice_pack.discription": "Reduces swelling and eases sore muscles.",
-"item.prototype_pain.plastic_dressing.discription": "Stronger bandage, protects wounds more effectively.",
-"item.prototype_pain.saline.discription": "Restores fluids and stabilizes patients in emergencies.",
-"item.prototype_pain.sterilized_dressing.discription": "Cleans and covers wounds, preventing infection.",
-"item.prototype_pain.blood_thinner.discription": "Prevents dangerous clotting, but increases bleeding risk.",
-"item.prototype_pain.fentanyl.discription": "Potent painkiller. Overdose risk at ~20%.",
-"item.prototype_pain.heroin.discription": "Strong narcotic with high addiction risk. Overdose risk at ~50%",
-"item.prototype_pain.morphine.discription": "Good old reliable pain relief. Overdose risk at ~90%",
-"item.prototype_pain.opium.discription": "Traditional narcotic, less potent but risky in excess. Overdose risk at ~200%.",
-"item.prototype_pain.naloxone.discription": "Reverses opioid overdoses, restoring breathing.",
-"item.prototype_pain.painkillers.discription": "General medication to reduce pain and discomfort.",
-"item.prototype_pain.splint.discription": "Stabilizes broken bones and aids healing.",
-"item.prototype_pain.tourniquet.discription": "Stops heavy bleeding but limits blood flow.",
-"item.prototype_pain.tweezers.discription": "Removes shrapnel, glass, or debris from wounds.",
-"item.prototype_pain.blood_clotting.discription": "Globally slows down blood loss, including internal bleeding. Likely to cause clotting.",
-"key.protoype_pain.open_pain_gui": "Open Health Screen",
-"key.categories.prototype_pain": "Prototype: Pain",
-"itemGroup.prototype_pain_tab": "Prototype: Pain",
-"key.protoype_pain.give_up": "Give Up",
-"item.prototype_pain.band_aid.discription": "Simple adhesive bandages. Usualy used on small cuts and bruises",
-"item.prototype_pain.glow_fruit": "Glow Fruit",
-"item.prototype_pain.glow_fruit.discription": "Bioluminescent plant found often in caves. Counteracts infections. Highly toxic when ingested.",
-"prototype_pain.gui.fluid_screen": "Press %1$s to Open Fluid GUI",
-"prototype_pain.fluid.opium": "Opium",
-"prototype_pain.fluid.fentanyl": "Fentanyl",
-"prototype_pain.fluid.heroin": "Heroin",
-"prototype_pain.fluid.morphine": "Morphine",
-"prototype_pain.fluid.water": "Water",
-"prototype_pain.gui.syringe_instruction": "Push the syringe down to inject. Make sure to check the dosage.",
-"prototype_pain.gui.minigame_exit": "Press ESC to exit"
+{
+  "prototype_pain.gui.tourniquet_button": "Remove Tourniquet",
+  "prototype_pain.gui.dislocation_button": "Fix Dislocation",
+  "prototype_pain.gui.shrapnel_button": "Remove Shrapnel",
+  "prototype_pain.gui.splint_button": "Remove Splint",
+
+  "prototype_pain.limb.chest": "Torso",
+  "prototype_pain.limb.lfoot": "Left Foot",
+  "prototype_pain.limb.head": "Head",
+  "prototype_pain.limb.rleg": "Right Leg",
+  "prototype_pain.limb.rfoot": "Right Foot",
+  "prototype_pain.limb.lleg": "Left Leg",
+  "prototype_pain.limb.larm": "Left Arm",
+  "prototype_pain.limb.lhand": "Left Hand",
+  "prototype_pain.limb.rarm": "Right Arm",
+  "prototype_pain.limb.rhand": "Right Hand",
+
+  "prototype_pain.gui.inject": "Inject",
+  "prototype_pain.gui.give_up": "Press %1$s to Give Up.",
+  "prototype_pain.gui.fluid_screen": "Press %1$s to Open Fluid GUI",
+  "prototype_pain.gui.syringe_instruction": "Push the syringe down to inject. Make sure to check the dosage.",
+  "prototype_pain.gui.minigame_exit": "Press ESC to Exit",
+
+  "death.attack.give_up": "%1$s gave up",
+  "death.attack.bleed": "%1$s lost too much blood",
+  "death.attack.heavy_bleed": "%1$s was drained of blood",
+  "death.attack.internal_bleed": "%1$s learned the hard way that blood isn’t meant to be everywhere inside your body.",
+  "death.attack.opioids": "%1$s took too much pain medication",
+  "death.attack.oxygen": "%1$s forgot to breathe",
+
+  "death.attack.give_up.player": "%1$s gave up, with some encouragement from %2$s",
+  "death.attack.bleed.player": "%1$s bled out thanks to %2$s",
+  "death.attack.heavy_bleed.player": "%1$s was drained dry after meeting %2$s",
+  "death.attack.internal_bleed.player": "%1$s discovered misplaced blood, courtesy of %2$s",
+  "death.attack.opioids.player": "%1$s overdosed with a little help from %2$s",
+  "death.attack.oxygen.player": "%1$s forgot to breathe while fighting %2$s",
+
+  "item.prototype_pain.dressing": "Bandage",
+  "item.prototype_pain.dressing.discription": "Basic bandage for covering and protecting wounds.",
+
+  "item.prototype_pain.plastic_dressing": "Occlusive Dressing",
+  "item.prototype_pain.plastic_dressing.discription": "Stronger bandage that protects wounds more effectively.",
+
+  "item.prototype_pain.sterilized_dressing": "Sterilized Dressing",
+  "item.prototype_pain.sterilized_dressing.discription": "Cleans and covers wounds, preventing infection.",
+
+  "item.prototype_pain.alcohol": "Bottle of Alcohol",
+  "item.prototype_pain.alcohol.discription": "A glass bottle that can hold 0.4L of liquid.",
+
+  "item.prototype_pain.ice_pack": "Ice Pack",
+  "item.prototype_pain.ice_pack.discription": "Reduces swelling and eases sore muscles.",
+
+  "item.prototype_pain.aid_gel": "Relief Gel",
+  "item.prototype_pain.aid_gel.discription": "A crudely made gel for aiding sore limbs.",
+
+  "item.prototype_pain.saline": "Saline",
+  "item.prototype_pain.saline.discription": "A 750ml fluid bag with a needle at the end.",
+
+  "item.prototype_pain.opium_vial": "Poppy Extract",
+  "item.prototype_pain.opium_vial.discription": "A 100ml bottle. The overdose label says 200ml.",
+
+  "item.prototype_pain.morphine_vial": "Morphine",
+  "item.prototype_pain.morphine_vial.discription": "A 100ml bottle. The overdose label says 90ml.",
+
+  "item.prototype_pain.heroin_vial": "Heroin",
+  "item.prototype_pain.heroin_vial.discription": "A 150ml syringe for intravenous injection. The dosage marks are scratched off.",
+
+  "item.prototype_pain.fentanyl_vial": "Fentanyl",
+  "item.prototype_pain.fentanyl_vial.discription": "A 100ml bottle containing diluted fentanyl for pain relief. The overdose label says 20ml.",
+
+  "item.prototype_pain.naloxone_vial": "Naloxone",
+  "item.prototype_pain.naloxone_vial.discription": "A 100ml bottle. The label reads \"Nal...\" — the rest is unreadable.",
+
+  "item.prototype_pain.painkillers": "Painkillers",
+  "item.prototype_pain.painkillers.discription": "A 100ml pill bottle. The dosage is 10ml.",
+
+  "item.prototype_pain.antibiotics": "Antibiotics",
+  "item.prototype_pain.antibiotics.discription": "A 100ml bottle of antibiotic pills. The dose is 10ml.",
+
+  "item.prototype_pain.blood_clotting": "Hemostatic Agent",
+  "item.prototype_pain.blood_clotting.discription": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
+
+  "item.prototype_pain.blood_thinner": "Anticoagulant",
+  "item.prototype_pain.blood_thinner.discription": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
+
+  "item.prototype_pain.splint": "Splint",
+  "item.prototype_pain.splint.discription": "Stabilizes broken bones and aids healing.",
+
+  "item.prototype_pain.tweezers": "Tweezers",
+  "item.prototype_pain.tweezers.discription": "Removes shrapnel, glass, or debris from wounds.",
+
+  "item.prototype_pain.tourniquet": "Tourniquet",
+  "item.prototype_pain.tourniquet.discription": "Stops heavy bleeding but limits blood flow.",
+
+  "item.prototype_pain.small_medibag": "Small Medical Bag",
+  "item.prototype_pain.small_medibag.discription": "A compact pouch for four medical items.",
+
+  "item.prototype_pain.medium_medibag": "Medium Medical Bag",
+  "item.prototype_pain.medium_medibag.discription": "A balanced pack with room for eight items.",
+
+  "item.prototype_pain.large_medibag": "Large Medical Bag",
+  "item.prototype_pain.large_medibag.discription": "A spacious medical kit that can hold up to twelve items.",
+
+  "item.prototype_pain.band_aids": "Band Aids",
+  "item.prototype_pain.band_aid.discription": "Simple adhesive bandages usually used on small cuts and bruises.",
+
+  "item.prototype_pain.glow_fruit": "Glow Fruit",
+  "item.prototype_pain.glow_fruit.discription": "A bioluminescent plant often found in caves. Counteracts infections but is highly toxic when ingested.",
+
+  "item.prototype_pain.ceftriaxone": "Ceftriaxone Vial",
+  "item.prototype_pain.ceftriaxone.discription": "A 100ml bottle. The safe dose label says \"may vary.\"",
+
+  "item.prototype_pain.medicine_vial": "Medicine Vial",
+  "item.prototype_pain.medicine_vial.discription": "A 100ml bottle meant for medicine.",
+
+  "item.prototype_pain.antiseptic": "Antiseptic",
+  "item.prototype_pain.antiseptic.discription": "A 200ml spray bottle. Sprays 10ml of liquid at a time.",
+
+  "item.prototype_pain.relief_cream": "Relief Cream",
+  "item.prototype_pain.relief_cream.discription": "A 100ml bottle. The label warns, \"Do not use more than 10 bottles in one day.\"",
+
+  "item.prototype_pain.antiserum": "Antiserum",
+  "item.prototype_pain.antiserum.discription": "A 100ml bottle with an autoinjector attached. The dosage is 50ml.",
+
+  "item.prototype_pain.brain_grow": "Brain Grow",
+  "item.prototype_pain.brain_grow.discription": "A 50ml bottle. The label says, \"Take up to one dose per day.\"",
+
+  "item.prototype_pain.syringe": "Syringe",
+  "item.prototype_pain.syringe.discription": "A 100ml syringe for intravenous injection.",
+
+
+  "prototype_pain.fluid.opium": "Opium",
+  "prototype_pain.fluid.opium.description": "A light opiate, lesser effect when taken orally",
+
+  "prototype_pain.fluid.fentanyl": "Fentanyl",
+  "prototype_pain.fluid.fentanyl.description": "Highly dangerous opiate. 100 times stronger than morphine",
+
+  "prototype_pain.fluid.heroin": "Heroin",
+  "prototype_pain.fluid.heroin.description": "A very strong opiate. Very addicting",
+
+  "prototype_pain.fluid.morphine": "Morphine",
+  "prototype_pain.fluid.morphine.description": "A strong opiate, lesser effect when taken orally",
+
+  "prototype_pain.fluid.water": "Water",
+  "prototype_pain.fluid.water.description": "Clear water. Tasteless",
+
+  "prototype_pain.fluid.painkillers": "Painkillers",
+  "prototype_pain.fluid.painkillers.description": "Medication for pain relief. Overdose at 80ml",
+
+  "prototype_pain.fluid.braingrow": "BrainGrow",
+  "prototype_pain.fluid.braingrow.description": "Special medicine used for heavy concussions and brain trauma. May cause discomfort. Meant to be taken orally",
+
+  "prototype_pain.fluid.alcohol": "Alcohol",
+  "prototype_pain.fluid.alcohol.description": "Highly distilled spirit. Usefull for disinfecting wounds.",
+
+  "prototype_pain.fluid.antiseptic": "Antiseptic",
+  "prototype_pain.fluid.antiseptic.description": "A potent disinfecting gel. Stings a lot.",
+
+  "prototype_pain.fluid.saline": "Saline",
+  "prototype_pain.fluid.saline.description": "A mix of water, salt, and minerals. Usefull for thirst and regaining body liquid.",
+
+  "prototype_pain.fluid.antibiotics": "Antibiotics",
+  "prototype_pain.fluid.antibiotics.description": "Pills that increase your immunity to infection. For some reason they taste like nickels.",
+
+  "prototype_pain.fluid.antiserum": "Antiserum",
+  "prototype_pain.fluid.antiserum.description": "Blood serum containing antibodies. Helps when fighting infections. Slightly increases blood volume.",
+
+  "prototype_pain.fluid.ceftriaxone": "Ceftriaxone",
+  "prototype_pain.fluid.ceftriaxone.description": "Very advanced form of an injected antibiotic. May cause excruciating chest pain.",
+
+  "prototype_pain.fluid.procoagulant": "Procoagulant",
+  "prototype_pain.fluid.procoagulant.description": "A simple blood clotting agent. Decreases bleeding overall but causes clotting. Dangerous in excess.",
+
+  "prototype_pain.fluid.streptokinase": "Streptokinase",
+  "prototype_pain.fluid.streptokinase.description": "A blood thinner. Decreases blood clotting. May cause increased bleeding.",
+
+  "prototype_pain.fluid.naloxone": "Naloxone",
+  "prototype_pain.fluid.naloxone.description": "A common opiate antagonist. Used to revert opioid overdose.",
+
+  "prototype_pain.fluid.relief_cream": "Relief Cream",
+  "prototype_pain.fluid.relief_cream.description": "A slightly antiseptic cream with soothing properties.",
+
+  "key.protoype_pain.open_pain_gui": "Open Health Screen",
+  "key.protoype_pain.give_up": "Give Up",
+  "key.categories.prototype_pain": "Prototype: Pain",
+
+  "itemGroup.prototype_pain_tab": "Prototype: Pain",
+  "prototype_pain.gui.bandage_instruction1": "Wrap the bandage around the limb to stop the bleeding.",
+  "prototype_pain.gui.bandage_instruction2": " You dont have to use the entire bandage."
 }

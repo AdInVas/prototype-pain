@@ -27,6 +27,10 @@ public class MedicalFluid {
         return Component.translatable("prototype_pain.fluid."+id);
     }
 
+    public Component getDescription(){
+        return Component.translatable("prototype_pain.fluid."+id+".description");
+    }
+
     public int getColor() {
         return color;
     }

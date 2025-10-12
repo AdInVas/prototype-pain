@@ -1,7 +1,6 @@
 package net.adinvas.prototype_pain.network;
 
-import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.items.IMedicalFluidContainer;
+import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

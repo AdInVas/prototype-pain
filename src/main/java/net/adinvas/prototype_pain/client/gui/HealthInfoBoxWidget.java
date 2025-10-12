@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public class HealthInfoBoxWidget extends AbstractWidget {
     private Component name;
@@ -18,6 +19,8 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float oxygen;
     private float opiates;
     private float brain;
+    private float immunity;
+    private float temp;
 
     private Component limbname =Component.empty();
     private float skin=100;
@@ -36,6 +39,14 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
     public void setBrain(float brain) {
         this.brain = brain;
+    }
+
+    public void setImmunity(float immunity) {
+        this.immunity = immunity;
+    }
+
+    public void setTemp(float temp) {
+        this.temp = temp;
     }
 
     private final ResourceLocation main_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/info_box.png");
@@ -133,6 +144,17 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.blit(brain_tex,4,123,0,0,16,16,16,16);
         guiGraphics.fill(23,133, (int) (23+(85*(brain/100))),137,0xFFFFFFFF);
 
+        float minTemp = 27f;  // coldest possible
+        float maxTemp = 43f;
+
+        float normalized = (temp - minTemp) / (maxTemp - minTemp);
+
+        int barTop = 109 - (int)(normalized * 28);
+
+
+        guiGraphics.fill(94,barTop,95,109,0xFFFFFFFF);
+        guiGraphics.drawString(mc.font,Math.floor(temp*10)/10+"",98,100,colorWhite);
+
 
         float blitV = 5;
         if (contiousness<=0) blitV = 4;
@@ -201,15 +223,16 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             guiGraphics.blit(blood_tex,76,64,0,0,10,10,10,10);
         }
         guiGraphics.drawString(mc.font,"O₂ "+(int)(oxygen)+"%",5,85,colorWhite);
+        guiGraphics.drawString(mc.font,""+(int)(immunity),17,104,colorWhite);
 
         if (opiates>0){
-            guiGraphics.blit(opiate_tex,100,64,0,0,16,32,16,32);
+            guiGraphics.blit(opiate_tex,104,64,0,0,16,32,16,32);
             if (opiates>100){
                 if (blink) {
-                    guiGraphics.fill(106,72,109,72+(int)((Math.min(opiates,100)/100)*18),0xFFFFFFFF);
+                    guiGraphics.fill(110,72,113,72+(int)((Math.min(opiates,100)/100)*18),0xFFFFFFFF);
                 }
             }else {
-                guiGraphics.fill(106,72,109,72+(int)((Math.min(opiates,100)/100)*18),0xFFFFFFFF);
+                guiGraphics.fill(110,72,113,72+(int)((Math.min(opiates,100)/100)*18),0xFFFFFFFF);
             }
         }
 

@@ -1,8 +1,8 @@
 package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.items.MedicalVial;
-import net.adinvas.prototype_pain.fluid_system.items.SyringeItem;
+import net.adinvas.prototype_pain.Util;
+import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -21,7 +21,7 @@ public class ColorsEvent {
                             if (syringe.getFilledTotal(stack)<=0){
                                 return 0x00FFFFFF;
                             }
-                            return SyringeItem.mixColors(syringe.getFuildAndRatio(stack)); // return full ARGB or RGB color
+                            return Util.mixColors(syringe.getFuildAndRatio(stack)); // return full ARGB or RGB color
                         }
                     }
                     return 0xFFFFFFFF; // white = no tint
@@ -30,7 +30,12 @@ public class ColorsEvent {
                 ModItems.OpiumVial.get(),
                 ModItems.HeroinVial.get(),
                 ModItems.FentanylVial.get(),
-                ModItems.MorphineVial.get()
+                ModItems.MorphineVial.get(),
+                ModItems.BloodClotting.get(),
+                ModItems.BloodThiner.get(),
+                ModItems.CEFTRIAXONE.get(),
+                ModItems.NaloxoneVial.get(),
+                ModItems.AntiSerum.get()
         );
     }
 }

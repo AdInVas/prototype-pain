@@ -7,8 +7,8 @@ import net.adinvas.prototype_pain.client.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.client.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
-import net.adinvas.prototype_pain.fluid_system.items.IMedicalFluidContainer;
-import net.adinvas.prototype_pain.fluid_system.gui.FluidExchangeScreen;
+import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
+import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.GiveUpPacket;
 import net.adinvas.prototype_pain.network.LegUsePacket;
@@ -115,7 +115,7 @@ public class ClientEvents {
                         carried.getItem() instanceof IMedicalFluidContainer &&
                         hovered.getItem().getItem() instanceof IMedicalFluidContainer) {
 
-                    mc.setScreen(new FluidExchangeScreen(hovered.getItem(), carried,hovered.getSlotIndex()));
+                    mc.setScreen(new FluidExchangeScreen(Minecraft.getInstance().screen, hovered.getItem(), carried,hovered.getSlotIndex()));
                     event.setCanceled(true); // prevent the inventory from also handling it
                 }
             }

@@ -180,6 +180,11 @@ public class ModCommands {
                                                     builder.suggest("OxygenCap");
                                                     builder.suggest("Opioids");
                                                     builder.suggest("bloodViscosity");
+                                                    builder.suggest("brainhealth");
+                                                    builder.suggest("drug_addiction");
+                                                    builder.suggest("dirtyness");
+                                                    builder.suggest("painshock");
+                                                    builder.suggest("temperature");
                                                     return builder.buildFuture();
                                                 })
                                                 .then(Commands.argument("value", FloatArgumentType.floatArg())
@@ -217,6 +222,21 @@ public class ModCommands {
                                                                     }
                                                                     case "bloodviscosity" -> {
                                                                         h.setBloodViscosity(value);
+                                                                    }
+                                                                    case "brainhealth" -> {
+                                                                        h.setBrainHealth(value);
+                                                                    }
+                                                                    case "drug_addiction" -> {
+                                                                        h.setDrug_addition(value);
+                                                                    }
+                                                                    case "dirtyness" -> {
+                                                                        h.setDirtyness(value);
+                                                                    }
+                                                                    case "painshock" -> {
+                                                                        h.setShock(value);
+                                                                    }
+                                                                    case "temperature" -> {
+                                                                        h.setTemperature(value);
                                                                     }
                                                                     default -> {
                                                                         ctx.getSource().sendFailure(Component.literal("Unknown field: " + field));

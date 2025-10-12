@@ -13,6 +13,7 @@ import net.adinvas.prototype_pain.item.bags.large.LargeMedibagScreen;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagScreen;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagScreen;
+import net.adinvas.prototype_pain.loot.ModLootModifier;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.visual.particles.BloodParticle;
 import net.adinvas.prototype_pain.visual.particles.ModParticles;
@@ -54,6 +55,7 @@ public class PrototypePain {
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
+        ModLootModifier.register(modEventBus);
         OverlayController.registerOverlay(new PainOverlay());
         OverlayController.registerOverlay(new ContiousnessOverlay());
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);

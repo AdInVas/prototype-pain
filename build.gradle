@@ -174,7 +174,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    // runtimeOnly fg.deobf('maven.modrinth:jei:lsAlz2ME')
+     runtimeOnly fg.deobf('maven.modrinth:jei:lsAlz2ME')
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

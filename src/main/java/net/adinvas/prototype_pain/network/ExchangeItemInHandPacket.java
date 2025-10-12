@@ -1,15 +1,11 @@
 package net.adinvas.prototype_pain.network;
 
-import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.items.IMedicalFluidContainer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class ExchangeItemInHandPacket {
