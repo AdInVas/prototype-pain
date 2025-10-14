@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.fluid_system;
 
 
+import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.network.chat.Component;
 
 public class MedicalFluid {
@@ -20,7 +21,7 @@ public class MedicalFluid {
     }
 
     public String getId() {
-        return id;
+        return PrototypePain.MOD_ID+":"+id;
     }
 
     public Component getDisplayName(){

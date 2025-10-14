@@ -42,13 +42,10 @@ public class AlganiteDressingItem extends Item implements IMedicalMinigameUsable
     @Override
     public void useMinigameAction(float scalableAmount, Player target, @Nullable Limb limb) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            h.addDelayedChange(((0.01f*scalableAmount)/20f)/60f,200,limb);
-            float painRed = Math.max(0f, 1f - 0.025f * scalableAmount);
+            h.addDelayedChange(((0.01f*scalableAmount)/20f)/60f,300,limb);
+            float painRed = Math.max(0f, 1f - 0.01f * scalableAmount);
             h.setLimbPain(limb,h.getLimbPain(limb)*painRed);
-            h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)+0.1f*scalableAmount);
-            float fractRed = Math.max(0f, 1f - 0.001f * scalableAmount);
-            h.setLimbFracture(limb,h.getLimbFracture(limb)*fractRed);
-            h.setLimbDislocation(limb,h.getLimbDislocated(limb)*fractRed);
+            h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)+1f*scalableAmount);
         });
     }
 

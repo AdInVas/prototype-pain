@@ -25,6 +25,10 @@ public class BrainGrowItem extends MedicalVial implements IAllowInMedicbags {
         super(new Properties().stacksTo(1).food(new FoodProperties.Builder().alwaysEat().build()));
     }
 
+    @Override
+    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
+        setupDefaults(pStack);
+    }
 
     @Override
     public ItemStack finishUsingItem(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity) {

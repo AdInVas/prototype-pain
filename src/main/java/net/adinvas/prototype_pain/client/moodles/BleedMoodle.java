@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -42,6 +43,30 @@ public class BleedMoodle extends AbstractMoodleVisual{
         ResourceLocation tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/moodles/blood_moodle.png");
         ms.blit(tex, x, y, 0, 0, 16, 16, 16, 16);
         return tex;
+    }
+
+    @Override
+    public List<Component> getTooltip(Player player) {
+        List<Component> componentList = new ArrayList<>();
+        switch (getMoodleStatus()){
+            case LIGHT -> {
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.title1"));
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.description1").withStyle(ChatFormatting.GRAY));
+            }
+            case NORMAL -> {
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.title2").withStyle(ChatFormatting.YELLOW));
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.description2").withStyle(ChatFormatting.GRAY));
+            }
+            case HEAVY -> {
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.title3").withStyle(ChatFormatting.GOLD));
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.description3").withStyle(ChatFormatting.GRAY));
+            }
+            case CRITICAL -> {
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.title4").withStyle(ChatFormatting.RED));
+                componentList.add(Component.translatable("prototype_pain.gui.moodle.bleeding.description4").withStyle(ChatFormatting.GRAY));
+            }
+        }
+        return componentList;
     }
 
 }

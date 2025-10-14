@@ -47,6 +47,7 @@ public class PlayerHealthData {
     private float Oxygen = 100f;
     private float OxygenCap = 100;
     private float Opioids = 0;
+    private float PendingOpioids=0;
     private float BPM = 70;
     private boolean isBreathing = true;
     private boolean respitoryArrest = false;
@@ -288,7 +289,7 @@ public class PlayerHealthData {
     }
 
     public void setLimbSkinHealth(Limb limb,float health){
-        ensureLimb(limb).skinHealth = health;
+        ensureLimb(limb).skinHealth = Mth.clamp(health,0,100);
     }
 
 
@@ -298,7 +299,7 @@ public class PlayerHealthData {
 
 
     public void setLimbMuscleHealth(Limb limb, float health) {
-        ensureLimb(limb).muscleHealth = health;
+        ensureLimb(limb).muscleHealth = Mth.clamp(health,0,100);
     }
 
 
@@ -308,7 +309,7 @@ public class PlayerHealthData {
 
 
     public void setLimbPain(Limb limb, float pain) {
-        ensureLimb(limb).pain = pain;
+        ensureLimb(limb).pain = Mth.clamp(pain,0,100);
     }
 
 
@@ -323,7 +324,7 @@ public class PlayerHealthData {
 
 
     public void setLimbInfection(Limb limb, float infection) {
-        ensureLimb(limb).infection = infection;
+        ensureLimb(limb).infection = Mth.clamp(infection,0,100);
     }
 
 
@@ -471,10 +472,8 @@ public class PlayerHealthData {
     public void recalculateConsciousness() {
         // Base consciousness target from oxygen
         double target = Oxygen;
-
         // Hard knockout conditions
-        if (Shock > 0.66 || limbStats.get(Limb.HEAD).muscleHealth < 30) {
-            limbStats.get(Limb.HEAD).MuscleHeal = true; // probably should be 'MuscleHeal' → 'muscleHeal'
+        if (Shock > 0.66) {
             target = 0;
         }
         // Pain reduces target consciousness
@@ -514,13 +513,20 @@ public class PlayerHealthData {
     }
 
 
+    public float getPendingOpioids() {
+        return PendingOpioids;
+    }
+
     public float getOpioids() {
         return Opioids;
     }
 
+    public void setPendingOpioids(float value) {
+        PendingOpioids = value;
+    }
 
-    public void setOpioids(float value) {
-        Opioids = value;
+    public void setOpioids(float va){
+        Opioids = va;
     }
 
     public float getNetOpiodids(){
@@ -612,7 +618,7 @@ public class PlayerHealthData {
         stats.MinPain = ((stats.infection/100)*10)+(((stats.skinHealth-100)/-100)*15);
 
         //Healing
-        if (stats.SkinHeal){
+        if (stats.SkinHeal&&!stats.shrapnell){
             stats.skinHealth += getBOOSTED_LIMB_HEAL_RATE();
         }else {
             stats.skinHealth += getNORMAL_LIMB_HEAL_RATE();
@@ -650,6 +656,7 @@ public class PlayerHealthData {
 
         // Bleed Adjustment
         stats.bleedRate = Math.min(stats.bleedRate,getMAX_BLEED_RATE()*(Math.abs((stats.skinHealth-100)/100)));
+        stats.bleedRate = Math.max(stats.bleedRate,0);
 
         //Fract/Disl calculation
         stats.dislocatedTimer = Mth.clamp(
@@ -669,6 +676,10 @@ public class PlayerHealthData {
             stats.fractureTimer--;
             if (stats.hasSplint)
                 stats.fractureTimer--;
+        }
+
+        if (stats.infection<=0&& limb==Limb.HEAD&&stats.muscleHealth<15){   
+            stats.muscleHealth += getBOOSTED_LIMB_HEAL_RATE()*3;
         }
 
         if (stats.Tourniquet) {
@@ -749,6 +760,9 @@ public class PlayerHealthData {
         limbStats.get(limb).muscleHealth = (float) Math.max(limbStats.get(limb).muscleHealth-damage*getDAMAGE_SCALE(),0);
         limbStats.get(limb).SkinHeal = false;
         limbStats.get(limb).MuscleHeal = false;
+        if (Math.random()>0.9){
+            brainHealth -= (float) (Math.random()*10);
+        }
     }
     public void applyBleedDamage(Limb limb, float damage,Player player){
         float bleed = (damage/15)* getMAX_BLEED_RATE();
@@ -765,10 +779,22 @@ public class PlayerHealthData {
 
     int tick=0;
 
+    float tempspeedup=0f;
     public void tickUpdate(ServerPlayer player) {
         updateTemperature(player);
         calculateImmunity();
         updateDirtyness(player);
+        //Opioid Pending
+
+        if (PendingOpioids>0){
+            float change = Math.min(2f+tempspeedup,PendingOpioids)/20f;
+            PendingOpioids -=change;
+            Opioids +=change;
+            tempspeedup = (float) Math.min(tempspeedup+0.05,3f);
+        }else {
+            tempspeedup=0;
+        }
+        PendingOpioids = Math.max(PendingOpioids,0);
         isUnderwater = player.isUnderWater();
         hungerLevel = player.getFoodData().getFoodLevel();
         isBreathing = true;
@@ -823,6 +849,13 @@ public class PlayerHealthData {
         if (blood > 5.25) contiousnessCap = 80;
 
         if (contiousnessCap>brainHealth)contiousnessCap=brainHealth;
+        double headpenalty = Math.min((limbStats.get(Limb.HEAD).muscleHealth-50)*2,0);
+
+        if (limbStats.get(Limb.HEAD).muscleHealth<15){
+            limbStats.get(Limb.HEAD).MuscleHeal = true;
+        }
+        if (contiousnessCap>100+headpenalty)contiousnessCap= (float) (100+headpenalty);
+
 
         if (blood > 5) {
             blood = Math.max(5, blood - (getBLOOD_REGEN_RATE() * getNutritionFactor()));
@@ -836,12 +869,17 @@ public class PlayerHealthData {
             brainHealth -= 0.01f/20f;
         }
 
+        if (brainHealth<30)contiousnessCap=0;
+
         if (Opioids>0){
-            drug_addition+= 0.1f/20f;
+            drug_addition+= 0.05f/20f;
         }else {
-            drug_addition+= -0.1f/20f;
+            drug_addition+= -0.05f/20f;
         }
         drug_addition = Math.max(0,drug_addition);
+        if (drug_addition>42){
+            brainHealth -= 0.05f/20f;
+        }
 
         // Respiratory arrest condition
         respitoryArrest = isFreezing||getNetOpiodids() > 100 || blood >= 5.7 || limbStats.get(Limb.CHEST).muscleHealth < 5||getTourniquet(Limb.HEAD);
@@ -1773,6 +1811,7 @@ public class PlayerHealthData {
             limbStats.get(limb).infection = infection;
             infectionSpread(limb);
         }
+        limbStats.get(limb).infection = Mth.clamp(limbStats.get(limb).infection,0,100);
     }
 
     public void updateDirtyness(Player player) {

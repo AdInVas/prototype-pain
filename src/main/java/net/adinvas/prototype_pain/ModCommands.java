@@ -14,7 +14,6 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -218,7 +217,7 @@ public class ModCommands {
                                                                         h.setOxygenCap(value);
                                                                     }
                                                                     case "opioids" -> {
-                                                                        h.setOpioids(value);
+                                                                        h.setPendingOpioids(value);
                                                                     }
                                                                     case "bloodviscosity" -> {
                                                                         h.setBloodViscosity(value);

@@ -14,6 +14,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -61,5 +62,11 @@ public class BandAidItem extends Item implements ISimpleMedicalUsable, IAllowInM
     @Override
     public SoundEvent getUseSound() {
         return SoundEvents.BONE_MEAL_USE;
+    }
+
+    @Override
+    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
+        setupDefaults(pStack);
+        super.onCraftedBy(pStack, pLevel, pPlayer);
     }
 }

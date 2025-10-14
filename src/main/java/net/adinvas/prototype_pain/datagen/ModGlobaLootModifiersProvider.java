@@ -160,6 +160,67 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                 },       // no extra conditions
                 ModItems.ReliefCream.get()
         ));
+        add("add_old_rag", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.30f).build()
+                },       // no extra conditions
+                ModItems.OldRag.get()
+        ));
+        add("add_rippeddressing", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.30f).build()
+                },       // no extra conditions
+                ModItems.RippedDressing.get()
+        ));
+        add("add_bruisekit", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.10f).build()
+                },       // no extra conditions
+                ModItems.BruiseKit.get()
+        ));
+        add("add_algdressing", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.10f).build()
+                },       // no extra conditions
+                ModItems.AlganateDressing.get()
+        ));
+        add("add_medicalgauze", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.08f).build()
+                },       // no extra conditions
+                ModItems.MedicalGauze.get()
+        ));
+        add("add_boneweld", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.04f).build()
+                },       // no extra conditions
+                ModItems.BoneWelding.get()
+        ));
+        add("add_medsuture", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.08f).build()
+                },       // no extra conditions
+                ModItems.MedicalSuture.get()
+        ));
+        add("add_lrd", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.01f).build()
+                },       // no extra conditions
+                ModItems.LRD.get()
+        ));
+        add("add_makeshiftlrd", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.02f).build()
+                },       // no extra conditions
+                ModItems.MakeshiftLRD.get()
+        ));
+        add("add_alcohol", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.2f).build()
+                },       // no extra conditions
+                ModItems.Alcohol.get()
+        ));
+
 
         add("random_vial",new AddRandomFillToChestsModifier(
                 new LootItemCondition[]{

@@ -6,12 +6,12 @@ import net.adinvas.prototype_pain.item.IAllowInMedicbags;
 import net.adinvas.prototype_pain.item.INbtDrivenDurability;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
-import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -29,7 +29,7 @@ public class ReliefGel extends Item implements ISimpleMedicalUsable, IAllowInMed
     @Override
     public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            h.setOpioids(h.getOpioids()+1);
+            h.setPendingOpioids(h.getPendingOpioids()+1);
             h.setLimbPain(limb,h.getLimbPain(limb)-5);
             h.setLimbDesinfected(limb,300);
             h.setLimbMuscleHeal(limb,true);
@@ -57,5 +57,11 @@ public class ReliefGel extends Item implements ISimpleMedicalUsable, IAllowInMed
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatable("item.prototype_pain.aid_gel.discription").withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
+        setupDefaults(pStack);
+        super.onCraftedBy(pStack, pLevel, pPlayer);
     }
 }

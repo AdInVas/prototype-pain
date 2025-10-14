@@ -4,7 +4,6 @@ package net.adinvas.prototype_pain.fluid_system;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
@@ -15,7 +14,7 @@ public class MedicalEffects {
         public void applyIngested(ServerPlayer player, float ml) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 0.3f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
 
@@ -23,7 +22,7 @@ public class MedicalEffects {
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 0.5f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
     };
@@ -33,7 +32,7 @@ public class MedicalEffects {
         public void applyIngested(ServerPlayer player, float ml) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 0.7f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
 
@@ -41,7 +40,7 @@ public class MedicalEffects {
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 1.1f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
     };
@@ -52,7 +51,7 @@ public class MedicalEffects {
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 1.5f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
     };
@@ -62,33 +61,41 @@ public class MedicalEffects {
         public void applyIngested(ServerPlayer player, float ml) {
             player.addEffect(new MobEffectInstance(MobEffects.WITHER,300,5));
             player.addEffect(new MobEffectInstance(MobEffects.POISON,300,5));
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.setTemperature(h.getTemperature()-0.005f*ml);
+            });
         }
 
         @Override
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 float op = ml * 50f;
-                h.setOpioids(h.getOpioids() + op);
+                h.setPendingOpioids(h.getPendingOpioids() + op);
             });
         }
     };
 
     public static final MedicalEffect WATER = new MedicalEffect() {
-
+        @Override
+        public void applyIngested(ServerPlayer player, float ml) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.setTemperature(h.getTemperature()-0.005f*ml);
+            });
+        }
     };
 
     public static final MedicalEffect PAINKILLERS = new MedicalEffect() {
         @Override
         public void applyIngested(ServerPlayer player, float ml) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.setOpioids(h.getOpioids()+(1.4f*ml));
+                h.setPendingOpioids(h.getPendingOpioids()+(1.4f*ml));
             });
         }
 
         @Override
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.setOpioids(h.getOpioids()+(0.1f*ml));
+                h.setPendingOpioids(h.getPendingOpioids()+(0.1f*ml));
             });
         }
     };
@@ -124,6 +131,7 @@ public class MedicalEffects {
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 h.setOpioids(h.getOpioids()-(4f*ml));
+                h.setPendingOpioids(h.getPendingOpioids()-(4f*ml));
             });
         }
     };
@@ -133,6 +141,9 @@ public class MedicalEffects {
         public void applyIngested(ServerPlayer player, float ml) {
             player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, (int) (1*ml),1));
             player.addEffect(new MobEffectInstance(MobEffects.POISON, (int) (1*ml),2));
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.setTemperature(h.getTemperature()-0.005f*ml);
+            });
         }
 
         @Override

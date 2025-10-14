@@ -35,7 +35,8 @@ public class ColorsEvent {
                 ModItems.BloodThiner.get(),
                 ModItems.CEFTRIAXONE.get(),
                 ModItems.NaloxoneVial.get(),
-                ModItems.AntiSerum.get()
+                ModItems.AntiSerum.get(),
+                ModItems.ReactionVial.get()
         );
     }
 }

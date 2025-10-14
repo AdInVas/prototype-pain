@@ -14,13 +14,6 @@ import java.util.List;
 
 public class OpiumVialItem extends MedicalVial implements IAllowInMedicbags {
 
-    @Override
-    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
-        super.onCraftedBy(pStack, pLevel, pPlayer);
-        if (!pStack.hasTag()) {
-            addFluid(pStack, 50, MedicalFluids.OPIUM);
-        }
-    }
 
     @Override
     public void setupDefaults(ItemStack stack) {

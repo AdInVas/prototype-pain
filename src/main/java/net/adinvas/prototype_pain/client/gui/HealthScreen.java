@@ -350,7 +350,7 @@ public class HealthScreen extends Screen {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = getItemstackForHand(HumanoidArm.LEFT, minecraft.player);
                 if (itemstack.getItem() instanceof IMedicalMinigameUsable helper){
-                    helper.openMinigameScreen(this,target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player));
+                    helper.openMinigameScreen(this,target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player));
                 }
                 if (itemstack.getItem() instanceof SyringeItem){
                     Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player)));

@@ -45,7 +45,7 @@ public class DressingItem extends Item implements IMedicalMinigameUsable, IAllow
             h.addDelayedChange(((0.01f*scalableAmount)/20f)/60f,200,limb);
             float painRed = Math.max(0f, 1f - 0.025f * scalableAmount);
             h.setLimbPain(limb,h.getLimbPain(limb)*painRed);
-            h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)+0.1f*scalableAmount);
+            h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)+0.3f*scalableAmount);
             float fractRed = Math.max(0f, 1f - 0.001f * scalableAmount);
             h.setLimbFracture(limb,h.getLimbFracture(limb)*fractRed);
             h.setLimbDislocation(limb,h.getLimbDislocated(limb)*fractRed);

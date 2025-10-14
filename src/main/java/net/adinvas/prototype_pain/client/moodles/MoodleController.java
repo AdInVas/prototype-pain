@@ -42,6 +42,11 @@ public class MoodleController {
         registerMoodle(new FractureMoodle());
         registerMoodle(new DislocationMoodle());
         registerMoodle(new ConsiousnessMoodle());
+        registerMoodle(new ShockMoodle());
+        registerMoodle(new TemperatureMoodle());
+        registerMoodle(new WiwdrawalMoodle());
+        registerMoodle(new DirtynessMoodle());
+        registerMoodle(new BrainHealthMoodle());
     }
 
     /** Collects all visible moodles for given player */

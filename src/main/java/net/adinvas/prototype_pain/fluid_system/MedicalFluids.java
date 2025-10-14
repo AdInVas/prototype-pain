@@ -2,9 +2,7 @@ package net.adinvas.prototype_pain.fluid_system;
 
 import net.minecraft.util.RandomSource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MedicalFluids {
     public static final Map<String,MedicalFluid> REGISTRY = new HashMap<>();
@@ -26,6 +24,7 @@ public class MedicalFluids {
     public static final MedicalFluid PROCOAGULANT = register(new MedicalFluid("procoagulant",MedicalEffects.PROCOAGULANT,0x57172b));
     public static final MedicalFluid STREPTOKINASE = register(new MedicalFluid("streptokinase",MedicalEffects.STREPTOKINASE,0x0aecfc));
     public static final MedicalFluid NALOXONE= register(new MedicalFluid("naloxone",MedicalEffects.NALOXONE,0xf2abff));
+    public static final MedicalFluid REACTION_LIQUID = register(new MedicalFluid("reaction_liquid",MedicalEffects.WATER,0xbceb23));
 
     private static MedicalFluid register(MedicalFluid fluid){
         REGISTRY.put(fluid.getId(),fluid);
@@ -40,6 +39,31 @@ public class MedicalFluids {
         if (REGISTRY.isEmpty()) return null;
         List<MedicalFluid> fluids = List.copyOf(REGISTRY.values());
         return fluids.get(random.nextInt(fluids.size()));
+    }
+
+
+    private static final Map<String, Set<MedicalFluid>> TAGS = new HashMap<>();
+
+    public static void registerInTag(String tag, MedicalFluid... fluids) {
+        TAGS.put(tag, new HashSet<>(List.of(fluids)));
+    }
+
+    public static boolean fluidInTag(MedicalFluid fluid, String tag) {
+        Set<MedicalFluid> set = TAGS.get(tag);
+        return set != null && set.contains(fluid);
+    }
+
+    public static Set<MedicalFluid> getTag(String tag) {
+        return TAGS.getOrDefault(tag, Collections.emptySet());
+    }
+
+    public static Set<String> getAllTags() {
+        return TAGS.keySet();
+    }
+
+    static {
+        MedicalFluids.registerInTag("prototype_pain:opioids", OPIUM, FENTANYL, MORPHINE, HEROIN);
+        MedicalFluids.registerInTag("prototype_pain:antiseptics", ANTISEPTIC,ALCOHOL,RELIEF_CREAM);
     }
 
 }
