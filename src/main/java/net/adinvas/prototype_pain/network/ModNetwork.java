@@ -25,8 +25,13 @@ public class ModNetwork {
         CHANNEL.registerMessage(1, GuiSyncTogglePacket.class, GuiSyncTogglePacket::write, GuiSyncTogglePacket::new, GuiSyncTogglePacket::handle);
         CHANNEL.registerMessage(2, UseMedItemPacket.class, UseMedItemPacket::write, UseMedItemPacket::new, UseMedItemPacket::handle);
         CHANNEL.registerMessage(3, MedicalActionPacket.class, MedicalActionPacket::write, MedicalActionPacket::new, MedicalActionPacket::handle);
-        CHANNEL.registerMessage(4, UseNarcoticItemPacket.class,UseNarcoticItemPacket::write,UseNarcoticItemPacket::new,UseNarcoticItemPacket::handle);
         CHANNEL.registerMessage(5, LegUsePacket.class,LegUsePacket::toBytes,LegUsePacket::new,LegUsePacket::handle);
         CHANNEL.registerMessage(6, GiveUpPacket.class,GiveUpPacket::toBytes,GiveUpPacket::new,GiveUpPacket::handle);
+        CHANNEL.registerMessage(7, FluidTransferPacket.class,FluidTransferPacket::write,FluidTransferPacket::new,FluidTransferPacket::handle);
+        CHANNEL.registerMessage(8, UseSyringePacket.class,UseSyringePacket::write,UseSyringePacket::new,UseSyringePacket::handle);
+        CHANNEL.registerMessage(9, SyringeFailPacket.class,SyringeFailPacket::write,SyringeFailPacket::new,SyringeFailPacket::handle);
+        CHANNEL.registerMessage(10, ExchangeItemInHandPacket.class,ExchangeItemInHandPacket::write,ExchangeItemInHandPacket::new,ExchangeItemInHandPacket::handle);
+        CHANNEL.registerMessage(11, UseBandagePacket.class,UseBandagePacket::write,UseBandagePacket::new,UseBandagePacket::handle);
+        CHANNEL.registerMessage(12,DislocationTryPacket.class,DislocationTryPacket::write,DislocationTryPacket::new,DislocationTryPacket::handle);
     }
 }

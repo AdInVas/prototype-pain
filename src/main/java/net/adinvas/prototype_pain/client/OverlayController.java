@@ -3,7 +3,9 @@ package net.adinvas.prototype_pain.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -36,6 +38,10 @@ public class OverlayController {
 
         // Example: only render our overlays after the HOTBAR
         GuiGraphics ms = event.getGuiGraphics();
+       Minecraft mc = Minecraft.getInstance();
+       ProfilerFiller profiler = mc.getProfiler();
+
+       profiler.push("prototype_pain:overlay");
         float pt = event.getPartialTick();
         // Render all registered overlays that should draw
         for (IOverlay overlay : overlays) {
@@ -43,6 +49,7 @@ public class OverlayController {
                 overlay.render(ms, pt);
             }
         }
+       profiler.pop();
     }
 
 }

@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.client.gui.minigames.DislocationMinigameScreen;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.network.MedicalActionPacket;
@@ -44,10 +45,13 @@ public class CustomButton extends AbstractWidget {
             case SPLINT -> MedicalAction.REMOVE_SPLINT;
             default -> null;
         };
+        if (action==MedicalAction.FIX_DISLOCATION){
+            Minecraft.getInstance().setScreen(new DislocationMinigameScreen(Minecraft.getInstance().screen,target,limb));
+            return;
+        }
         if (action!=null){
             ModNetwork.CHANNEL.sendToServer(new MedicalActionPacket(limb,target.getUUID(),action));
         }
-        super.onClick(pMouseX, pMouseY);
     }
 
     public StatusSprites getStatus() {

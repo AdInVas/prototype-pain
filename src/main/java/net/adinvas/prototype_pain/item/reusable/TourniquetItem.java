@@ -1,7 +1,8 @@
 package net.adinvas.prototype_pain.item.reusable;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.item.IMedUsable;
+import net.adinvas.prototype_pain.item.IAllowInMedicbags;
+import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TourniquetItem extends Item implements IMedUsable {
+public class TourniquetItem extends Item implements ISimpleMedicalUsable, IAllowInMedicbags {
     public TourniquetItem() {
         super(new Item.Properties().stacksTo(1));
     }

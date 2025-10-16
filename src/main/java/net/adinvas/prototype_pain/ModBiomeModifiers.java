@@ -28,7 +28,7 @@ public class ModBiomeModifiers {
                 GenerationStep.Decoration.UNDERGROUND_DECORATION
         ));
         context.register(ADD_GLOW_FRUIT_SWAMP,new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                biomes.getOrThrow(BiomeTags.IS_FOREST),
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.GLOW_FRUIT_PATCH_SWAMP)),
                 GenerationStep.Decoration.VEGETAL_DECORATION
         ));

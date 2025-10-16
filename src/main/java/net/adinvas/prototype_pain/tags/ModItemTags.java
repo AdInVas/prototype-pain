@@ -12,7 +12,10 @@ public class ModItemTags {
 
     public static TagKey<Item> ARMOR_FULL_ARM = tag("armorfullarm");
     public static TagKey<Item> ARMOR_CHEST_ONLY = tag("armorchestonly");
-
+    public static TagKey<Item> ARMOR_INSULATION = tag("armor_insulation");
+    public static TagKey<Item> VIAL_ITEMS =tag("vial_items");
+    public static TagKey<Item> DRESSINGS = tag("dressings");
+    public static TagKey<Item> ALCOHOL_CREATABLE = tag("alcohol_create");
 
 
     private static TagKey<Item> tag(String name) {

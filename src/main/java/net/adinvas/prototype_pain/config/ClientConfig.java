@@ -6,13 +6,15 @@ public class ClientConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.BooleanValue ADDITIONAL_SOUNDS;
+    public static final ForgeConfigSpec.BooleanValue ADDITIONAL_VISUALS;
 
     static {
         BUILDER.push("Prototype Pain Client Config");
 
-        ADDITIONAL_SOUNDS = BUILDER
-                .define("additionalSoundEffects",false);
+        ADDITIONAL_VISUALS = BUILDER
+                .comment("Warning, Flashing Lights, and wierd visual effects")
+                .define("additionalVisuals",false);
+
 
         BUILDER.pop();
         SPEC = BUILDER.build();

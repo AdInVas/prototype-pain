@@ -13,6 +13,7 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> HEART_BEAT = register("heartbeat");
     public static final RegistryObject<SoundEvent> BANDAGE_USE = register("bandage");
     public static final RegistryObject<SoundEvent> SYRINGE_USE = register("syringe");
+    public static final RegistryObject<SoundEvent> SYRINGE_LOOP = register("syringe_loop");
     public static final RegistryObject<SoundEvent> RINGING = register("ring");
     public static final RegistryObject<SoundEvent> PILL = register("pill");
 

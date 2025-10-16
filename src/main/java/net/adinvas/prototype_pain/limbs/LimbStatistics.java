@@ -1,12 +1,13 @@
 package net.adinvas.prototype_pain.limbs;
 
 public class LimbStatistics {
+    public enum Shrapnells {ARROW, NEEDLE,NONE,SMALL_MANY,SMALL_ONE}
     float skinHealth = 100f;//
     float muscleHealth = 100f;//
     float pain = 0f;//
     float infection = 0f;//
-    float fractureTimer = 0f;//
-    float dislocatedTimer = 0f;
+    float fracture = 0f;//
+    float dislocation = 0f;
     boolean shrapnell = false;//
     boolean hasSplint = false;//
     float bleedRate = 0f;//
@@ -17,6 +18,7 @@ public class LimbStatistics {
     boolean MuscleHeal = false;
     boolean Tourniquet = false;
     int tourniquetTimer = 0;
+    boolean amputated = false;
 
 
     LimbStatistics(){}
@@ -28,8 +30,8 @@ public class LimbStatistics {
                 ", muscleHealth=" + muscleHealth +
                 ", pain=" + pain +
                 ", infection=" + infection +
-                ", fractureTimer=" + fractureTimer +
-                ", dislocatedTimer=" + dislocatedTimer +
+                ", fractureTimer=" + fracture +
+                ", dislocatedTimer=" + dislocation +
                 ", shrapnell=" + shrapnell +
                 ", hasSplint=" + hasSplint +
                 ", bleedRate=" + bleedRate +

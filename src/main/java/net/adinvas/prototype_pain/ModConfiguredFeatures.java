@@ -33,7 +33,7 @@ public class ModConfiguredFeatures {
                                         new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.GLOW_FRUIT_BUSH.get())))
                         )));
 
-        register(context,SWAMP_GLOW_FRUIT_CONFIG,Feature.FLOWER,new RandomPatchConfiguration(128,50,10,PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
+        register(context,SWAMP_GLOW_FRUIT_CONFIG,Feature.FLOWER,new RandomPatchConfiguration(64,10,10,PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
                 new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.GLOW_FRUIT_BUSH.get())))));
     }
 

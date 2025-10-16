@@ -2,26 +2,22 @@ package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.client.OverlayController;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
-import net.minecraft.client.telemetry.TelemetryProperty;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +27,7 @@ import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID)
 public class ModEvents {
+
 
 
     @SubscribeEvent
@@ -66,6 +63,10 @@ public class ModEvents {
             if (event.phase!= TickEvent.Phase.START)return;
             if (event.player instanceof ServerPlayer player) {
                 if (player.gameMode.isCreative())return;
+                ServerLevel level = player.serverLevel();
+                ProfilerFiller profiler = level.getProfiler();
+
+                profiler.push("prototype_pain:player_health_system");
                 event.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(playerHealthData -> {
                     playerHealthData.tickUpdate(player);
                     boolean usingArm = player.isUsingItem();
@@ -74,6 +75,7 @@ public class ModEvents {
                         playerHealthData.onArmUse(hand,player);
                     }
                 });
+                profiler.pop();
             }
         }
         /*
@@ -97,19 +99,18 @@ public class ModEvents {
 
     }
 
-    @SubscribeEvent
-    public static void onPlayerDamage(LivingDamageEvent event){
-        if (!(event.getEntity() instanceof ServerPlayer player)){
-
-        }
-    }
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        ProfilerFiller profiler = server.getProfiler();
+        profiler.push("prototype_pain:sync_tracker");
         if (event.phase == TickEvent.Phase.END) {
+
             SyncTracker.tick(ServerLifecycleHooks.getCurrentServer());
             SyncTracker.tickEveryone(ServerLifecycleHooks.getCurrentServer());
         }
+        profiler.pop();
     }
 
 

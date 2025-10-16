@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "prototype_pain:item/empty_bottle",
+    "layer1": "prototype_pain:item/vial_color"
+  }
+}
