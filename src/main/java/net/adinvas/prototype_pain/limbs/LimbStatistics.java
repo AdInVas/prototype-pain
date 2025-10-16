@@ -6,8 +6,8 @@ public class LimbStatistics {
     float muscleHealth = 100f;//
     float pain = 0f;//
     float infection = 0f;//
-    float fractureTimer = 0f;//
-    float dislocatedTimer = 0f;
+    float fracture = 0f;//
+    float dislocation = 0f;
     boolean shrapnell = false;//
     boolean hasSplint = false;//
     float bleedRate = 0f;//
@@ -30,8 +30,8 @@ public class LimbStatistics {
                 ", muscleHealth=" + muscleHealth +
                 ", pain=" + pain +
                 ", infection=" + infection +
-                ", fractureTimer=" + fractureTimer +
-                ", dislocatedTimer=" + dislocatedTimer +
+                ", fractureTimer=" + fracture +
+                ", dislocatedTimer=" + dislocation +
                 ", shrapnell=" + shrapnell +
                 ", hasSplint=" + hasSplint +
                 ", bleedRate=" + bleedRate +

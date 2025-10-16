@@ -32,5 +32,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(9, SyringeFailPacket.class,SyringeFailPacket::write,SyringeFailPacket::new,SyringeFailPacket::handle);
         CHANNEL.registerMessage(10, ExchangeItemInHandPacket.class,ExchangeItemInHandPacket::write,ExchangeItemInHandPacket::new,ExchangeItemInHandPacket::handle);
         CHANNEL.registerMessage(11, UseBandagePacket.class,UseBandagePacket::write,UseBandagePacket::new,UseBandagePacket::handle);
+        CHANNEL.registerMessage(12,DislocationTryPacket.class,DislocationTryPacket::write,DislocationTryPacket::new,DislocationTryPacket::handle);
     }
 }

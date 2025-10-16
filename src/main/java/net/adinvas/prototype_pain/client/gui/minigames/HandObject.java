@@ -15,6 +15,8 @@ public class HandObject {
     private final double shakeAmount = 24.0;
     private float shakeScale = 0;
 
+
+
     private double stiffness = 0.15; // how strongly it moves toward mouse
     private final double damping = 0.7;
 
@@ -30,6 +32,18 @@ public class HandObject {
         this.handStartY = handStartY;
     }
 
+    public boolean isIs_clicked() {
+        return is_clicked;
+    }
+
+    public double getVx() {
+        return vx;
+    }
+
+    public double getVy() {
+        return vy;
+    }
+
     public void setStiffness(double stiffness) {
         this.stiffness = stiffness;
     }
@@ -38,7 +52,9 @@ public class HandObject {
         this.shakeScale = shakeScale;
     }
 
+
     public void update(double mouseX, double mouseY) {
+
         shakeX = ((Math.random() - 0.5) * 2 * shakeAmount)*shakeScale;
         shakeY = ((Math.random() - 0.5) * 2 * shakeAmount)*shakeScale;
 

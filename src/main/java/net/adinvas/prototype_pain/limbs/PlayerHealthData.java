@@ -30,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
 import java.util.List;
@@ -172,7 +173,7 @@ public class PlayerHealthData {
         return (float) (ServerConfig.DISINFECTION_SCALE.get()/20f);
     }
     public double getWUND_ANTIBLEED_RATE(){
-        return ServerConfig.WUND_ANTIBLEED_RATE.get()/(20f*60);
+        return ServerConfig.WUND_ANTIBLEED_RATE.get()/20/60;
     }
     public float getINFECTION_CHANCE(){
         return (float) (ServerConfig.INFECTION_CHANCE.get()/20f);
@@ -210,11 +211,14 @@ public class PlayerHealthData {
    public double getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE(){
         return ServerConfig.FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE.get();
    }
+   public double getFRACTURE_HEAL(){
+        return ServerConfig.FRACTURE_HEAL_RATE.get()/20d;
+   }
+   public double getDISLOCATION_HEAL(){
+        return ServerConfig.DISLOCATION_HEAL_RATE.get()/20d;
+   }
    public double getContiousnessPerOpioid(){
         return ServerConfig.CONS_PENALTY_PER_OPIOID.get();
-   }
-   public int getMAX_FRACT_DISL_TIME_T(){
-        return ServerConfig.MAX_FRACT_DISL_TIME_T.get();
    }
    public float getNORMAL_LIMB_HEAL_RATE(){
         return (float) (ServerConfig.NORMAL_LIMB_HEAL_RATE.get()/20f);
@@ -330,22 +334,22 @@ public class PlayerHealthData {
 
 
     public float getLimbFracture(Limb limb) {
-        return ensureLimb(limb).fractureTimer;
+        return ensureLimb(limb).fracture;
     }
 
 
     public void setLimbFracture(Limb limb, float fracture) {
-        ensureLimb(limb).fractureTimer = fracture;
+        ensureLimb(limb).fracture = Mth.clamp(fracture,0,100);
     }
 
 
     public float isLimbDislocated(Limb limb) {
-        return ensureLimb(limb).dislocatedTimer;
+        return ensureLimb(limb).dislocation;
     }
 
 
     public void setLimbDislocation(Limb limb, float dislocation) {
-        ensureLimb(limb).dislocatedTimer = dislocation;
+        ensureLimb(limb).dislocation = Mth.clamp(dislocation,0,100);
     }
 
 
@@ -603,8 +607,8 @@ public class PlayerHealthData {
             stats.hasSplint = false;
             stats.bleedRate = 0;
             stats.finalPain = 0;
-            stats.fractureTimer= 0;
-            stats.dislocatedTimer = 0;
+            stats.fracture= 0;
+            stats.dislocation = 0;
             stats.tourniquetTimer = 0;
             stats.pain= 0;
             stats.shrapnell= false;
@@ -659,24 +663,26 @@ public class PlayerHealthData {
         stats.bleedRate = Math.max(stats.bleedRate,0);
 
         //Fract/Disl calculation
-        stats.dislocatedTimer = Mth.clamp(
-                stats.dislocatedTimer-1,0,getMAX_FRACT_DISL_TIME_T()
-        );
-        stats.fractureTimer = Mth.clamp(
-                stats.fractureTimer-1,0,getMAX_FRACT_DISL_TIME_T()
-        );
+
+        if (stats.fracture>0 ||stats.dislocation>0){
+            stats.muscleHealth = Math.min(stats.muscleHealth,50);
+        }
+
+
+        if (stats.fracture>0){
+            double reduction = getFRACTURE_HEAL()*(1+BooleanUtils.toInteger(stats.hasSplint));
+            stats.fracture = (float) Mth.clamp(stats.fracture-reduction,0,100);
+        }
+        if (stats.dislocation>0){
+            double reduction = getFRACTURE_HEAL()*(1+BooleanUtils.toInteger(stats.hasSplint));
+            stats.dislocation = (float) Mth.clamp(stats.dislocation-reduction,0,100);
+        }
 
 
         if (stats.infection>=75){
             stats.muscleHealth -= getINFECTION_MUSCLE_DRAIN();
         }
 
-
-        if (stats.fractureTimer>0){
-            stats.fractureTimer--;
-            if (stats.hasSplint)
-                stats.fractureTimer--;
-        }
 
         if (stats.infection<=0&& limb==Limb.HEAD&&stats.muscleHealth<15){   
             stats.muscleHealth += getBOOSTED_LIMB_HEAL_RATE()*3;
@@ -746,11 +752,11 @@ public class PlayerHealthData {
             float bone_damage_chance = (float) ((100-limbStats.get(limb).muscleHealth)/100*getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE());
             if (Math.random()>0.5){
                 if (Math.random()<bone_damage_chance||damage>15){
-                    setLimbFracture(limb,Math.max(getLimbFracture(limb),Math.max(1200,damage*500)));
+                    setLimbFracture(limb,Math.max(getLimbFracture(limb),30+(damage/10)*70));
                 }
             }else {
                 if (Math.random()<bone_damage_chance||damage>15){
-                    setLimbDislocation(limb,Math.max(getLimbDislocated(limb),Math.max(1200,damage*300)));
+                    setLimbDislocation(limb,Math.max(getLimbDislocated(limb),30+(damage/10)*70));
                 }
             }
         }
@@ -760,8 +766,8 @@ public class PlayerHealthData {
         limbStats.get(limb).muscleHealth = (float) Math.max(limbStats.get(limb).muscleHealth-damage*getDAMAGE_SCALE(),0);
         limbStats.get(limb).SkinHeal = false;
         limbStats.get(limb).MuscleHeal = false;
-        if (Math.random()>0.9){
-            brainHealth -= (float) (Math.random()*10);
+        if (Math.random()>0.9&& limb==Limb.HEAD){
+            brainHealth -= (float) (Math.random()*5);
         }
     }
     public void applyBleedDamage(Limb limb, float damage,Player player){
@@ -774,7 +780,7 @@ public class PlayerHealthData {
     }
 
     public float getLimbDislocated(Limb limb){
-            return ensureLimb(limb).dislocatedTimer;
+            return ensureLimb(limb).dislocation;
     }
 
     int tick=0;
@@ -831,11 +837,11 @@ public class PlayerHealthData {
         // Bleeding — internal
         if (internalBleeding > 0) {
             internalBleeding = (float) Math.max(0, internalBleeding - getWUND_ANTIBLEED_RATE());
-            internalBleeding = Mth.clamp(internalBleeding,0,getMAX_BLEED_RATE());
+            internalBleeding = Mth.clamp(internalBleeding,0,getMAX_BLEED_RATE()/4);
         }
 
         // Hemothorax
-        hemothorax += internalBleeding;
+        hemothorax += internalBleeding*10;
         if (hemothorax > 0) {
             hemothoraxpain = (float) ((4.0 / 15.0) * hemothorax);
             hemothorax -= getHEMOTHORAX_HEAL_RATE();
@@ -1097,8 +1103,8 @@ public class PlayerHealthData {
             limbTag.putFloat("MuscleHealth", stats.muscleHealth);
             limbTag.putFloat("Pain", stats.pain);
             limbTag.putFloat("Infection", stats.infection);
-            limbTag.putFloat("FractureTimer", stats.fractureTimer);
-            limbTag.putFloat("Dislocated", stats.dislocatedTimer);
+            limbTag.putFloat("FractureTimer", stats.fracture);
+            limbTag.putFloat("Dislocated", stats.dislocation);
             limbTag.putBoolean("Shrapnell", stats.shrapnell);
             limbTag.putBoolean("HasSplint", stats.hasSplint);
             limbTag.putFloat("BleedRate", stats.bleedRate);
@@ -1157,8 +1163,8 @@ public class PlayerHealthData {
             copiedStats.muscleHealth = originalStats.muscleHealth;
             copiedStats.pain = originalStats.pain;
             copiedStats.infection = originalStats.infection;
-            copiedStats.fractureTimer = originalStats.fractureTimer;
-            copiedStats.dislocatedTimer = originalStats.dislocatedTimer;
+            copiedStats.fracture = originalStats.fracture;
+            copiedStats.dislocation = originalStats.dislocation;
             copiedStats.shrapnell = originalStats.shrapnell;
             copiedStats.hasSplint = originalStats.hasSplint;
             copiedStats.bleedRate = originalStats.bleedRate;
@@ -1235,8 +1241,8 @@ public class PlayerHealthData {
             if (limbTag.contains("MuscleHealth")) stats.muscleHealth = limbTag.getFloat("MuscleHealth");
             if (limbTag.contains("Pain")) stats.pain = limbTag.getFloat("Pain");
             if (limbTag.contains("Infection")) stats.infection = limbTag.getFloat("Infection");
-            if (limbTag.contains("FractureTimer")) stats.fractureTimer = limbTag.getFloat("FractureTimer");
-            if (limbTag.contains("Dislocated")) stats.dislocatedTimer = limbTag.getFloat("Dislocated");
+            if (limbTag.contains("FractureTimer")) stats.fracture = limbTag.getFloat("FractureTimer");
+            if (limbTag.contains("Dislocated")) stats.dislocation = limbTag.getFloat("Dislocated");
             if (limbTag.contains("Shrapnell")) stats.shrapnell = limbTag.getBoolean("Shrapnell");
             if (limbTag.contains("HasSplint")) stats.hasSplint = limbTag.getBoolean("HasSplint");
             if (limbTag.contains("BleedRate")) stats.bleedRate = limbTag.getFloat("BleedRate");

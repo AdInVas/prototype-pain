@@ -186,7 +186,8 @@ public class HealthScreen extends Screen {
         LimbWidget h = getHoveringWidget(pMouseX,pMouseY);
 
         if (h!=null){
-            lastHovered = h;
+            if (!BGmode)
+                lastHovered = h;
         }
     }
 
@@ -214,7 +215,8 @@ public class HealthScreen extends Screen {
             return;
         }
         updateScreen();
-        UpdateButtons(lastClicked);
+        if (!BGmode)
+            UpdateButtons(lastClicked);
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
             healthbox.setSkin(health.getLimbSkinHealth(lastHovered.getLimb()));
             healthbox.setMuscle(health.getLimbMuscleHealth(lastHovered.getLimb()));
@@ -228,8 +230,8 @@ public class HealthScreen extends Screen {
             healthbox.setInfection(health.getLimbInfection(lastHovered.getLimb()));
             healthbox.setOpiates(health.getNetOpiodids());
             healthbox.setOxygen(health.getOxygen());
-            healthbox.setDislocated((health.getLimbDislocated(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
-            healthbox.setFracture((health.getLimbFracture(lastHovered.getLimb())/health.getMAX_FRACT_DISL_TIME_T())*100);
+            healthbox.setDislocated(health.getLimbDislocated(lastHovered.getLimb()));
+            healthbox.setFracture(health.getLimbFracture(lastHovered.getLimb()));
             healthbox.setBrain(health.getBrainHealth());
             healthbox.setTemp(health.getTemperature());
             healthbox.setImmunity(health.getImmunity());
@@ -337,7 +339,7 @@ public class HealthScreen extends Screen {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = getItemstackForHand(HumanoidArm.RIGHT, minecraft.player);
                 if (itemstack.getItem() instanceof IMedicalMinigameUsable helper){
-                    helper.openMinigameScreen(this,target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player));
+                    helper.openMinigameScreen(target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player));
                 }
                 if (itemstack.getItem() instanceof SyringeItem){
                     Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player)));
@@ -350,7 +352,7 @@ public class HealthScreen extends Screen {
                 Limb limb = widget.getLimb();
                 ItemStack itemstack = getItemstackForHand(HumanoidArm.LEFT, minecraft.player);
                 if (itemstack.getItem() instanceof IMedicalMinigameUsable helper){
-                    helper.openMinigameScreen(this,target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player));
+                    helper.openMinigameScreen(target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player));
                 }
                 if (itemstack.getItem() instanceof SyringeItem){
                     Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player)));
@@ -414,7 +416,8 @@ public class HealthScreen extends Screen {
 
         CustomButton button = getHoveringWidgetCusomButton(pMouseX,pMouseY);
         if (button!=null){
-            UpdateButtons(lastClicked);
+            if (!BGmode)
+                UpdateButtons(lastClicked);
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }

@@ -279,7 +279,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }else {
             guiGraphics.drawCenteredString(mc.font,"----",77,249,colorWhite);
         }
-        if (fracture>0){
+        if (dislocated>0){
             guiGraphics.drawCenteredString(mc.font,(int)dislocated+"%",77,261,colorRed);
         }else {
             guiGraphics.drawCenteredString(mc.font,"----",77,261,colorWhite);

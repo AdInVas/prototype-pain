@@ -2,14 +2,14 @@ package net.adinvas.prototype_pain.item.bandages;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.Util;
-import net.adinvas.prototype_pain.client.gui.minigames.BandageMinigameScreen;
+import net.adinvas.prototype_pain.client.MinigameOpener;
+
 import net.adinvas.prototype_pain.item.IAllowInMedicbags;
 import net.adinvas.prototype_pain.item.IMedicalMinigameUsable;
 import net.adinvas.prototype_pain.item.INbtDrivenDurability;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +18,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,8 +37,10 @@ public class AlganiteDressingItem extends Item implements IMedicalMinigameUsable
     }
 
     @Override
-    public void openMinigameScreen(Screen parent, Player target, ItemStack stack, @Nullable Limb limb, InteractionHand hand) {
-        Minecraft.getInstance().setScreen(new BandageMinigameScreen(parent,target,stack,limb,hand));
+    public void openMinigameScreen( Player target, ItemStack stack, @Nullable Limb limb, InteractionHand hand) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,() -> () ->{
+            MinigameOpener.OpenBandageMinigame(target,stack,limb,hand);
+        });
     }
 
     @Override

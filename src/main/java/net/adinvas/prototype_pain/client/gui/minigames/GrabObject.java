@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class GrabObject {
-    protected int x, y; // logical position
+    protected double x, y; // logical position
     protected int hitX, hitY, hitWidth, hitHeight;
     protected final ResourceLocation tex;
     protected final int texWidth, texHeight;
@@ -55,8 +55,8 @@ public class GrabObject {
     public void mouseClicked(double mouseX, double mouseY, int button) {
         if (isInside(mouseX, mouseY) && button == 0) { // left click
             dragging = true;
-            dragOffsetX = (int) mouseX - x;
-            dragOffsetY = (int) mouseY - y;
+            dragOffsetX = (int) (mouseX - x);
+            dragOffsetY = (int) (mouseY - y);
         }
     }
 

@@ -27,7 +27,8 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue PAIN_PER_DAMAGE;
     public static final ForgeConfigSpec.DoubleValue OPIATE_PAIN_REDUCTION;
     public static final ForgeConfigSpec.DoubleValue FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE;
-    public static final ForgeConfigSpec.IntValue MAX_FRACT_DISL_TIME_T;
+    public static final ForgeConfigSpec.DoubleValue FRACTURE_HEAL_RATE;
+    public static final ForgeConfigSpec.DoubleValue DISLOCATION_HEAL_RATE;
 
     // Limb healing rates
     public static final ForgeConfigSpec.DoubleValue NORMAL_LIMB_HEAL_RATE;  // % per second
@@ -71,7 +72,7 @@ public class ServerConfig {
 
         WUND_ANTIBLEED_RATE = BUILDER
                 .comment("The rate at which internal Bleeding heals (L/min)")
-                        .defineInRange("wundAntiBleed",0.00025,0,10);
+                        .defineInRange("wundAntiBleed",0.000025,0,10);
 
         INFECTION_CHANCE=BUILDER
                 .comment("Chance of an infection at 0% skin health (%/s)")
@@ -109,9 +110,6 @@ public class ServerConfig {
         FRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE = BUILDER
                 .comment("Chance for Discocation/Fracture at 0% Muscle Health")
                         .defineInRange("fractDislcFromMuslceDamageChance",0.33,0,1);
-        MAX_FRACT_DISL_TIME_T= BUILDER
-                .comment("Max Fracture/Dislocation duration (ticks)")
-                        .defineInRange("maxFractDislcTime",5*60*20,1, Integer.MAX_VALUE);
         NORMAL_LIMB_HEAL_RATE = BUILDER
                 .comment("The normal rate at which Limbs Heal their Health passively (%/s)")
                         .defineInRange("normalLimbHealRate",0.04,0,100);
@@ -182,6 +180,13 @@ public class ServerConfig {
         IMMUNITY_SCALE = BUILDER
                 .comment("Scalar of Immunity value")
                         .defineInRange("immunityScale",1,0,Double.MAX_VALUE);
+
+        FRACTURE_HEAL_RATE = BUILDER
+                .comment("Fracture Heal rate (%/s)")
+                        .defineInRange("fractureRegen",0.05,0,Double.MAX_VALUE);
+        DISLOCATION_HEAL_RATE = BUILDER
+                .comment("Dislocation Heal rate (%/s)")
+                .defineInRange("dislocationRegen",0.05,0,Double.MAX_VALUE);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

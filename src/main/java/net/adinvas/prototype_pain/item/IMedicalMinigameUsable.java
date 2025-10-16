@@ -8,6 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public interface IMedicalMinigameUsable {
-   void openMinigameScreen(Screen parent, Player target, ItemStack stack, @Nullable Limb limb, InteractionHand hand);
+   void openMinigameScreen(Player target, ItemStack stack, @Nullable Limb limb, InteractionHand hand);
    void useMinigameAction(float durability, Player target, @Nullable Limb limb);
 }

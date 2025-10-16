@@ -314,39 +314,33 @@ public class ShapelessWithMedicalContainerRecipe implements CraftingRecipe {
         }
 
         @Override
-        public @Nullable ShapelessWithMedicalContainerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buf) {
-            // Read crafting category
+        public ShapelessWithMedicalContainerRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
             CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
-
-            // Read number of ingredients
             int size = buf.readVarInt();
-            NonNullList<MedicalIngridient> ingredients = NonNullList.withSize(size, null);
+            NonNullList<MedicalIngridient> ingredients = NonNullList.create();
 
             for (int i = 0; i < size; i++) {
-                // Read the vanilla Ingredient
                 Ingredient ing = Ingredient.fromNetwork(buf);
-
-                // Read extra MedicalIngredient data
                 boolean isFluidContainer = buf.readBoolean();
                 boolean consume = buf.readBoolean();
-                boolean hasFluid = buf.readBoolean();
                 boolean copy = buf.readBoolean();
+
+                boolean hasFluid = buf.readBoolean();
                 String fluidId = null;
                 String fluidTag = null;
                 float fluidAmount = 0f;
                 if (hasFluid) {
-                    fluidId = buf.readUtf();
-                    fluidTag = buf.readUtf();
+                    boolean hasId = buf.readBoolean();
+                    boolean hasTag = buf.readBoolean();
+                    if (hasId) fluidId = buf.readUtf();
+                    if (hasTag) fluidTag = buf.readUtf();
                     fluidAmount = buf.readFloat();
                 }
 
-                ingredients.set(i, new MedicalIngridient(ing, isFluidContainer, consume, fluidId,fluidTag, fluidAmount,copy));
+                ingredients.add(new MedicalIngridient(ing, isFluidContainer, consume, fluidId, fluidTag, fluidAmount, copy));
             }
 
-            // Read result item
             ItemStack result = buf.readItem();
-
-            // Read result fluid info
             boolean hasResultFluid = buf.readBoolean();
             String resultFluidId = null;
             float resultFluidAmount = 0f;
@@ -355,49 +349,37 @@ public class ShapelessWithMedicalContainerRecipe implements CraftingRecipe {
                 resultFluidAmount = buf.readFloat();
             }
 
-            // Build recipe
-            ShapelessWithMedicalContainerRecipe recipe = new ShapelessWithMedicalContainerRecipe(
-                    recipeId,
-                    category,
-                    ingredients,
-                    result
-            );
+            ShapelessWithMedicalContainerRecipe recipe =
+                    new ShapelessWithMedicalContainerRecipe(id, category, ingredients, result);
             recipe.resultFluidId = resultFluidId;
             recipe.resultFluidAmount = resultFluidAmount;
-
             return recipe;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buf, ShapelessWithMedicalContainerRecipe recipe) {
-            // Write crafting category
             buf.writeEnum(recipe.category);
-
-            // Write number of ingredients
             buf.writeVarInt(recipe.ingredients.size());
 
             for (MedicalIngridient mi : recipe.ingredients) {
-                // Write vanilla Ingredient
                 mi.ingredient.toNetwork(buf);
-
-                // Write extra MedicalIngredient data
                 buf.writeBoolean(mi.isFluidContainer);
                 buf.writeBoolean(mi.consume);
                 buf.writeBoolean(mi.copy);
 
-                boolean hasFluid = mi.fluidId != null;
+                boolean hasFluid = mi.fluidId != null || mi.fluidTag != null;
                 buf.writeBoolean(hasFluid);
                 if (hasFluid) {
-                    buf.writeUtf(mi.fluidId);
-                    buf.writeUtf(mi.fluidTag);
+                    buf.writeBoolean(mi.fluidId != null);
+                    buf.writeBoolean(mi.fluidTag != null);
+                    if (mi.fluidId != null) buf.writeUtf(mi.fluidId);
+                    if (mi.fluidTag != null) buf.writeUtf(mi.fluidTag);
                     buf.writeFloat(mi.fluidAmount);
                 }
             }
 
-            // Write result item
             buf.writeItem(recipe.result);
 
-            // Write result fluid info
             boolean hasResultFluid = recipe.resultFluidId != null;
             buf.writeBoolean(hasResultFluid);
             if (hasResultFluid) {
