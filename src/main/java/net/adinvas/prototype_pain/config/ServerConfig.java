@@ -46,7 +46,6 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue CONSIOUSNESS_REGEN;
 
     //Heavy Shit
-    public static final ForgeConfigSpec.BooleanValue TOGGLE_UNCONTIOUS_INVENTORY;
 
     public static final ForgeConfigSpec.DoubleValue HELMET_ARMOR_SCALE;
     public static final ForgeConfigSpec.DoubleValue CHESTPLATE_ARMOR_SCALE;
@@ -135,10 +134,6 @@ public class ServerConfig {
                 .comment("the Heal Scalar of magical healing(potions,regenration)")
                 .defineInRange("magicalHealRate",0.5,0,Double.MAX_VALUE);
 
-
-        TOGGLE_UNCONTIOUS_INVENTORY = BUILDER
-                .comment("On/Off for other players opening uncontious players inventory")
-                        .define("toggleInventorySteal",false);
 
         CONS_PENALTY_PER_OPIOID = BUILDER
                 .comment("How much consiousness is penalized by one point of Opioids (opioids max is 100)")

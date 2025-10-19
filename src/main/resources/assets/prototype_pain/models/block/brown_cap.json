@@ -1,0 +1,7 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "prototype_pain:block/brown_cap"
+  },
+  "render_type": "cutout"
+}

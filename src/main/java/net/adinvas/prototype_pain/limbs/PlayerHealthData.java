@@ -19,6 +19,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -27,9 +28,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
@@ -313,7 +317,7 @@ public class PlayerHealthData {
 
 
     public void setLimbPain(Limb limb, float pain) {
-        ensureLimb(limb).pain = Mth.clamp(pain,0,100);
+        ensureLimb(limb).pain = Mth.clamp(pain,0,999);
     }
 
 
@@ -353,13 +357,12 @@ public class PlayerHealthData {
     }
 
 
-    public boolean hasLimbShrapnell(Limb limb) {
+    public int hasLimbShrapnell(Limb limb) {
         return ensureLimb(limb).shrapnell;
     }
 
-
-    public void setLimbShrapnell(Limb limb, boolean shrapnell) {
-        ensureLimb(limb).shrapnell = shrapnell;
+    public void setLimbShrapnell(Limb limb, int shrapnell) {
+        ensureLimb(limb).shrapnell = Math.min(shrapnell,5);
     }
 
 
@@ -476,9 +479,11 @@ public class PlayerHealthData {
     public void recalculateConsciousness() {
         // Base consciousness target from oxygen
         double target = Oxygen;
+        boolean hard_cut= false;
         // Hard knockout conditions
         if (Shock > 0.66) {
             target = 0;
+            hard_cut=true;
         }
         // Pain reduces target consciousness
         else if (totalPain > 50) {
@@ -496,7 +501,7 @@ public class PlayerHealthData {
         float regenPerTick = regenPerSecond / 20f;     // assuming 20 ticks per second
 
         // Smoothly move toward target
-        if (Math.abs(diff) > regenPerTick) {
+        if (Math.abs(diff) > regenPerTick&&!hard_cut&&diff>0) {
             contiousness += Math.signum(diff) * regenPerTick;
         } else {
             contiousness = (float) target; // close enough, snap to target
@@ -611,7 +616,7 @@ public class PlayerHealthData {
             stats.dislocation = 0;
             stats.tourniquetTimer = 0;
             stats.pain= 0;
-            stats.shrapnell= false;
+            stats.shrapnell= 0;
             stats.desinfectionTimer = 0;
             return;
         }
@@ -622,15 +627,15 @@ public class PlayerHealthData {
         stats.MinPain = ((stats.infection/100)*10)+(((stats.skinHealth-100)/-100)*15);
 
         //Healing
-        if (stats.SkinHeal&&!stats.shrapnell){
+        if (stats.SkinHeal&&stats.shrapnell<=0){
             stats.skinHealth += getBOOSTED_LIMB_HEAL_RATE();
         }else {
             stats.skinHealth += getNORMAL_LIMB_HEAL_RATE();
         }
 
-        if (stats.MuscleHeal&&!stats.shrapnell&&stats.infection<=0){
+        if (stats.MuscleHeal&&stats.shrapnell<=0&&stats.infection<=0){
             stats.muscleHealth += getBOOSTED_LIMB_HEAL_RATE();
-        }else if (!stats.shrapnell&&stats.infection<=0){
+        }else if (stats.shrapnell<=0&&stats.infection<=0){
             stats.muscleHealth += getNORMAL_LIMB_HEAL_RATE();
         }
         stats.skinHealth = Math.min(stats.skinHealth,100);
@@ -784,6 +789,7 @@ public class PlayerHealthData {
     }
 
     int tick=0;
+    int breathTick = 0;
 
     float tempspeedup=0f;
     public void tickUpdate(ServerPlayer player) {
@@ -791,7 +797,6 @@ public class PlayerHealthData {
         calculateImmunity();
         updateDirtyness(player);
         //Opioid Pending
-
         if (PendingOpioids>0){
             float change = Math.min(2f+tempspeedup,PendingOpioids)/20f;
             PendingOpioids -=change;
@@ -805,7 +810,12 @@ public class PlayerHealthData {
         hungerLevel = player.getFoodData().getFoodLevel();
         isBreathing = true;
 
+        if (breathTick++>20){
+            breathTick=0;
+            player.setAirSupply(player.getMaxAirSupply());
+        }
         if (player.hasEffect(MobEffects.REGENERATION)&&tick++>20){
+
             tick=0;
             MobEffectInstance inst = player.getEffect(MobEffects.REGENERATION);
             if (inst!=null) {
@@ -841,7 +851,7 @@ public class PlayerHealthData {
         }
 
         // Hemothorax
-        hemothorax += internalBleeding*10;
+        hemothorax += internalBleeding*40;
         if (hemothorax > 0) {
             hemothoraxpain = (float) ((4.0 / 15.0) * hemothorax);
             hemothorax -= getHEMOTHORAX_HEAL_RATE();
@@ -901,11 +911,12 @@ public class PlayerHealthData {
         OxygenCap = Math.max(0, OxygenCap);
 
         // Breathing & oxygen change
-        if (isUnderwater || respitoryArrest) {
+        if ((isUnderwater&&player.getEffect(MobEffects.WATER_BREATHING)==null) || respitoryArrest) {
             isBreathing = false;
+        }
+        if (!isBreathing&&getAirLossRate(player)>0){
             Oxygen = Math.max(0, Oxygen - getOXYGEN_DRAIN());
         }
-
         if (isBreathing) {
             Oxygen = Math.min(100, Oxygen + getOXYGEN_REPLENISH());
             if (Oxygen > OxygenCap) Oxygen = OxygenCap;
@@ -949,7 +960,6 @@ public class PlayerHealthData {
                 player.yRotO = 0; // Stop looking around
                 player.xRotO = 0;
             }
-
 
     }
 
@@ -1046,7 +1056,7 @@ public class PlayerHealthData {
                 Limb limb = (arm == HumanoidArm.LEFT) ? Limb.LEFT_HAND : Limb.RIGHT_HAND;
 
                 // Check if this limb is "broken"
-                boolean broken = getLimbMuscleHealth(limb) < 10 || getLimbFracture(limb) > 0;
+                boolean broken = getLimbMuscleHealth(limb) < 10 || getLimbFracture(limb) > 0||getLimbDislocated(limb)>0;
 
                 if (broken) {
                     // Try to move item into inventory
@@ -1105,7 +1115,7 @@ public class PlayerHealthData {
             limbTag.putFloat("Infection", stats.infection);
             limbTag.putFloat("FractureTimer", stats.fracture);
             limbTag.putFloat("Dislocated", stats.dislocation);
-            limbTag.putBoolean("Shrapnell", stats.shrapnell);
+            limbTag.putInt("Shrapnell", stats.shrapnell);
             limbTag.putBoolean("HasSplint", stats.hasSplint);
             limbTag.putFloat("BleedRate", stats.bleedRate);
             limbTag.putFloat("DesinfectionTimer", stats.desinfectionTimer);
@@ -1243,7 +1253,7 @@ public class PlayerHealthData {
             if (limbTag.contains("Infection")) stats.infection = limbTag.getFloat("Infection");
             if (limbTag.contains("FractureTimer")) stats.fracture = limbTag.getFloat("FractureTimer");
             if (limbTag.contains("Dislocated")) stats.dislocation = limbTag.getFloat("Dislocated");
-            if (limbTag.contains("Shrapnell")) stats.shrapnell = limbTag.getBoolean("Shrapnell");
+            if (limbTag.contains("Shrapnell")) stats.shrapnell = limbTag.getInt("Shrapnell");
             if (limbTag.contains("HasSplint")) stats.hasSplint = limbTag.getBoolean("HasSplint");
             if (limbTag.contains("BleedRate")) stats.bleedRate = limbTag.getFloat("BleedRate");
             if (limbTag.contains("DesinfectionTimer")) stats.desinfectionTimer = limbTag.getFloat("DesinfectionTimer");
@@ -1281,7 +1291,7 @@ public class PlayerHealthData {
                 applyMuscleDamage(limb,damage);
                 applyBleedDamage(limb,damage/6f,source);
                 if (random.nextFloat()<=getMANUAL_SHRAPNEL_SUCCESS_CHANCE()){
-                    setLimbShrapnell(limb,false);
+                    setLimbShrapnell(limb,0);
                 }
             }
             case REMOVE_SPLINT -> {
@@ -1494,7 +1504,7 @@ public class PlayerHealthData {
             applyBleedDamage(rLimb,passDamage*0.7f,player);
             float chance = passDamage/6+0.2f;
             if (Math.random()<chance&&shrapnell){
-                setLimbShrapnell(rLimb,true);
+                setLimbShrapnell(rLimb, (int) (hasLimbShrapnell(rLimb)+(Math.random()*5)));
             }
             damage-=2;
             hurtArmor(rLimb,player,damage);
@@ -1537,7 +1547,7 @@ public class PlayerHealthData {
             chance = Math.max(0f, curve * 0.75f); // scale to max 0.75
         }
         if (random.nextFloat()<chance){
-            setLimbShrapnell(randomLimb,true);
+            setLimbShrapnell(randomLimb,hasLimbShrapnell(randomLimb)+1);
         }
         hurtArmor(randomLimb,player,damage);
     }
@@ -1755,6 +1765,9 @@ public class PlayerHealthData {
                     else if (state.is(Blocks.CAMPFIRE)) base += 5f;
                     else if (state.is(Blocks.ICE)) base -= 3f;
                     else if (state.is(Blocks.POWDER_SNOW)) base -= 5f;
+                    if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
+                        base += 3f;
+                    }
 
                     if (base != 0f) {
                         double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
@@ -1764,35 +1777,58 @@ public class PlayerHealthData {
                 }
             }
         }
+        if (player.isSprinting()) envTemp += 1.5f;
+        else if (player.isSwimming()) envTemp -= 1f;
+        if (player.getFoodData().getFoodLevel() < 6) envTemp -= 0.5f;
+
         float generalheatbonus = 0f;
 
         if (player.isInWater()) generalheatbonus -= 3f; // cold water
         if (player.isOnFire()) generalheatbonus += 10f;
 
         float armorInsulation = 0f;
+        /*
         for (ItemStack piece : player.getArmorSlots()) {
             if (piece.is(ModItemTags.ARMOR_INSULATION)){
                 armorInsulation += 2f;
             }
         }
 
+         */
+        armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
+
         boolean skyVisible = player.level().canSeeSkyFromBelowWater(player.blockPosition());
         if (!skyVisible) {
             blockheatBonus *= 0.5f; // less effect indoors
         }
 
-        if (player.level().isRainingAt(player.blockPosition())) blockheatBonus -= 2f;
-        if (player.level().isThundering()) blockheatBonus -= 3f;
-        if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) blockheatBonus += 1f;
+        if (player.level().isRainingAt(player.blockPosition())) generalheatbonus -= 2f;
+        if (player.level().isThundering()) generalheatbonus -= 3f;
+        if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) generalheatbonus += 1f;
 
-        envTemp += (blockheatBonus+generalheatbonus) - armorInsulation * 0.5f;
+        envTemp += (blockheatBonus + generalheatbonus);
 
+// --- Armor insulation slows down temperature change ---
+// Each point of insulation reduces how fast body temperature changes toward environment
+        float INSULATION_PER_POINT = 0.05f;   // 5% slower per insulation point
+        float MAX_INSULATION_SCALE = 0.85f;   // max 85% slower (still allows change)
+        float MIN_RATE = 1e-5f;               // avoid stalling
+
+// Compute insulation effect and clamp it
+        float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
+        float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
+
+// Base adjustment rate — faster when in water
+        float baseRate = (player.isInWater() ? 0.01f : 0.005f) / 20f;
+
+// Reduce change rate by insulation
+        float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
+        adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
+
+// Smoothly adjust toward target
         float targetTemp = envTemp;
-        float current = temperature;
-        float delta = (targetTemp - current) * (0.002f/20f); // smooth change
-        temperature += delta;
+        temperature += (targetTemp - temperature) * adjustmentRate;
     }
-
 
     public void calculateImmunity(){
         float temp_bonus = -36.6f+temperature;
@@ -1844,5 +1880,37 @@ public class PlayerHealthData {
 
     //Visuals
 
+    private int lastAir = -1;
+    private long lastTick = -1;
+    private float lastRate = 0f;
 
+    // Call every tick for the player
+    public float getAirLossRate(Player player) {
+        int currentAir = player.getAirSupply();
+        long tick = player.level().getGameTime();
+
+        // On first tick, just initialize
+        if (lastAir == -1) {
+            lastAir = currentAir;
+            lastTick = tick;
+            return 0f;
+        }
+
+        // Compute difference
+        long deltaTicks = tick - lastTick;
+        if (deltaTicks <= 0) return lastRate; // Avoid division by 0
+
+        int diff = lastAir - currentAir;
+        float rate = diff / (float) deltaTicks;
+
+        // Update tracking
+        lastAir = currentAir;
+        lastTick = tick;
+
+        // Filter small changes (air regen, mod sync issues, etc.)
+        if (rate < 0) rate = 0f;
+
+        lastRate = rate;
+        return rate;
+    }
 }

@@ -149,7 +149,9 @@ public class BrainDamageClientController {
             RenderSystem.setShader(() -> shader);
 
             shader.safeGetUniform("Intensity").set(intensity);
-            shader.safeGetUniform("BlurScale").set(1.0f / mc.getWindow().getScreenWidth());
+            shader.safeGetUniform("BlurScaleX").set(1f/mc.getWindow().getScreenWidth());
+            shader.safeGetUniform("BlurScaleY").set(1f/mc.getWindow().getScreenHeight());
+
 
             Tesselator tesselator = Tesselator.getInstance();
             BufferBuilder buf = tesselator.getBuilder();
@@ -163,9 +165,19 @@ public class BrainDamageClientController {
 
             BufferUploader.drawWithShader(buf.end());
 
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(true);
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, 0);
+
+            // 2. Explicitly disable blending
+            RenderSystem.disableBlend();
+
+            // 3. Reset the shader
+            RenderSystem.setShader(GameRenderer::getPositionTexShader); // <--- You have this, which is good
+
+            RenderSystem.enableDepthTest(); // <--- You have this, which is good
+            RenderSystem.depthMask(true); // <--- You have this, which is good
+
+            // 4. IMPORTANT: Ensure the main FBO is bound for subsequent rendering
+            mc.getMainRenderTarget().bindWrite(false);
         }
     }
 

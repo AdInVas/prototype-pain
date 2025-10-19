@@ -33,6 +33,7 @@ public class IcePackItem extends Item implements ISimpleMedicalUsable, IAllowInM
             h.setLimbDislocation(limb,h.getLimbDislocated(limb)*0.4f);
             h.setLimbPain(limb,h.getLimbPain(limb)*0.5f);
             h.setLimbMuscleHeal(limb,true);
+            h.setTemperature(h.getTemperature()-.5f);
             ItemStack newitemstack = stack;
             setNbtDurability(stack,getNbtDurability(stack)-20);
             if (getNbtDurability(stack)<=0){

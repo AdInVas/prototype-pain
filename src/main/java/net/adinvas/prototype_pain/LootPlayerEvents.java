@@ -17,7 +17,7 @@ public class LootPlayerEvents {
     public static void onPlayerInteract(PlayerInteractEvent.EntityInteract event){
         if (!(event.getTarget() instanceof Player target)) return;
 
-        if (!ServerConfig.TOGGLE_UNCONTIOUS_INVENTORY.get())return;
+        if (!target.level().getGameRules().getBoolean(ModGamerules.INVENTORY_STEAL))return;
         Player actor = event.getEntity();
         if (actor.isShiftKeyDown()) return;
 

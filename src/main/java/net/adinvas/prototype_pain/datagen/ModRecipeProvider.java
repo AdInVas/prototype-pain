@@ -107,7 +107,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.SterilizedDressing.get())
                 .requires(ModItemTags.DRESSINGS)
                 .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:antiseptics",-25)
+                .requiresFluidTag("prototype_pain:antiseptics",-100)
                 .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "sterilized_dressing"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.BoneWelding.get())
@@ -367,5 +367,13 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requiresFluidTag("prototype_pain:opioids", -10)
                 .resultFluid(MedicalFluids.RELIEF_CREAM.getId(), 25)
                 .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "relief_cream"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.HeatPack.get())
+                .requires(Items.GUNPOWDER)
+                .requires(ItemTags.WOOL)
+                .requires(Items.GUNPOWDER)
+                .requires(Items.IRON_NUGGET)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer);
     }
 }

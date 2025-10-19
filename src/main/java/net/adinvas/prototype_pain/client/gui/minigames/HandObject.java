@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class HandObject {
+    enum SpriteType {NORMAL,TWEEZERS}
+    public final SpriteType spriteType;
     public double x, y;     // current position
     public double vx, vy;   // velocity
     private double prevX, prevY;
@@ -25,7 +27,8 @@ public class HandObject {
     private boolean is_clicked=false;
     private float angle = 0;
 
-    public HandObject(double startX, double startY, int handStartX, int handStartY) {
+    public HandObject(SpriteType spriteType, double startX, double startY, int handStartX, int handStartY) {
+        this.spriteType = spriteType;
         this.x = startX;
         this.y = startY;
         this.handStartX = handStartX;
@@ -102,17 +105,35 @@ public class HandObject {
         pose.translate(renderX, renderY, 0);
         pose.mulPose(Axis.ZP.rotation((float) angle));
 
-        if (is_clicked){
-            guiGraphics.blit(
-                    new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm_click.png"),
-                    -40 * 4, -8 * 4, 0, 0, 48 * 4, 16 * 4, 48 * 4, 16 * 4
-            );
-        }else {
-            guiGraphics.blit(
-                    new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm.png"),
-                    -40 * 4, -8 * 4, 0, 0, 48 * 4, 16 * 4, 48 * 4, 16 * 4
-            );
+        switch (spriteType){
+            case NORMAL -> {
+                if (is_clicked){
+                    guiGraphics.blit(
+                            new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm_click.png"),
+                            -160, -32, 0, 0, 192, 64, 192, 64
+                    );
+                }else {
+                    guiGraphics.blit(
+                            new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm.png"),
+                            -160, -32, 0, 0, 192, 64, 192, 64
+                    );
+                }
+            }
+            case TWEEZERS -> {
+                if (is_clicked){
+                    guiGraphics.blit(
+                            new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm_click_tweezers.png"),
+                            -188, -53, 0, 0, 192, 64, 192, 64
+                    );
+                }else {
+                    guiGraphics.blit(
+                            new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm_tweezers.png"),
+                            -188, -53, 0, 0, 192, 64, 192, 64
+                    );
+                }
+            }
         }
+
 
         pose.popPose();
     }

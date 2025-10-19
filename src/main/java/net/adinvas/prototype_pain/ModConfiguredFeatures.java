@@ -22,6 +22,10 @@ public class ModConfiguredFeatures {
             ResourceKey.create(Registries.CONFIGURED_FEATURE,
                     new ResourceLocation(PrototypePain.MOD_ID, "glow_swamp_fruit_config"));
 
+    public static final ResourceKey<ConfiguredFeature<?,?>> BROWN_CAP =
+            ResourceKey.create(Registries.CONFIGURED_FEATURE,
+                    new ResourceLocation(PrototypePain.MOD_ID, "brown_cap_config"));
+
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context){
         context.register(GLOW_FRUIT_CONFIG,
                 new ConfiguredFeature<>(Feature.RANDOM_PATCH,
@@ -35,6 +39,9 @@ public class ModConfiguredFeatures {
 
         register(context,SWAMP_GLOW_FRUIT_CONFIG,Feature.FLOWER,new RandomPatchConfiguration(64,10,10,PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
                 new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.GLOW_FRUIT_BUSH.get())))));
+        register(context,BROWN_CAP,Feature.FLOWER,new RandomPatchConfiguration(80,10,10,PlacementUtils.onlyWhenEmpty(Feature.SIMPLE_BLOCK,
+                new SimpleBlockConfiguration(BlockStateProvider.simple(ModBlocks.BROWN_CAP.get())))));
+
     }
 
     public static <FC extends FeatureConfiguration,F extends Feature<FC>> void register(BootstapContext<ConfiguredFeature<?,?>> context,ResourceKey<ConfiguredFeature<?,?>> key, F feature, FC configuration){

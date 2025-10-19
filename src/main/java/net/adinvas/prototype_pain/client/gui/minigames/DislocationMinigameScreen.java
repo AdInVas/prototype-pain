@@ -46,7 +46,7 @@ public class DislocationMinigameScreen extends Screen {
         Minecraft mc = Minecraft.getInstance();
 
         guiGraphics.drawCenteredString(mc.font,Component.translatable("prototype_pain.gui.dislocation_instruction1"),this.width/2,10,0xFFFFFF);
-        guiGraphics.drawCenteredString(mc.font,Component.translatable("prototype_pain.gui.dislocation_instruction2"),this.width/2,20,0xFFFFFF);
+        //guiGraphics.drawCenteredString(mc.font,Component.translatable("prototype_pain.gui.dislocation_instruction2"),this.width/2,20,0xFFFFFF);
 
         guiGraphics.drawCenteredString(mc.font,(int)boneObject.getFakeDislocation()+"%",this.width/2,this.height / 6+175,0xCC0000);
         guiGraphics.drawCenteredString(mc.font,Component.translatable("prototype_pain.gui.minigame_exit"),this.width/2,this.height / 6+190,0xFFFFFF);
@@ -98,7 +98,6 @@ public class DislocationMinigameScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        Minecraft.getInstance().getSoundManager().stop();
         if (boneObject.isEndCondition()){
             ModNetwork.CHANNEL.sendToServer(new DislocationTryPacket(target.getUUID(),limb,0));
         }
@@ -130,7 +129,7 @@ public class DislocationMinigameScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(this.width/2,this.height/2,this.width,this.height/3*2);
+        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }

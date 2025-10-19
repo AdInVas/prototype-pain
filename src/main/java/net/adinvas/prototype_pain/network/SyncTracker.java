@@ -26,7 +26,6 @@ public class SyncTracker {
                 if (target != null) {
                     target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(cap -> {
                         CompoundTag tag = cap.serializeNBT(new CompoundTag());
-                        //PrototypePain.LOGGER.info("Syncing {} -> {}, tag={}", viewer.getScoreboardName(), target.getScoreboardName(), tag);
                         ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> viewer), new SyncHealthPacket(tag, target.getUUID())
                         );
                     });

@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.client;
+package net.adinvas.prototype_pain.client.overlays.ovr;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
-public class ContiousnessOverlay implements IOverlay{
+public class ContiousnessOverlay implements IOverlay {
     private float intensity= 1;
     private float brain = 100;
     private boolean dying = false;

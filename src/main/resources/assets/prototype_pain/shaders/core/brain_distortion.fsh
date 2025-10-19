@@ -1,19 +1,24 @@
 #version 150
 uniform sampler2D Sampler0;
 uniform float Intensity;
-uniform float BlurScale;
+uniform float BlurScaleY;
+uniform float BlurScaleX;
 in vec2 texCoord;
 out vec4 fragColor;
 
+vec4 squareblur(sampler2D smap, vec2 uv, vec2 scale, float radius){
+    vec4 sum = vec4(0.0);
+    sum += texture2D(smap, uv) * 0.24;
+    sum += texture2D(smap, uv + vec2(scale.x * radius, 0.0))*0.19;
+    sum += texture2D(smap, uv - vec2(scale.x * radius, 0.0))*0.19;
+    sum += texture2D(smap, uv + vec2(0.0,scale.y * radius))*0.19;
+    sum += texture2D(smap, uv - vec2(0.0,scale.y * radius))*0.19;
+    return sum;
+}
+
+
 void main() {
     float BlurRadius = Intensity*8;
-    vec4 sum = vec4(0.0);
-    float weights[3] = float[](0.227027, 0.316216, 0.07027);
-    sum += texture(Sampler0, texCoord) * weights[0];
-    for (int i = 1; i < 2; i++) {
-        float j = float(i);
-        sum += texture(Sampler0, texCoord + vec2(BlurScale * j * BlurRadius, 0.0))*weights[i];
-        sum += texture(Sampler0, texCoord - vec2(BlurScale * j * BlurRadius, 0.0))*weights[i];
-    }
-    fragColor =sum;
+    vec2 texel = vec2(BlurScaleX,BlurScaleY);
+    fragColor =squareblur(Sampler0,texCoord,texel,BlurRadius);
 }

@@ -44,7 +44,7 @@ public class BandageMinigameScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(this.width/2,this.height/2,this.width,this.height/3*2);
+        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
@@ -119,7 +119,6 @@ public class BandageMinigameScreen extends Screen {
     public void onClose() {
         super.onClose();
         ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(bandageObject.getItemStack(),hand==InteractionHand.OFF_HAND));
-        Minecraft.getInstance().getSoundManager().stop();
         if (parent instanceof HealthScreen hp){
             hp.BGmode = false;
         }

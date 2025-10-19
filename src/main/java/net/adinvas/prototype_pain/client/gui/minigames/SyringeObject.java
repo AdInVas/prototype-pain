@@ -192,4 +192,8 @@ public class SyringeObject extends GrabObject{
             tickSound = null;
         }
     }
+
+    public SyringeTickSound getTickSound() {
+        return tickSound;
+    }
 }

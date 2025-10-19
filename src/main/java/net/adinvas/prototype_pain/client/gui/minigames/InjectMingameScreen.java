@@ -42,7 +42,7 @@ public class InjectMingameScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(this.width/2,this.height/2,this.width,this.height/3*2);
+        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
@@ -145,7 +145,9 @@ public class InjectMingameScreen extends Screen {
         super.onClose();
         ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(syringeStack,hand==InteractionHand.OFF_HAND));
         syringeObject.stop();
-        Minecraft.getInstance().getSoundManager().stop();
+        if (syringeObject.getTickSound()!=null){
+            minecraft.getSoundManager().stop(syringeObject.getTickSound());
+        }
         if (syringeObject.isSnapped()){
             Minecraft.getInstance().player.playSound(SoundEvents.GLASS_BREAK,1f,1f);
         }

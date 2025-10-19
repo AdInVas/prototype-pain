@@ -1,11 +1,18 @@
 package net.adinvas.prototype_pain.events;
 
+import com.mojang.blaze3d.pipeline.MainTarget;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.Keybinds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.client.ContiousnessOverlay;
-import net.adinvas.prototype_pain.client.OverlayController;
-import net.adinvas.prototype_pain.client.PainOverlay;
+import net.adinvas.prototype_pain.client.SoundMenager;
+import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
+import net.adinvas.prototype_pain.client.overlays.OverlayController;
+import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
@@ -17,8 +24,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -26,6 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
@@ -43,7 +54,7 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         ProfilerFiller profiler = mc.getProfiler();
-
+        SoundMenager.tick();
         profiler.push("prototype_pain:client_misc");
         if (player==null)return;
         if (event.side== LogicalSide.CLIENT) {
@@ -175,6 +186,7 @@ public class ClientEvents {
         }
     }
 
+
     static int tick =0;
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
@@ -203,4 +215,5 @@ public class ClientEvents {
             event.setCanceled(true);
         }
     }
+
 }

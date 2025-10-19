@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.gui.minigames.DislocationMinigameScreen;
+import net.adinvas.prototype_pain.client.gui.minigames.ShrapnelMinigameScreen;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.network.MedicalActionPacket;
@@ -47,6 +48,10 @@ public class CustomButton extends AbstractWidget {
         };
         if (action==MedicalAction.FIX_DISLOCATION){
             Minecraft.getInstance().setScreen(new DislocationMinigameScreen(Minecraft.getInstance().screen,target,limb));
+            return;
+        }
+        if (action==MedicalAction.TRY_SHRAPNEL){
+            Minecraft.getInstance().setScreen(new ShrapnelMinigameScreen(Minecraft.getInstance().screen,target,limb,false));
             return;
         }
         if (action!=null){

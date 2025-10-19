@@ -8,8 +8,4 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Inject(method = "decreaseAirSupply", at = @At("HEAD"), cancellable = true)
-    private void noDrowning(int air, CallbackInfoReturnable<Integer> cir) {
-        cir.setReturnValue(air);
-    }
 }

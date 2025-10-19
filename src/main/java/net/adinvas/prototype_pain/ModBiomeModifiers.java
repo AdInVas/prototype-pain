@@ -17,6 +17,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_GLOW_FRUIT = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS,new ResourceLocation(PrototypePain.MOD_ID,"add_glow_fruit"));
     public static final ResourceKey<BiomeModifier> ADD_GLOW_FRUIT_SWAMP = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS,new ResourceLocation(PrototypePain.MOD_ID,"add_glow_fruit_swamp"));
+    public static final ResourceKey<BiomeModifier> ADD_BROWN_CAP = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS,new ResourceLocation(PrototypePain.MOD_ID,"add_brown_cap"));
 
     public static void BootStrap(BootstapContext<BiomeModifier> context){
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
@@ -30,6 +31,11 @@ public class ModBiomeModifiers {
         context.register(ADD_GLOW_FRUIT_SWAMP,new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.GLOW_FRUIT_PATCH_SWAMP)),
+                GenerationStep.Decoration.VEGETAL_DECORATION
+        ));
+        context.register(ADD_BROWN_CAP,new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.BROWN_CAP)),
                 GenerationStep.Decoration.VEGETAL_DECORATION
         ));
     }

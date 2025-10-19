@@ -1,5 +1,5 @@
 {
-  "vertex": "prototype_pain:brain_distortion",
+  "vertex": "prototype_pain:pass_trough",
   "fragment": "prototype_pain:brain_distortion",
   "samplers": [
     { "name": "Sampler0" }
@@ -10,6 +10,7 @@
   ],
   "uniforms": [
     { "name": "Intensity", "type": "float", "count": 1, "values": [0] },
-    { "name": "BlurScale", "type": "float", "count": 1, "values": [0.001] }
+    { "name": "BlurScaleY", "type": "float", "count": 1, "values": [0.001] },
+    { "name": "BlurScaleX", "type": "float", "count": 1, "values": [0.001] }
   ]
 }

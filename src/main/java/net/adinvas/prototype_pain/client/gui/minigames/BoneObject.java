@@ -4,8 +4,10 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.DislocationTryPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 import org.joml.Vector2d;
@@ -59,6 +61,7 @@ public class BoneObject extends GrabObject{
     public void onHit(Vector2d velocity, Player target, Limb limb){
         if (velocity.length() < HIT_THRESHOLD||!canBeHit)
             return;
+        Minecraft.getInstance().player.playSound(SoundEvents.SHIELD_BLOCK,1,0.7f);
 
         canBeHit = false;
         if (targetPos.equals(correctPos))return;
@@ -67,7 +70,7 @@ public class BoneObject extends GrabObject{
         Vector2d assistDir = new Vector2d(correctPos).sub(x, y).normalize();
 
         // Blend between hand direction and assist direction
-        Vector2d hitDir = new Vector2d(velocity).normalize  ().lerp(assistDir, AIM_ASSIST).normalize();
+        Vector2d hitDir = new Vector2d(velocity.mul(2)).normalize  ().lerp(assistDir, AIM_ASSIST).normalize();
 
         // Compute how far to move the bone (scaled by hit force)
         Vector2d hitOffset = new Vector2d(hitDir).mul(HIT_FORCE*(Math.random()*1+1));
@@ -85,7 +88,6 @@ public class BoneObject extends GrabObject{
             EndCondition = true;
         }
         float newval = (float) new Vector2d(targetPos).sub(correctPos).length();
-        PrototypePain.LOGGER.info("OLD {} | NEW {} {}",dislocationValue,newval,isEndCondition());
         dislocationValue = EndCondition?0:newval;
 
         ModNetwork.CHANNEL.sendToServer(new DislocationTryPacket(target.getUUID(),limb,dislocationValue));
@@ -134,7 +136,6 @@ public class BoneObject extends GrabObject{
     @Override
     public void render(GuiGraphics guiGraphics) {
         super.render(guiGraphics);
-        guiGraphics.fill((int) (this.x+hitX), (int) (this.y+hitY), (int) (this.x+hitX+hitWidth), (int) (this.y+hitY+hitHeight),0x99FF0000);
     }
 
 }

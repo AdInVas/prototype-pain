@@ -46,6 +46,14 @@
         "stream": false
       }
     ]
+  },
+  "pain_drone": {
+    "sounds": [
+      {
+        "name": "prototype_pain:broken",
+        "stream": true
+      }
+    ]
   }
 }
 

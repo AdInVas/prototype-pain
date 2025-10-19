@@ -25,7 +25,6 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.tag(ModItemTags.DRESSINGS)
                 .add(ModItems.Dressing.get(),
                     ModItems.PlasticDressing.get(),
-                    ModItems.OldRag.get(),
                     ModItems.SterilizedDressing.get(),
                     ModItems.MedicalGauze.get(),
                     ModItems.AlganateDressing.get());

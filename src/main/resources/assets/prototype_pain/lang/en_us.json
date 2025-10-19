@@ -158,7 +158,11 @@
   "item.prototype_pain.reaction_vial": "Medicine Vial",
   "item.prototype_pain.reaction_vial.discription": "A 100ml bottle meant for medicine.",
 
+  "item.prototype_pain.brown_cap": "Brown Cap",
+  "item.prototype_pain.brown_cap.discription": "You have no idea what is this fungus. For all you know it can cure cancer or kill you on the spot",
 
+  "item.prototype_pain.heat_pack": "Heat Pack",
+  "item.prototype_pain.heat_pack.discription": "A slightly larger chemical hand warmer. Aids in healing of muscles slightly.",
 
   "prototype_pain.fluid.opium": "Opium",
   "prototype_pain.fluid.opium.description": "A light opiate, lesser effect when taken orally",
@@ -340,5 +344,8 @@
   "prototype_pain.gui.moodle.withdrawal.title3": "Severe withdrawal",
   "prototype_pain.gui.moodle.withdrawal.description3": "You are struggling to hold yourself together, shaking, desperate for any sort of relief. It feels horrible. Treatment needed.",
   "prototype_pain.gui.moodle.withdrawal.title4": "Dying of withdrawal",
-  "prototype_pain.gui.moodle.withdrawal.description4": "Your body is failing to sustain itself without the opiates it became so reliant on. Your heart is struggling to pump oxygen around the body, resulting in hypoxic brain damage during a desperate episode."
+  "prototype_pain.gui.moodle.withdrawal.description4": "Your body is failing to sustain itself without the opiates it became so reliant on. Your heart is struggling to pump oxygen around the body, resulting in hypoxic brain damage during a desperate episode.",
+  "prototype_pain.gui.dislocation_instruction1": "Hit the bone into the correct spot to fix dislocation.",
+  "prototype_pain.gui.shrapnel_instruction": "Slowly extract shrapnel from thie limb. Use tweezers to ignore the speed restriction"
+
 }

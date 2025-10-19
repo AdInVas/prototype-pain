@@ -30,6 +30,10 @@ public class ModPlacedFeatures {
             ResourceKey.create(Registries.PLACED_FEATURE,
                     new ResourceLocation(PrototypePain.MOD_ID, "glow_fruit_patch_swamp"));
 
+    public static final ResourceKey<PlacedFeature> BROWN_CAP =
+            ResourceKey.create(Registries.PLACED_FEATURE,
+                    new ResourceLocation(PrototypePain.MOD_ID, "brown_cap_patch"));
+
     public static List<Block> stone_list = new ArrayList<>();
     static {
         stone_list.add(Blocks.STONE);
@@ -56,6 +60,15 @@ public class ModPlacedFeatures {
         ));
         context.register(GLOW_FRUIT_PATCH_SWAMP, new PlacedFeature(
                 configured.getOrThrow(ModConfiguredFeatures.SWAMP_GLOW_FRUIT_CONFIG),
+                List.of(
+                        RarityFilter.onAverageOnceEvery(24), // rarer
+                        InSquarePlacement.spread(),
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(60), VerticalAnchor.absolute(90)),
+                        BiomeFilter.biome()
+                )
+        ));
+        context.register(BROWN_CAP, new PlacedFeature(
+                configured.getOrThrow(ModConfiguredFeatures.BROWN_CAP),
                 List.of(
                         RarityFilter.onAverageOnceEvery(24), // rarer
                         InSquarePlacement.spread(),

@@ -1,11 +1,13 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.blocks.BrownCapBlock;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
 import net.adinvas.prototype_pain.item.bandages.*;
 import net.adinvas.prototype_pain.item.fluid_vials.*;
+import net.adinvas.prototype_pain.item.misc.BrownCapItem;
 import net.adinvas.prototype_pain.item.reusable.SplintItem;
 import net.adinvas.prototype_pain.item.reusable.TourniquetItem;
 import net.adinvas.prototype_pain.item.reusable.TweezersItem;
@@ -34,6 +36,7 @@ public class ModItems {
     public static final RegistryObject<Item> MakeshiftLRD = ITEMS.register("makeshift_lrd", MakeshiftLRDItem::new);
     public static final RegistryObject<Item> MedicalSuture = ITEMS.register("medical_suture", MedicalSutureItem::new);
     public static final RegistryObject<Item> Ice_Pack = ITEMS.register("ice_pack", IcePackItem::new);
+    public static final RegistryObject<Item> HeatPack = ITEMS.register("heat_pack", HeatPackItem::new);
     public static final RegistryObject<Item> GLOW_FRUIT = ITEMS.register("glow_fruit", GlowFruitItem::new);
 
     public static final RegistryObject<Item> SmallMedibag = ITEMS.register("small_medibag", SmallMedibagItem::new);
@@ -67,5 +70,6 @@ public class ModItems {
     public static final RegistryObject<Item> AntiSerum =  ITEMS.register("antiserum", AntiSerumItem::new);
     public static final RegistryObject<Item> CEFTRIAXONE =  ITEMS.register("ceftriaxone", CeftriaxoneItem::new);
     public static final RegistryObject<Item> ReliefCream = ITEMS.register("relief_cream",ReliefCreamItem::new);
+    public static final RegistryObject<Item> BrownCap = ITEMS.register("brown_cap", BrownCapItem::new);
 
 }

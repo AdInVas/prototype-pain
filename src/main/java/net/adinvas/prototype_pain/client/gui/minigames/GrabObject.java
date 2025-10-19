@@ -27,6 +27,14 @@ public class GrabObject {
         this.scale = scale;
     }
 
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
     public void render(GuiGraphics guiGraphics) {
         var pose = guiGraphics.pose();
         pose.pushPose();

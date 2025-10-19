@@ -16,4 +16,6 @@ public class ModBlocks {
             .randomTicks()
             .instabreak()
             .noCollission()));
+
+    public static final RegistryObject<Block> BROWN_CAP = BLOCKS.register("brown_cap", ()-> new BrownCapBlock(BlockBehaviour.Properties.copy(Blocks.BROWN_MUSHROOM)));
 }

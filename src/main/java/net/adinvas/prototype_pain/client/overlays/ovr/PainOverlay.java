@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.client;
+package net.adinvas.prototype_pain.client.overlays.ovr;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
-public class PainOverlay implements IOverlay{
+public class PainOverlay implements IOverlay {
 
     private float baseIntensity = .4f;   // baseline value (0-1)
     private float pulseSpeed = 2.5f;      // cycles per second
