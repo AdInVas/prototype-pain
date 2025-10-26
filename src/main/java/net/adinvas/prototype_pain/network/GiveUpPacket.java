@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.network;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +29,7 @@ public class GiveUpPacket {
             if (player != null) {
                 player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
                         .ifPresent(h->{
+
                             h.killPlayer(player,true);
                         });
             }

@@ -26,20 +26,21 @@ public class HeatPackItem extends Item implements ISimpleMedicalUsable, IAllowIn
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)+10);
             h.setLimbMuscleHeal(limb,true);
             h.setTemperature(h.getTemperature()+.5f);
-            ItemStack newitemstack = stack;
-            setNbtDurability(stack,getNbtDurability(stack)-20);
-            if (getNbtDurability(stack)<=0){
-                newitemstack = ItemStack.EMPTY;
-            }
-            source.setItemInHand(hand,newitemstack);
+
         });
-        return true;
+        ItemStack newitemstack = stack;
+        setNbtDurability(stack,getNbtDurability(stack)-20);
+        if (getNbtDurability(stack)<=0){
+            newitemstack = ItemStack.EMPTY;
+        }
+        return newitemstack;
     }
+
     @Override
     public Component getName(ItemStack pStack) {
         Component finalcomp = super.getName(pStack);

@@ -1,7 +1,10 @@
 package net.adinvas.prototype_pain.item.bags.medium;
 
+import net.adinvas.prototype_pain.item.IBag;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagMenu;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -17,9 +20,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MediumMedibagItem extends Item {
+public class MediumMedibagItem extends Item implements IBag {
 
     public MediumMedibagItem() {
         super(new Properties().stacksTo(1));
@@ -44,5 +48,56 @@ public class MediumMedibagItem extends Item {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatable("item.prototype_pain.medium_medibag.discription").withStyle(ChatFormatting.GRAY));
+    }
+
+    @Override
+    public List<ItemStack> getItems(ItemStack bagStack) {
+        List<ItemStack> items = new ArrayList<>();
+
+        if (!bagStack.hasTag()) return items;
+        CompoundTag rootTag = bagStack.getTag();
+        if (rootTag == null || !rootTag.contains("StoredItems", Tag.TAG_COMPOUND)) return items;
+
+        CompoundTag configTag = rootTag.getCompound("StoredItems");
+
+        // --- Determine how many slots this bag has ---
+        // You can replace this with a fixed number or a method call (e.g. getSlotCount())
+        int slotCount = 8; // or hardcode: int slotCount = 12;
+
+        // --- Read in order ---
+        for (int i = 0; i < slotCount; i++) {
+            String key = "Slot" + i;
+            ItemStack stack = ItemStack.EMPTY;
+            if (configTag.contains(key, Tag.TAG_COMPOUND)) {
+                CompoundTag slotTag = configTag.getCompound(key);
+                stack = ItemStack.of(slotTag);
+            }
+            items.add(stack);
+        }
+
+        return items;
+    }
+
+    @Override
+    public void setItems(ItemStack bagStack, List<ItemStack> items) {
+        if (bagStack == null || items == null) return;
+
+        CompoundTag rootTag = bagStack.getOrCreateTag();
+        CompoundTag configTag = new CompoundTag();
+
+        // --- Always write all slots, even if empty ---
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = items.get(i);
+            CompoundTag stackTag = new CompoundTag();
+
+            if (!stack.isEmpty()) {
+                stack.save(stackTag);
+            }
+
+            configTag.put("Slot" + i, stackTag);
+        }
+
+        rootTag.put("StoredItems", configTag);
+        bagStack.setTag(rootTag);
     }
 }

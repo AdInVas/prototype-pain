@@ -20,8 +20,17 @@ public class LimbWidget extends AbstractWidget {
     private float shake =0;
     private float border_red =0;
     private float base_red =0;
+    private boolean amputated;
     private int txt_height;
     private int txt_width;
+
+    public void setAmputated(boolean amputated) {
+        this.amputated = amputated;
+    }
+
+    public boolean isAmputated() {
+        return amputated;
+    }
 
     private final Map<StatusSprites, SubSprite> subSprites = new EnumMap<>(StatusSprites.class);
     private boolean expanded = false;
@@ -94,6 +103,7 @@ public class LimbWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        if (amputated)return;
         Minecraft mc = Minecraft.getInstance();
         mc.getTextureManager().bindForSetup(baseTxt);
 
@@ -141,6 +151,7 @@ public class LimbWidget extends AbstractWidget {
     }
 
     private void updateSubSpritePositions() {
+        if (amputated)return;
         List<SubSprite> visibleSprites = subSprites.values().stream()
                 .filter(SubSprite::isVisible)
                 .toList();

@@ -62,7 +62,7 @@ public class GlowFruitItem extends Item implements ISimpleMedicalUsable {
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)-1);
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)-4);
@@ -74,7 +74,7 @@ public class GlowFruitItem extends Item implements ISimpleMedicalUsable {
             }
             stack.shrink(1);
         });
-        return true;
+        return stack;
     }
 
     @Override

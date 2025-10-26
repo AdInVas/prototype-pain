@@ -6,14 +6,12 @@ import net.adinvas.prototype_pain.item.IAllowInMedicbags;
 import net.adinvas.prototype_pain.item.INbtDrivenDurability;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
 import net.adinvas.prototype_pain.limbs.Limb;
-import net.adinvas.prototype_pain.network.UseMedItemPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +20,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class BandAidItem extends Item implements ISimpleMedicalUsable, IAllowInMedicbags, INbtDrivenDurability {
     public BandAidItem() {
@@ -30,7 +29,8 @@ public class BandAidItem extends Item implements ISimpleMedicalUsable, IAllowInM
 
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
+        AtomicReference<ItemStack> newitem= new AtomicReference<>(stack);
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)+3);
             h.addDelayedChange(((0.1f)/20f)/60f,100,limb);
@@ -40,9 +40,9 @@ public class BandAidItem extends Item implements ISimpleMedicalUsable, IAllowInM
             if (getNbtDurability(stack)<=0){
                 newitemstack = ItemStack.EMPTY;
             }
-            source.setItemInHand(hand,newitemstack);
+            newitem.set(newitemstack);
         });
-        return true;
+        return newitem.get();
     }
     @Override
     public Component getName(ItemStack pStack) {

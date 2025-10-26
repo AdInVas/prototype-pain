@@ -1,4 +1,5 @@
 {
+
   "prototype_pain.gui.tourniquet_button": "Remove Tourniquet",
   "prototype_pain.gui.dislocation_button": "Fix Dislocation",
   "prototype_pain.gui.shrapnel_button": "Remove Shrapnel",
@@ -163,6 +164,11 @@
 
   "item.prototype_pain.heat_pack": "Heat Pack",
   "item.prototype_pain.heat_pack.discription": "A slightly larger chemical hand warmer. Aids in healing of muscles slightly.",
+
+  "item.prototype_pain.auto_pump": "Auto Pump",
+  "item.prototype_pain.auto_pump.discription": "A very advanced Life support device with internal batteries. Keeps oxygen at stable levels,provides adrenaline and energy. Batteries last about 5min. Usable on Chest",
+
+  "block.prototype_pain.scav_plushie": "Scav Plushie",
 
   "prototype_pain.fluid.opium": "Opium",
   "prototype_pain.fluid.opium.description": "A light opiate, lesser effect when taken orally",
@@ -346,6 +352,12 @@
   "prototype_pain.gui.moodle.withdrawal.title4": "Dying of withdrawal",
   "prototype_pain.gui.moodle.withdrawal.description4": "Your body is failing to sustain itself without the opiates it became so reliant on. Your heart is struggling to pump oxygen around the body, resulting in hypoxic brain damage during a desperate episode.",
   "prototype_pain.gui.dislocation_instruction1": "Hit the bone into the correct spot to fix dislocation.",
-  "prototype_pain.gui.shrapnel_instruction": "Slowly extract shrapnel from thie limb. Use tweezers to ignore the speed restriction"
+  "prototype_pain.gui.shrapnel_instruction": "Slowly extract shrapnel from thie limb. Use tweezers to ignore the speed restriction",
+  "prototype_pain.gui.moodle.adrenaline.title1": "Adrenaline",
+  "prototype_pain.gui.moodle.adrenaline.description1": "Pain numbed. You're on high alert.",
+  "prototype_pain.gui.moodle.life_support.description1": "Oxygen and awareness levels kept at sustainable levels by a life support machine",
+  "prototype_pain.gui.moodle.life_support.title1": "Life Support",
+  "prototype_pain.gui.moodle.amputated.description1": "One of your extremities has been dismembered. Traumatizing. Obviously, any use of the lobbed off limb is permanently gone.",
+  "prototype_pain.gui.moodle.amputated.title1": "Amputated"
 
 }

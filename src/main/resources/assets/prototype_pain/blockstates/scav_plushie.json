@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "prototype_pain:block/scav_plushie" },
+    "facing=south": { "model": "prototype_pain:block/scav_plushie", "y": 180 },
+    "facing=west":  { "model": "prototype_pain:block/scav_plushie", "y": 270 },
+    "facing=east":  { "model": "prototype_pain:block/scav_plushie", "y": 90 }
+  }
+}

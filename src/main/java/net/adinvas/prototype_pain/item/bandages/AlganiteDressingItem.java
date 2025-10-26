@@ -44,6 +44,13 @@ public class AlganiteDressingItem extends Item implements IMedicalMinigameUsable
     }
 
     @Override
+    public void openMinigameBagScreen(Player target, ItemStack stack, ItemStack bagStack,int slot, @Nullable Limb limb, InteractionHand hand) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,() -> () ->{
+            MinigameOpener.OpenBandageMinigame(target,stack,bagStack,slot,limb,hand);
+        });
+    }
+
+    @Override
     public void useMinigameAction(float scalableAmount, Player target, @Nullable Limb limb) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.addDelayedChange(((0.01f*scalableAmount)/20f)/60f,300,limb);

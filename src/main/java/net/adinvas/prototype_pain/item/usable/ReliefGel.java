@@ -27,21 +27,21 @@ public class ReliefGel extends Item implements ISimpleMedicalUsable, IAllowInMed
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setPendingOpioids(h.getPendingOpioids()+1);
             h.setLimbPain(limb,h.getLimbPain(limb)-5);
             h.setLimbDesinfected(limb,300);
             h.setLimbMuscleHeal(limb,true);
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)+10);
-            ItemStack newitemstack = stack;
-            setNbtDurability(stack,getNbtDurability(stack)-20);
-            if (getNbtDurability(stack)<=0){
-                newitemstack = ItemStack.EMPTY;
-            }
-            source.setItemInHand(hand,newitemstack);
+
         });
-        return true;
+        ItemStack newitemstack = stack;
+        setNbtDurability(stack,getNbtDurability(stack)-20);
+        if (getNbtDurability(stack)<=0){
+            newitemstack = ItemStack.EMPTY;
+        }
+        return newitemstack;
     }
     @Override
     public Component getName(ItemStack pStack) {

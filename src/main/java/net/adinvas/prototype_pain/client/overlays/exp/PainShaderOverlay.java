@@ -33,8 +33,9 @@ public class PainShaderOverlay implements IShaderOverlay {
                 .map(PlayerHealthData::getTotalPain).orElse(0d) / 100f);
         pain = Mth.clamp(pain, 0f, 1f);
 
-        float displayedPain = Mth.lerp(0.1f, prevPain, pain);
 
+        float displayedPain = Mth.lerp(0.1f, prevPain, pain);
+        if (displayedPain<0.1&&pain<0.1)return;
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();

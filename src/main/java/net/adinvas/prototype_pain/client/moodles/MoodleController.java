@@ -46,6 +46,9 @@ public class MoodleController {
         registerMoodle(new DirtynessMoodle());
         registerMoodle(new BrainHealthMoodle());
         registerMoodle(new HemothoraxMoodle());
+        registerMoodle(new LifeSupportMoodle());
+        registerMoodle(new AdrenalineMoodle());
+        registerMoodle(new AmputatedMoodle());
     }
 
     /** Collects all visible moodles for given player */

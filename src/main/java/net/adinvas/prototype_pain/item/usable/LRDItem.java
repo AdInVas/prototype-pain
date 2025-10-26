@@ -29,7 +29,7 @@ public class LRDItem extends Item implements ISimpleMedicalUsable, IAllowInMedic
 
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)+50f);
             h.setLimbInfection(limb,h.getLimbInfection(limb)-10);
@@ -45,15 +45,13 @@ public class LRDItem extends Item implements ISimpleMedicalUsable, IAllowInMedic
                 h.setLimbBleedRate(limb1,h.getLimbBleedRate(limb1)*0.75f);
             }
 
-
-            ItemStack newitemstack = stack;
-            setNbtDurability(stack,getNbtDurability(stack)-50);
-            if (getNbtDurability(stack)<=0){
-                newitemstack = ItemStack.EMPTY;
-            }
-            source.setItemInHand(hand,newitemstack);
         });
-        return true;
+        ItemStack newitemstack = stack;
+        setNbtDurability(stack,getNbtDurability(stack)-50);
+        if (getNbtDurability(stack)<=0){
+            newitemstack = ItemStack.EMPTY;
+        }
+        return newitemstack;
     }
     @Override
     public Component getName(ItemStack pStack) {

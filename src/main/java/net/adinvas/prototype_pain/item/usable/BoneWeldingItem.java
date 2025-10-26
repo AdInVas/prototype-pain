@@ -29,7 +29,7 @@ public class BoneWeldingItem extends Item implements ISimpleMedicalUsable, IAllo
 
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbSkinHealth(limb,h.getLimbSkinHealth(limb)-25);
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)-26);
@@ -37,16 +37,13 @@ public class BoneWeldingItem extends Item implements ISimpleMedicalUsable, IAllo
             h.setLimbBleedRate(limb,h.getLimbBleedRate(limb)+((0.09f)/20f/60f));
             h.setLimbPain(limb,h.getLimbPain(limb)+30);
             h.setBloodViscosity(h.getBloodViscosity()+2);
-
-
-            ItemStack newitemstack = stack;
-            setNbtDurability(stack,getNbtDurability(stack)-50);
-            if (getNbtDurability(stack)<=0){
-                newitemstack = ItemStack.EMPTY;
-            }
-            source.setItemInHand(hand,newitemstack);
         });
-        return true;
+        ItemStack newitemstack = stack;
+        setNbtDurability(stack,getNbtDurability(stack)-50);
+        if (getNbtDurability(stack)<=0){
+            newitemstack = ItemStack.EMPTY;
+        }
+        return newitemstack;
     }
     @Override
     public Component getName(ItemStack pStack) {

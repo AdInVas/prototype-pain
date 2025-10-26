@@ -28,7 +28,7 @@ public class ReliefCreamItem extends MedicalVial implements ISimpleMedicalUsable
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         if (stack.getItem() instanceof MedicalVial vial){
             Map<MedicalFluid,Float> fluidmap = vial.drain(stack,10);
             for (MedicalFluid fluid : fluidmap.keySet()){
@@ -36,7 +36,7 @@ public class ReliefCreamItem extends MedicalVial implements ISimpleMedicalUsable
                 fluid.getMedicalEffect().applyOnSkin(target,amount,limb);
             }
         }
-        return true;
+        return stack;
     }
 
     @Override

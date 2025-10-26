@@ -4,6 +4,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.network.PacketDistributor;
 import java.util.*;
@@ -57,6 +58,52 @@ public class SyncTracker {
                 }
             }
         }
+    }
+
+    static int tickCounterReduced = 0;
+    public static void tickEveryoneReducedBroadcast(MinecraftServer server){
+        tickCounterReduced++;
+        if (tickCounterReduced<20){
+            return;
+        }else{
+            tickCounterReduced = 0;
+        }
+        for (ServerPlayer viewer : server.getPlayerList().getPlayers()) {
+            for (ServerPlayer target : server.getPlayerList().getPlayers()) {
+                boolean isDirty = target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.isReducedDirty).orElse(false);
+                if (!isDirty)continue;
+                target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(cap -> {
+                    CompoundTag tag = cap.serilizeReducedNbt(new CompoundTag());
+                    ModNetwork.CHANNEL.send(PacketDistributor.PLAYER.with(() -> viewer), new SyncHealthPacket(tag, target.getUUID())
+                    );
+                });
+            }
+        }
+    }
+
+    public static void onJoin(ServerPlayer viewer,MinecraftServer server){
+        for (ServerPlayer target : server.getPlayerList().getPlayers()) {
+            target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(cap -> {
+                CompoundTag tag = cap.serilizeReducedNbt(new CompoundTag());
+                ModNetwork.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> viewer),
+                        new SyncHealthPacket(tag, target.getUUID())
+                );
+            });
+        }
+
+// Then send viewer's data TO everyone else
+        viewer.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(cap -> {
+            CompoundTag tag = cap.serilizeReducedNbt(new CompoundTag());
+            for (ServerPlayer target : server.getPlayerList().getPlayers()) {
+                if (target != viewer) {
+                    ModNetwork.CHANNEL.send(
+                            PacketDistributor.PLAYER.with(() -> target),
+                            new SyncHealthPacket(tag, viewer.getUUID())
+                    );
+                }
+            }
+        });
     }
 
 

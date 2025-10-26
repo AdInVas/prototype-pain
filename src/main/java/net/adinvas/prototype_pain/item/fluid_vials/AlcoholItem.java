@@ -39,7 +39,7 @@ public class AlcoholItem extends MedicalVial implements ISimpleMedicalUsable, IA
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         if (stack.getItem() instanceof MedicalVial vial){
             Map<MedicalFluid,Float> fluidmap = vial.drain(stack,100);
             for (MedicalFluid fluid : fluidmap.keySet()){
@@ -47,7 +47,7 @@ public class AlcoholItem extends MedicalVial implements ISimpleMedicalUsable, IA
                 fluid.getMedicalEffect().applyOnSkin(target,amount,limb);
             }
         }
-        return true;
+        return stack;
     }
 
     @Override

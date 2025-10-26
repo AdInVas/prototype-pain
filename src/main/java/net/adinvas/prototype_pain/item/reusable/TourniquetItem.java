@@ -23,21 +23,20 @@ public class TourniquetItem extends Item implements ISimpleMedicalUsable, IAllow
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         if (limb!=Limb.CHEST) {
             AtomicBoolean used = new AtomicBoolean(false);
             target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 if (!h.getTourniquet(limb)){
                     h.setTourniquet(limb, true);
                     used.set(true);
-                    source.setItemInHand(hand,ItemStack.EMPTY);
                 }
             });
             if (used.get()){
-                return true;
+                return ItemStack.EMPTY;
             }
         }
-        return false;
+        return stack;
     }
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {

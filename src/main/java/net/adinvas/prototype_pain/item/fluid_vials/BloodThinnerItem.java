@@ -25,7 +25,7 @@ public class BloodThinnerItem extends MedicalVial implements ISimpleMedicalUsabl
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         if (stack.getItem() instanceof MedicalVial vial){
             Map<MedicalFluid,Float> fluidmap = vial.drain(stack,34);
             for (MedicalFluid fluid : fluidmap.keySet()){
@@ -33,7 +33,7 @@ public class BloodThinnerItem extends MedicalVial implements ISimpleMedicalUsabl
                 fluid.getMedicalEffect().applyInjected(target,amount,limb);
             }
         }
-        return true;
+        return stack;
     }
 
     @Override

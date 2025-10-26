@@ -17,11 +17,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.antlr.v4.codegen.model.Sync;
 
 import java.util.Optional;
 
@@ -100,17 +102,28 @@ public class ModEvents {
     }
 
 
+
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         ProfilerFiller profiler = server.getProfiler();
         profiler.push("prototype_pain:sync_tracker");
         if (event.phase == TickEvent.Phase.END) {
-
-            SyncTracker.tick(ServerLifecycleHooks.getCurrentServer());
-            SyncTracker.tickEveryone(ServerLifecycleHooks.getCurrentServer());
+            SyncTracker.tick(server);
+            SyncTracker.tickEveryone(server);
+            SyncTracker.tickEveryoneReducedBroadcast(server);
         }
         profiler.pop();
+    }
+
+    @SubscribeEvent
+    public void onJoin(EntityJoinLevelEvent event){
+        if(event.getEntity() instanceof ServerPlayer player){
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.isReducedDirty = true;
+            });
+            SyncTracker.onJoin((ServerPlayer)player,ServerLifecycleHooks.getCurrentServer());
+        }
     }
 
 

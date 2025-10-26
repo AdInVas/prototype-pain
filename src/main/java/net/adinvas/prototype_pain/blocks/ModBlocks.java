@@ -18,4 +18,9 @@ public class ModBlocks {
             .noCollission()));
 
     public static final RegistryObject<Block> BROWN_CAP = BLOCKS.register("brown_cap", ()-> new BrownCapBlock(BlockBehaviour.Properties.copy(Blocks.BROWN_MUSHROOM)));
+
+    public static final RegistryObject<Block> SCAV_BLOCK = BLOCKS.register("scav_plushie",()-> new ScavBlock(
+            BlockBehaviour.Properties.of().instabreak().noOcclusion().noCollission()
+    ));
+
 }

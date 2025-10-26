@@ -15,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -31,9 +32,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraftforge.common.Tags;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
@@ -57,7 +60,10 @@ public class PlayerHealthData {
     private boolean isBreathing = true;
     private boolean respitoryArrest = false;
     private float bloodViscosity = 0;
-    
+    private float adrenaline = 0;
+    private int lifeSupportTimer= 0;
+
+
     private float immunity=100;
     private float antibiotic_timer=0;
     private float drug_addition = 0;
@@ -136,7 +142,13 @@ public class PlayerHealthData {
         return dirtyness;
     }
 
+    public float getAdrenaline() {
+        return adrenaline;
+    }
 
+    public void setAdrenaline(float adrenaline) {
+        this.adrenaline = adrenaline;
+    }
 
     public float getBrainHealth() {
         return brainHealth;
@@ -144,6 +156,14 @@ public class PlayerHealthData {
 
     public float getImmunity() {
         return immunity;
+    }
+
+    public int getLifeSupportTimer() {
+        return lifeSupportTimer;
+    }
+
+    public void setLifeSupportTimer(int lifeSupportTimer) {
+        this.lifeSupportTimer = lifeSupportTimer;
     }
 
     public void setBrainHealth(float brainHealth) {
@@ -567,6 +587,63 @@ public class PlayerHealthData {
         BPM = value;
     }
 
+    public void setlimbAmputated(Limb limb,boolean value){
+        isReducedDirty=true;
+        ensureLimb(limb).amputated = value;
+    }
+    public boolean isAmputated(Limb limb){
+        return ensureLimb(limb).amputated;
+    }
+
+    public void dismember(Limb limb){
+        switch (limb){
+            case LEFT_ARM -> {
+                setlimbAmputated(Limb.LEFT_HAND,true);
+            }
+            case RIGHT_LEG -> {
+                setlimbAmputated(Limb.RIGHT_FOOT,true);
+            }
+            case LEFT_LEG ->{
+                setlimbAmputated(Limb.LEFT_FOOT,true);
+            }
+            case RIGHT_ARM -> {
+                setlimbAmputated(Limb.RIGHT_HAND,true);
+            }
+        }
+        setlimbAmputated(limb,true);
+    }
+
+    public boolean handleAmputation(Limb limb,float damage,float base_damage_treshhold){
+        float damage_treshold = base_damage_treshhold;
+        if (limb==Limb.CHEST || limb==Limb.HEAD){
+            damage_treshold*=2;
+        }
+        float musclepenalty= (100-getLimbMuscleHealth(limb))/100 *-10;
+        float skinpenalty = (100-getLimbSkinHealth(limb))/100 *-5;
+        damage_treshold += musclepenalty+skinpenalty;
+        if (damage>=damage_treshold/2){
+            if (Math.random()<damage/(damage_treshold))return false;
+            List<Limb> limbList = limb.getConnectedLimbs();
+            for (Limb limb1 :limbList){
+                setLimbSkinHealth(limb1,0);
+                setLimbBleedRate(limb1,1);
+                setLimbPain(limb1,149);
+                setAdrenaline(Math.max(getAdrenaline(),125));
+            }
+            dismember(limb);
+            return true;
+        } else if (damage>=6&&!(limb==Limb.CHEST || limb==Limb.HEAD)) {
+            if (Math.random()<0.01){
+                handleAmputation(limb,1,0);
+            }
+        }
+        return false;
+    }
+
+    public void setClean(){
+        isReducedDirty = false;
+    }
+
     public void setTourniquet(Limb limb,boolean value){
         ensureLimb(limb).Tourniquet = value;
     }
@@ -595,6 +672,7 @@ public class PlayerHealthData {
     public void recalcTotalPain() {
         totalPain = limbStats.values().stream().mapToDouble(ls -> ls.finalPain).max().orElse(0f);
         totalPain = Math.max(totalPain,hemothoraxpain);
+        totalPain = Math.max(0,totalPain-adrenaline);
     }
 
     public double getMaxInfection(){
@@ -796,6 +874,10 @@ public class PlayerHealthData {
         updateTemperature(player);
         calculateImmunity();
         updateDirtyness(player);
+        if (adrenaline>0){
+            adrenaline -= 4f/20f;
+        }
+        adrenaline = Math.max(0,adrenaline);
         //Opioid Pending
         if (PendingOpioids>0){
             float change = Math.min(2f+tempspeedup,PendingOpioids)/20f;
@@ -952,6 +1034,12 @@ public class PlayerHealthData {
                 }
             }
         }
+        if (lifeSupportTimer>0){
+            lifeSupportTimer--;
+            Oxygen = Math.max(Oxygen,50);
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,10,0));
+            adrenaline = Math.max(70,adrenaline);
+        }
 
         boolean isUnc = getContiousness()<=4;
             if (isUnc){
@@ -1049,23 +1137,24 @@ public class PlayerHealthData {
             ItemStack stack = player.getItemInHand(hand);
 
             if (!stack.isEmpty()) {
-                // Which physical arm is this hand using?
                 HumanoidArm arm = Limb.getFromHand(hand, player);
-
-                // Map arm to your Limb system
                 Limb limb = (arm == HumanoidArm.LEFT) ? Limb.LEFT_HAND : Limb.RIGHT_HAND;
 
-                // Check if this limb is "broken"
-                boolean broken = getLimbMuscleHealth(limb) < 10 || getLimbFracture(limb) > 0||getLimbDislocated(limb)>0;
+                boolean broken = getLimbMuscleHealth(limb) < 10
+                        || getLimbFracture(limb) > 0
+                        || getLimbDislocated(limb) > 0;
 
                 if (broken) {
-                    // Try to move item into inventory
-                    if (player.getInventory().add(stack)) {
-                        player.setItemInHand(hand, ItemStack.EMPTY);
-                    } else {
-                        // Drop if inventory is full
+                    player.setItemInHand(hand, ItemStack.EMPTY);
+
+                    int handSlot = player.getInventory().selected; // hotbar index of hand
+                    if (player.getInventory().getItem(handSlot).isEmpty()) {
+                        // don't add to inventory, just drop
                         player.drop(stack, false);
-                        player.setItemInHand(hand, ItemStack.EMPTY);
+                    } else {
+                        // safe to add to other inventory slots
+                        ItemStack leftover = player.getInventory().add(stack) ? ItemStack.EMPTY : stack;
+                        if (!leftover.isEmpty()) player.drop(leftover, false);
                     }
                 }
             }
@@ -1095,6 +1184,8 @@ public class PlayerHealthData {
         nbt.putFloat("Shock",Shock);
         nbt.putFloat("Dirty",dirtyness);
         nbt.putFloat("Temp",temperature);
+        nbt.putFloat("Adrenaline",adrenaline);
+        nbt.putInt("LifeSupport",lifeSupportTimer);
 
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
@@ -1133,6 +1224,22 @@ public class PlayerHealthData {
         return nbt;
     }
 
+    public boolean isReducedDirty = false;
+    public CompoundTag serilizeReducedNbt(CompoundTag tag){
+        ListTag limbList = new ListTag();
+        for (Map.Entry<Limb, LimbStatistics> entry : limbStats.entrySet()) {
+            CompoundTag limbTag = new CompoundTag();
+            limbTag.putString("LimbName", entry.getKey().name());
+            LimbStatistics stats = entry.getValue();
+            limbTag.putBoolean("Amputated", stats.amputated);
+            limbList.add(limbTag);
+        }
+        tag.put("LimbStats", limbList);
+
+        return tag;
+    }
+
+
 
     public void copyFrom(PlayerHealthData other) {
         this.blood = other.blood;
@@ -1155,6 +1262,8 @@ public class PlayerHealthData {
         this.Shock = other.Shock;
         this.dirtyness = other.dirtyness;
         this.temperature = other.temperature;
+        this.adrenaline = other.adrenaline;
+        this.lifeSupportTimer = other.lifeSupportTimer;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -1231,6 +1340,10 @@ public class PlayerHealthData {
             dirtyness = nbt.getFloat("Dirty");
         if (nbt.contains("Temp"))
             temperature = nbt.getFloat("Temp");
+        if (nbt.contains("Adrenaline"))
+            adrenaline = nbt.getFloat("Adrenaline");
+        if (nbt.contains("LifeSupport"))
+            lifeSupportTimer = nbt.getInt("LifeSupport");
 
         changeEntries.clear();
         ListTag changeList = nbt.getList("ChangeList", 10);
@@ -1269,15 +1382,15 @@ public class PlayerHealthData {
     }
 
 
-    public boolean tryUseItem(Limb limb, ItemStack itemstack, ServerPlayer source, ServerPlayer target,InteractionHand hand){
+    public ItemStack tryUseItem(Limb limb, ItemStack itemstack, ServerPlayer source, ServerPlayer target){
         if (itemstack.getItem() instanceof ISimpleMedicalUsable medItem){
-            boolean used =  medItem.onMedicalUse(limb,source,target,itemstack,hand);
-            if (used){
+            ItemStack used =  medItem.onMedicalUse(limb,source,target,itemstack);
+            if (used!=itemstack){
                 source.serverLevel().getLevel().playSound(null,source.getOnPos(),medItem.getUseSound(), SoundSource.PLAYERS);
             }
             return used;
         }
-        return false;
+        return itemstack;
     }
 
 
@@ -1323,6 +1436,7 @@ public class PlayerHealthData {
 
     public void handleFallDamage(float damageValue,Player player){
         Random random = new Random();
+        setAdrenaline(Math.max(getAdrenaline(),damageValue*2));
         float remainingDamage = damageValue * 1;
 
         remainingDamage = applyLocationalArmor(Limb.LEFT_FOOT,remainingDamage,player,false,false,false,true);
@@ -1374,6 +1488,7 @@ public class PlayerHealthData {
 
     public void handleMagicDamage(float damage){
         for (Limb limb : limbStats.keySet()){
+            setAdrenaline(Math.max(getAdrenaline(),damage*1));
             applyMuscleDamage(limb, (float) (damage*(Math.random()/4f)));
             applyPain(limb, (float) (damage*(Math.random())));
         }
@@ -1471,6 +1586,7 @@ public class PlayerHealthData {
     }
 
     public void handleFireDamage(float damage,Player player){
+        setAdrenaline(Math.max(getAdrenaline(),damage*1));
         int i=0;
         while (damage>0){
             i++;
@@ -1494,6 +1610,7 @@ public class PlayerHealthData {
     }
 
     public void handleExplosionDamage(float damage,boolean shrapnell, Player player){
+        setAdrenaline(Math.max(getAdrenaline(),damage*4));
         while (damage>2){
             float passDamage = Math.min(damage,6);
             Limb rLimb = Limb.weigtedRandomLimb();
@@ -1506,8 +1623,12 @@ public class PlayerHealthData {
             if (Math.random()<chance&&shrapnell){
                 setLimbShrapnell(rLimb, (int) (hasLimbShrapnell(rLimb)+(Math.random()*5)));
             }
-            damage-=2;
             hurtArmor(rLimb,player,damage);
+            boolean amputated = handleAmputation(rLimb,passDamage,15+5);
+            if (amputated){
+                damage/=4;
+            }
+            damage-=2;
         };
     }
 
@@ -1527,6 +1648,7 @@ public class PlayerHealthData {
     }
 
     public void handleProjectileDamage(HitSector hitSector,float damage, Player player) {
+        setAdrenaline(Math.max(getAdrenaline(),damage*2));
         Random random = new Random();
         List<Limb> limbList = hitSector.getLimbsPerSector();
         Limb randomLimb = limbList.get(random.nextInt(limbList.size()));
@@ -1550,9 +1672,14 @@ public class PlayerHealthData {
             setLimbShrapnell(randomLimb,hasLimbShrapnell(randomLimb)+1);
         }
         hurtArmor(randomLimb,player,damage);
+        boolean amputated = handleAmputation(randomLimb,damage,15+5+6);
+        if (amputated){
+            damage/=4;
+        }
     }
 
     public void handleRandomDamage(float damage, Player player) {
+        setAdrenaline(Math.max(getAdrenaline(),damage*1));
         int i=0;
         while (damage>0){
             i++;
@@ -1572,6 +1699,10 @@ public class PlayerHealthData {
             }
             damage-=damage_pass;
             hurtArmor(randLimb,player,damage_pass);
+            boolean amputated = handleAmputation(randLimb,passDamage,15+5+2);
+            if (amputated){
+                damage/=4;
+            }
         }
     }
 
@@ -1639,11 +1770,12 @@ public class PlayerHealthData {
             }
         }
         player.setHealth(0.1f);
-        player.hurt(src, 1.0F);
+        player.hurt(src, 5.0F);
         if (player.isAlive()) {
             player.setHealth(0.1f);
-            player.hurt(src, 1.0F);
+            player.hurt(src, 5.0F);
         }
+        player.kill();
     }
 
     public void resetToDefaults() {
@@ -1678,6 +1810,8 @@ public class PlayerHealthData {
         dirtyness = 0;
         antibiotic_timer = 0;
         immunity = 100;
+        adrenaline = 0;
+        lifeSupportTimer =0;
 
         // passthrough / player-state
         hungerLevel = 20;
@@ -1859,9 +1993,14 @@ public class PlayerHealthData {
     public void updateDirtyness(Player player) {
         float passiveIncrease = 0.000666f;
         if (player.isSprinting())passiveIncrease *=3;
+        boolean swamp =
+                player.level().getBiome(player.blockPosition()).is(Biomes.SWAMP)||
+                        player.level().getBiome(player.blockPosition()).is(Biomes.MANGROVE_SWAMP)||
+                        player.level().getBiome(player.blockPosition()).is(Biomes.JUNGLE);
+
 
         // Dirt accumulates faster if player is hurt or bleeding
-        if (getCombinedBleed()>0) passiveIncrease += 0.02f;
+        if (getCombinedBleed()>0||swamp) passiveIncrease += 0.02f;
         BlockPos blockPosBelow = player.blockPosition().below();
         BlockState blockStateBelow = player.level().getBlockState(blockPosBelow);
         if (blockStateBelow.is(Blocks.MUD)||blockStateBelow.is(BlockTags.SAND)) passiveIncrease += 0.05f;
@@ -1869,7 +2008,13 @@ public class PlayerHealthData {
 
         // Rain and clean water slowly reduce dirt
         float passiveDecrease = 0f;
-        if (player.isUnderWater()) passiveDecrease += 1f;
+        if (player.isUnderWater()) {
+            if (!swamp) {
+                passiveDecrease += 1f;
+            }else{
+                passiveIncrease +=0.5f;
+            }
+        }
         else if (player.level().isRainingAt(player.blockPosition())) passiveDecrease += 0.05f;
 
         dirtyness += (passiveIncrease - passiveDecrease) /20;
@@ -1913,4 +2058,7 @@ public class PlayerHealthData {
         lastRate = rate;
         return rate;
     }
+
+
+
 }

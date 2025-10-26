@@ -227,6 +227,12 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                 },       // no extra conditions
                 ModItems.HeatPack.get()
         ));
+        add("add_auto_pump",new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.01f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.HeatPack.get()
+        ));
 
 
         add("random_vial",new AddRandomFillToChestsModifier(

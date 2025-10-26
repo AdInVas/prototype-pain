@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.BrownCapBlock;
+import net.adinvas.prototype_pain.blocks.ModBlocks;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
@@ -12,6 +13,7 @@ import net.adinvas.prototype_pain.item.reusable.SplintItem;
 import net.adinvas.prototype_pain.item.reusable.TourniquetItem;
 import net.adinvas.prototype_pain.item.reusable.TweezersItem;
 import net.adinvas.prototype_pain.item.usable.*;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -71,5 +73,9 @@ public class ModItems {
     public static final RegistryObject<Item> CEFTRIAXONE =  ITEMS.register("ceftriaxone", CeftriaxoneItem::new);
     public static final RegistryObject<Item> ReliefCream = ITEMS.register("relief_cream",ReliefCreamItem::new);
     public static final RegistryObject<Item> BrownCap = ITEMS.register("brown_cap", BrownCapItem::new);
+    public static final RegistryObject<Item> AutoPump = ITEMS.register("auto_pump", AutoPumpItem::new);
 
+
+    public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
+            new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));
 }

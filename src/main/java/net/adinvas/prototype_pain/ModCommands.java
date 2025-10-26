@@ -253,6 +253,33 @@ public class ModCommands {
                                 )
                         )
 
+                        .then(Commands.literal("amputate")
+                                .requires(source ->source.hasPermission(2))
+                                .then(Commands.argument("target", EntityArgument.player())
+                                        .then(Commands.argument("limb", StringArgumentType.word())
+                                                .suggests((ctx, builder) -> {
+                                                    for (Limb e : Limb.values()) {
+                                                        builder.suggest(e.name().toLowerCase()); // lowercase is more user-friendly
+                                                    }
+                                                    return builder.buildFuture();
+                                                })
+                                                .executes(ctx -> {
+                                                    String raw = StringArgumentType.getString(ctx, "limb");
+                                                    Limb limb = Limb.valueOf(raw.toUpperCase());
+
+                                                    ServerPlayer target = EntityArgument.getPlayer(ctx, "target");
+
+                                                    target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                                                        h.dismember(limb);
+                                                        ctx.getSource().sendSuccess(()->Component.literal("amputated "+raw),true);
+                                                    });
+
+                                                    return 1;
+                                                })
+                                        )
+                                )
+                        )
+
 
 
         );

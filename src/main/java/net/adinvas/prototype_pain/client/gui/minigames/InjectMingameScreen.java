@@ -5,6 +5,7 @@ import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.ExchangeItemInBagPacket;
 import net.adinvas.prototype_pain.network.ExchangeItemInHandPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.SyringeFailPacket;
@@ -25,11 +26,14 @@ public class InjectMingameScreen extends Screen {
     private final ItemStack syringeStack;
     private final Limb limb;
     private double lastpMouseX=this.width/2,lastpMouseY=this.height/2;
+    private final ItemStack bagstack;
+    private final int slot;
 
     private SyringeObject syringeObject;
     private final InteractionHand hand;
 
     private HandObject handObject;
+
     public InjectMingameScreen(Screen parent, Player target, ItemStack syringeStack, Limb limb, InteractionHand hand) {
         super(Component.literal("Inject screen"));
         this.parent = parent;
@@ -37,7 +41,21 @@ public class InjectMingameScreen extends Screen {
         this.syringeStack = syringeStack;
         this.limb = limb;
         this.hand = hand;
+        this.bagstack = ItemStack.EMPTY;
+        slot = -1;
     }
+
+    public InjectMingameScreen(Screen parent, Player target, ItemStack syringeStack,ItemStack bagstack,int slot, Limb limb, InteractionHand hand) {
+        super(Component.literal("Inject screen"));
+        this.parent = parent;
+        this.target = target;
+        this.syringeStack = syringeStack;
+        this.limb = limb;
+        this.hand = hand;
+        this.bagstack = bagstack;
+        this.slot = slot;
+    }
+
 
     @Override
     protected void init() {
@@ -143,7 +161,11 @@ public class InjectMingameScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(syringeStack,hand==InteractionHand.OFF_HAND));
+        if (bagstack!=null){
+            ModNetwork.CHANNEL.sendToServer(new ExchangeItemInBagPacket(syringeStack,hand==InteractionHand.OFF_HAND,bagstack,slot));
+        }else{
+            ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(syringeStack,hand==InteractionHand.OFF_HAND));
+        }
         syringeObject.stop();
         if (syringeObject.getTickSound()!=null){
             minecraft.getSoundManager().stop(syringeObject.getTickSound());

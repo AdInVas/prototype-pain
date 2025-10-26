@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -20,6 +21,7 @@ public class ModCreativeTab {
                     .icon(() -> new ItemStack(ModItems.Dressing.get())) // icon for the tab
                     .displayItems((parameters, output) -> {
                         for (RegistryObject<Item> itemRegistryObject : ModItems.ITEMS.getEntries()){
+                            if (itemRegistryObject == ModItems.ScavPlush)continue;
                             if (itemRegistryObject.get() instanceof MedicalVial medicalVial){
                                 ItemStack stack = new ItemStack(itemRegistryObject.get());
                                 medicalVial.setupDefaults(stack);

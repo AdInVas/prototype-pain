@@ -42,6 +42,12 @@ public class MedicalGauzeItem extends Item implements IMedicalMinigameUsable, IA
             MinigameOpener.OpenBandageMinigame(target,stack,limb,hand);
         });
     }
+    @Override
+    public void openMinigameBagScreen(Player target, ItemStack stack, ItemStack bagStack,int slot, @Nullable Limb limb, InteractionHand hand) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,() -> () ->{
+            MinigameOpener.OpenBandageMinigame(target,stack,bagStack,slot,limb,hand);
+        });
+    }
 
     @Override
     public void useMinigameAction(float scalableAmount, Player target, @Nullable Limb limb) {

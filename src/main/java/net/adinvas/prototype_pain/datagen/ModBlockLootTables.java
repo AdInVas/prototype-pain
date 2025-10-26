@@ -19,6 +19,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
     protected void generate() {
         this.dropOther(ModBlocks.BROWN_CAP.get(), ModItems.BrownCap.get());
         this.dropOther(ModBlocks.GLOW_FRUIT_BUSH.get(), ItemStack.EMPTY.getItem());
+        this.dropSelf(ModBlocks.SCAV_BLOCK.get());
     }
 
     @Override

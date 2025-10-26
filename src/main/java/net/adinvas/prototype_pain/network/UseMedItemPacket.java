@@ -48,29 +48,11 @@ public class UseMedItemPacket {
             InteractionHand hand = msg.offHand ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
             ItemStack stack = source.getItemInHand(hand);
             target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
-                boolean used = health.tryUseItem(limb,stack,source,target,hand);
-                if (used){
-                }
+                ItemStack used = health.tryUseItem(limb,stack,source,target);
+                source.setItemInHand(hand,used);
             });
         });
         ctx.get().setPacketHandled(true);
     }
 
-    public static ItemStack manualHurt(ItemStack stack, int amount) {
-        if (stack == null || stack.isEmpty() || amount <= 0 || !stack.isDamageableItem()) {
-            return stack;
-        }
-
-        int newDamage = stack.getDamageValue() + amount;
-        int max = stack.getMaxDamage();
-
-        if (newDamage >= max) {
-            // broken -> return an empty stack so the caller can replace it
-            return ItemStack.EMPTY;
-        }
-
-        // update damage value on the existing ItemStack
-        stack.setDamageValue(newDamage);
-        return stack;
-    }
 }

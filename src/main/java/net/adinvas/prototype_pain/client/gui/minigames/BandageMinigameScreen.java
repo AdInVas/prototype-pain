@@ -6,6 +6,7 @@ import net.adinvas.prototype_pain.client.gui.HealthScreen;
 import net.adinvas.prototype_pain.client.gui.StatusSprites;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.ExchangeItemInBagPacket;
 import net.adinvas.prototype_pain.network.ExchangeItemInHandPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,8 @@ public class BandageMinigameScreen extends Screen {
     private final Screen parent;
     private final Player target;
     private final ItemStack bandageStack;
+    private final ItemStack bagStack;
+    private final int slot;
     private final Limb limb;
     private final InteractionHand hand;
 
@@ -39,6 +42,19 @@ public class BandageMinigameScreen extends Screen {
         this.bandageStack = bandageStack;
         this.limb = limb;
         this.hand = hand;
+        bagStack = null;
+        slot = -1;
+    }
+
+    public BandageMinigameScreen(Screen parent, Player target, ItemStack bandageStack,ItemStack bagStack,int slot, Limb limb, InteractionHand hand) {
+        super(Component.literal("BandageMinigame"));
+        this.parent = parent;
+        this.target = target;
+        this.bandageStack = bandageStack;
+        this.limb = limb;
+        this.hand = hand;
+        this.bagStack = bagStack;
+        this.slot = slot;
     }
 
     @Override
@@ -118,7 +134,11 @@ public class BandageMinigameScreen extends Screen {
     @Override
     public void onClose() {
         super.onClose();
-        ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(bandageObject.getItemStack(),hand==InteractionHand.OFF_HAND));
+        if (bagStack==null){
+            ModNetwork.CHANNEL.sendToServer(new ExchangeItemInHandPacket(bandageObject.getItemStack(),hand==InteractionHand.OFF_HAND));
+        }else{
+            ModNetwork.CHANNEL.sendToServer(new ExchangeItemInBagPacket(bandageObject.getItemStack(),hand==InteractionHand.OFF_HAND,bagStack,slot));
+        }
         if (parent instanceof HealthScreen hp){
             hp.BGmode = false;
         }

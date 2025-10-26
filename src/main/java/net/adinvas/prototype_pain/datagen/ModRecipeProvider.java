@@ -160,29 +160,30 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.SmallMedibag.get())
-                .pattern(" N ")
+                .pattern("NNN")
                 .pattern("WLW")
-                .define('N',Items.IRON_NUGGET)
+                .define('N',Items.IRON_INGOT)
                 .define('W',ItemTags.WOOL)
                 .define('L',Items.LEATHER)
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.MediumMedibag.get())
-                .pattern("NSN")
-                .pattern("WLW")
-                .define('N',Items.IRON_NUGGET)
+                .pattern("GWG")
+                .pattern("SLS")
                 .define('W',ItemTags.WOOL)
                 .define('L',Items.LEATHER)
+                .define('G',Items.GOLD_INGOT)
                 .define('S',ModItems.SmallMedibag.get())
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.LargeMedibag.get())
-                .pattern(" W ")
+                .pattern("DWD")
                 .pattern("MNM")
                 .define('N',Items.IRON_NUGGET)
                 .define('W',ItemTags.WOOL)
+                .define('D',Items.DIAMOND)
                 .define('M',ModItems.MediumMedibag.get())
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);

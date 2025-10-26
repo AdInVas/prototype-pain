@@ -27,21 +27,20 @@ public class IcePackItem extends Item implements ISimpleMedicalUsable, IAllowInM
     }
 
     @Override
-    public boolean onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack, InteractionHand hand) {
+    public ItemStack onMedicalUse(Limb limb, ServerPlayer source, ServerPlayer target, ItemStack stack) {
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.setLimbMuscleHealth(limb,h.getLimbMuscleHealth(limb)+35);
             h.setLimbDislocation(limb,h.getLimbDislocated(limb)*0.4f);
             h.setLimbPain(limb,h.getLimbPain(limb)*0.5f);
             h.setLimbMuscleHeal(limb,true);
             h.setTemperature(h.getTemperature()-.5f);
-            ItemStack newitemstack = stack;
-            setNbtDurability(stack,getNbtDurability(stack)-20);
-            if (getNbtDurability(stack)<=0){
-                newitemstack = ItemStack.EMPTY;
-            }
-            source.setItemInHand(hand,newitemstack);
         });
-        return true;
+        ItemStack newitemstack = stack;
+        setNbtDurability(stack,getNbtDurability(stack)-20);
+        if (getNbtDurability(stack)<=0){
+            newitemstack = ItemStack.EMPTY;
+        }
+        return newitemstack;
     }
     @Override
     public Component getName(ItemStack pStack) {
