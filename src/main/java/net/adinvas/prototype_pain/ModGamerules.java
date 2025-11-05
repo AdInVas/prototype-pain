@@ -6,6 +6,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModGamerules {
     public static GameRules.Key<GameRules.BooleanValue> INVENTORY_STEAL;
+    public static GameRules.Key<GameRules.IntegerValue> LAST_STAND_CHANCE;
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
@@ -14,6 +15,11 @@ public class ModGamerules {
                     "doInventoryStealing", // gamerule name
                     GameRules.Category.PLAYER,
                     GameRules.BooleanValue.create(false) // default value
+            );
+            LAST_STAND_CHANCE = GameRules.register(
+                    "lastStandChancePercentage",
+                    GameRules.Category.PLAYER,
+                    GameRules.IntegerValue.create(10)
             );
         });
     }

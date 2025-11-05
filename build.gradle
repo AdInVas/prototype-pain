@@ -179,8 +179,11 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
+    compileOnly( fg.deobf("de.maxhenkel.voicechat:voicechat-api:2.5.0"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    //runtimeOnly(fg.deobf("maven.modrinth:figura:4HqSmvZ6"))
+    runtimeOnly(fg.deobf("maven.modrinth:simple-voice-chat:forge-1.20.1-2.5.35"))
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

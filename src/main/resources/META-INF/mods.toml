@@ -64,3 +64,11 @@ versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies."${mod_id}"]]
+modId="voicechat_api"
+mandatory=false
+# Note that the mod ID "voicechat_api" was introduced with API version 2.6.0 - For older versions you need to depend on the mod ID "voicechat"
+versionRange="[2.5.0,)"
+ordering="AFTER"
+side="BOTH"
+

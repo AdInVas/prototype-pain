@@ -16,7 +16,7 @@ public class MouseHandlerMixin {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null) {
             mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                if (h.getContiousness()<=4){
+                if (h.getContiousness()<=10){
                     ci.cancel();
                 }
             });

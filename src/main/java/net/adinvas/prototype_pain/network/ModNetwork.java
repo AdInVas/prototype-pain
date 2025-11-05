@@ -37,5 +37,9 @@ public class ModNetwork {
         CHANNEL.registerMessage(14, AdjustShrapnelPacket.class,AdjustShrapnelPacket::write,AdjustShrapnelPacket::new,AdjustShrapnelPacket::handle);
         CHANNEL.registerMessage(15, UseBagMedItemPacket.class,UseBagMedItemPacket::write,UseBagMedItemPacket::new,UseBagMedItemPacket::handle);
         CHANNEL.registerMessage(16, ExchangeItemInBagPacket.class,ExchangeItemInBagPacket::write,ExchangeItemInBagPacket::new,ExchangeItemInBagPacket::handle);
+        CHANNEL.registerMessage(17, CauterizeActionPacket.class,CauterizeActionPacket::write,CauterizeActionPacket::new,CauterizeActionPacket::handle);
+        CHANNEL.registerMessage(18, TalkPacket.class,TalkPacket::toBytes,TalkPacket::new,TalkPacket::handle);
+        CHANNEL.registerMessage(19, CPRPacket.class,CPRPacket::write,CPRPacket::new,CPRPacket::handle);
+        CHANNEL.registerMessage(20, TriggerLastStandPacket.class,TriggerLastStandPacket::write,TriggerLastStandPacket::new,TriggerLastStandPacket::handle);
     }
 }

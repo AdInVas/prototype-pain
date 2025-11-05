@@ -54,6 +54,41 @@
         "stream": true
       }
     ]
+  },
+  "ring": {
+    "sounds": [
+      {
+        "name": "prototype_pain:tinnitus",
+        "stream": true
+      }
+    ]
+  },
+  "bone_break": {
+    "sounds": [
+      {
+        "name": "prototype_pain:bone-break1"
+      },
+      {
+        "name": "prototype_pain:bone-break2"
+      },
+      {
+        "name": "prototype_pain:bone-break3"
+      }
+    ]
+  },
+  "amputation": {
+    "sounds": [
+      {
+        "name": "prototype_pain:amputation"
+      }
+    ]
+  },
+  "laststand": {
+    "sounds": [
+      {
+        "name": "prototype_pain:laststand"
+      }
+    ]
   }
 }
 

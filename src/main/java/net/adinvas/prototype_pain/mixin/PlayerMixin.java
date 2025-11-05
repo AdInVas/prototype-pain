@@ -20,7 +20,7 @@ public abstract class PlayerMixin {
     private void pp$forceLaydownPose(CallbackInfo ci) {
         Player self = (Player)(Object)this;
         self.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-            if (h.getContiousness() <= 4) {
+            if (h.getContiousness() <= 10) {
                 self.setPose(Pose.SWIMMING);
                 ci.cancel(); // prevent vanilla from picking another pose
             }

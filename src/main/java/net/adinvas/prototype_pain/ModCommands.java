@@ -184,6 +184,9 @@ public class ModCommands {
                                                     builder.suggest("dirtyness");
                                                     builder.suggest("painshock");
                                                     builder.suggest("temperature");
+                                                    builder.suggest("lefteyeblind");
+                                                    builder.suggest("righteyeblind");
+                                                    builder.suggest("mouthremoved");
                                                     return builder.buildFuture();
                                                 })
                                                 .then(Commands.argument("value", FloatArgumentType.floatArg())
@@ -236,6 +239,27 @@ public class ModCommands {
                                                                     }
                                                                     case "temperature" -> {
                                                                         h.setTemperature(value);
+                                                                    }
+                                                                    case "lefteyeblind" ->{
+                                                                        if (value>0){
+                                                                            h.setLeftEyeBlind(true);
+                                                                        }else {
+                                                                            h.setLeftEyeBlind(false);
+                                                                        }
+                                                                    }
+                                                                    case "righteyeblind" ->{
+                                                                        if (value>0){
+                                                                            h.setRightEyeBlind(true);
+                                                                        }else {
+                                                                            h.setRightEyeBlind(false);
+                                                                        }
+                                                                    }
+                                                                    case "mouthremoved" ->{
+                                                                        if (value>0){
+                                                                            h.setMouthRemoved(true);
+                                                                        }else {
+                                                                            h.setMouthRemoved(false);
+                                                                        }
                                                                     }
                                                                     default -> {
                                                                         ctx.getSource().sendFailure(Component.literal("Unknown field: " + field));

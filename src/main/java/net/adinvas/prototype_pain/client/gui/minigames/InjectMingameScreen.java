@@ -41,7 +41,7 @@ public class InjectMingameScreen extends Screen {
         this.syringeStack = syringeStack;
         this.limb = limb;
         this.hand = hand;
-        this.bagstack = ItemStack.EMPTY;
+        this.bagstack = null;
         slot = -1;
     }
 
@@ -55,12 +55,29 @@ public class InjectMingameScreen extends Screen {
         this.bagstack = bagstack;
         this.slot = slot;
     }
-
+    public boolean isAmputated(){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player==null) return false;
+        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+            for (Limb l:limb.availableHandsForAction()){
+                if (!h.isAmputated(l)){
+                    return false;
+                }
+            }
+            return true;
+        }).orElse(false);
+    }
 
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
+        HandObject.SpriteType spriteType;
+        if (isAmputated()) {
+            spriteType= HandObject.SpriteType.GONE;
+        }else {
+            spriteType= HandObject.SpriteType.NORMAL;
+        }
+        handObject = new HandObject(spriteType,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
@@ -124,7 +141,7 @@ public class InjectMingameScreen extends Screen {
             handObject.setStiffness(consscale);
         }
         Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            if (h.getContiousness()<=4)
+            if (h.getContiousness()<=10)
                 onClose();
         });
         super.tick();
@@ -137,8 +154,11 @@ public class InjectMingameScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (handObject.spriteType!=HandObject.SpriteType.GONE){
         syringeObject.mouseClicked(handObject.x,handObject.y,pButton);
-        handObject.mouseClicked();
+
+            handObject.mouseClicked();
+        }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 

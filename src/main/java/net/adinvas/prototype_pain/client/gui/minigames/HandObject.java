@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class HandObject {
-    enum SpriteType {NORMAL,TWEEZERS}
+    enum SpriteType {NORMAL,TWEEZERS,GONE}
     public final SpriteType spriteType;
     public double x, y;     // current position
     public double vx, vy;   // velocity
@@ -131,6 +131,12 @@ public class HandObject {
                             -188, -53, 0, 0, 192, 64, 192, 64
                     );
                 }
+            }
+            case GONE -> {
+                    guiGraphics.blit(
+                            new ResourceLocation(PrototypePain.MOD_ID, "textures/gui/limbs/arm_broken.png"),
+                            -160, -32, 0, 0, 192, 64, 192, 64
+                    );
             }
         }
 

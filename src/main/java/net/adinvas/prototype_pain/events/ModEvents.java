@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
 import net.minecraft.resources.ResourceLocation;
@@ -10,21 +11,32 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.antlr.v4.codegen.model.Sync;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID)
@@ -103,6 +115,7 @@ public class ModEvents {
 
 
 
+
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
@@ -114,6 +127,65 @@ public class ModEvents {
             SyncTracker.tickEveryoneReducedBroadcast(server);
         }
         profiler.pop();
+    }
+
+    @SubscribeEvent
+    public static void onItemUse(LivingEntityUseItemEvent.Stop event){
+        if (event.getEntity() instanceof Player player) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                Item item = event.getItem().getItem();
+                if (h.getLimbFracture(Limb.HEAD)>0){
+                    h.setLimbPain(Limb.HEAD, h.getLimbPain(Limb.HEAD)+3);
+                }
+                if (h.getLimbDislocated(Limb.CHEST)>0||h.getLimbFracture(Limb.CHEST)>0){
+                    h.setLimbPain(Limb.CHEST, h.getLimbPain(Limb.CHEST)+4);
+                }
+                if (item.isEdible()){
+                    if (h.getLimbDislocated(Limb.HEAD)>0){
+                        h.setLimbPain(Limb.HEAD, h.getLimbPain(Limb.HEAD)+25);
+                    }
+                }
+            });
+        }
+
+    }
+
+    @SubscribeEvent
+    public static void onAttack(LivingAttackEvent event){
+        if (event.getEntity() instanceof Player player) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                if (h.getLimbFracture(Limb.HEAD)>0){
+                    h.setLimbPain(Limb.HEAD, h.getLimbPain(Limb.HEAD)+3);
+                }
+                if (h.getLimbDislocated(Limb.CHEST)>0||h.getLimbFracture(Limb.CHEST)>0){
+                    h.setLimbPain(Limb.CHEST, h.getLimbPain(Limb.CHEST)+4);
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onJump(LivingEvent.LivingJumpEvent event){
+        if (event.getEntity() instanceof Player player) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                if (h.getLimbFracture(Limb.HEAD)>0){
+                    h.setLimbPain(Limb.HEAD, h.getLimbPain(Limb.HEAD)+10);
+                }
+                if (h.getLimbDislocated(Limb.CHEST)>0){
+                    h.setLimbPain(Limb.CHEST, h.getLimbPain(Limb.HEAD)+10);
+                }
+                List<Limb> templist= new ArrayList<>();
+                templist.add(Limb.LEFT_LEG);
+                templist.add(Limb.RIGHT_LEG);
+                templist.add(Limb.LEFT_FOOT);
+                templist.add(Limb.RIGHT_FOOT);
+                for (Limb limb :templist){
+                    if (h.getLimbDislocated(limb)>0||h.getLimbFracture(limb)>0){
+                        h.setLimbPain(limb, h.getLimbPain(limb)+10);
+                    }
+                }
+            });
+        }
     }
 
     @SubscribeEvent

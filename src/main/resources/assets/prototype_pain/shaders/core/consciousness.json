@@ -1,6 +1,6 @@
 {
   "vertex": "prototype_pain:pass_trough",
-  "fragment": "prototype_pain:brain_distortion",
+  "fragment": "prototype_pain:consciousness",
   "samplers": [
     { "name": "Sampler0" }
   ],

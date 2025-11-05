@@ -1,6 +1,5 @@
 package net.adinvas.prototype_pain.events;
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
@@ -127,58 +126,5 @@ public class BrainDamageClientController {
         }
     }
 
-    @SubscribeEvent
-    public static void renderShader(RenderLevelStageEvent event){
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player==null)return;
-        float brainHealth = mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f);
-        if (brainHealth>= 80) return;
-        ShaderInstance shader = ClientShaderEvents.BRAIN_SHADER;
-        if (shader != null) {
-            float time = (mc.level.getGameTime() + event.getPartialTick()) * 0.02f;
-            float intensity = Mth.clamp((100-brainHealth)/100f, 0f, 1f);
-
-            RenderSystem.disableDepthTest();
-            RenderSystem.depthMask(false);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-
-            // Tell Minecraft to use our shader
-            RenderSystem.setShaderTexture(0, mc.getMainRenderTarget().getColorTextureId());
-            RenderSystem.setShader(() -> shader);
-
-            shader.safeGetUniform("Intensity").set(intensity);
-            shader.safeGetUniform("BlurScaleX").set(1f/mc.getWindow().getScreenWidth());
-            shader.safeGetUniform("BlurScaleY").set(1f/mc.getWindow().getScreenHeight());
-
-
-            Tesselator tesselator = Tesselator.getInstance();
-            BufferBuilder buf = tesselator.getBuilder();
-            buf.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-
-            // Fullscreen quad (clip-space coordinates)
-            buf.vertex(-1.0, -1.0, 0).uv(0.0f, 0.0f).endVertex();
-            buf.vertex( 1.0, -1.0, 0).uv(1.0f, 0.0f).endVertex();
-            buf.vertex( 1.0,  1.0, 0).uv(1.0f, 1.0f).endVertex();
-            buf.vertex(-1.0,  1.0, 0).uv(0.0f, 1.0f).endVertex();
-
-            BufferUploader.drawWithShader(buf.end());
-
-            RenderSystem.setShaderTexture(0, 0);
-
-            // 2. Explicitly disable blending
-            RenderSystem.disableBlend();
-
-            // 3. Reset the shader
-            RenderSystem.setShader(GameRenderer::getPositionTexShader); // <--- You have this, which is good
-
-            RenderSystem.enableDepthTest(); // <--- You have this, which is good
-            RenderSystem.depthMask(true); // <--- You have this, which is good
-
-            // 4. IMPORTANT: Ensure the main FBO is bound for subsequent rendering
-            mc.getMainRenderTarget().bindWrite(false);
-        }
-    }
 
 }

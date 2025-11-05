@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.damagesource.DamageType;
@@ -29,6 +30,7 @@ import net.minecraft.world.phys.*;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -37,7 +39,7 @@ import java.util.Optional;
 @Mod.EventBusSubscriber
 public class HitboxEvents {
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onLivingDamage(LivingHurtEvent event){
         if (!(event.getEntity() instanceof Player player))return;
         float absorb = player.getAbsorptionAmount();
@@ -53,6 +55,20 @@ public class HitboxEvents {
             player.setAbsorptionAmount(absorb-reduction);
             damageamount -= reduction;
         }
+        damageamount = Math.max(damageamount,0);
+
+        /*
+        player.sendSystemMessage(Component.literal(
+                "Source: " + event.getSource().toString()
+                        + " | amt: " + damageamount
+                        + " | bypassArmor: " + event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)
+                        + " | bypassShield: " + event.getSource().is(DamageTypeTags.BYPASSES_SHIELD)
+                        + " | bypassEnchant: " + event.getSource().is(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+                        + " | ignoredTag: " + event.getSource().is(ModDamageTypeTags.IGNORE)
+                        + " | absorb: " + absorb
+        ));
+
+         */
         if (event.getSource().is(ModDamageTypeTags.IGNORE))return;
         if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
         if (event.getSource().is(DamageTypes.FALL)){
@@ -63,14 +79,7 @@ public class HitboxEvents {
             event.setAmount(0);
             return;
         }
-        if (event.getSource().is(CBCgrape)||event.getSource().is(CBCshrap)){
-            float finalDamage = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-            });
-            event.setAmount(0);
-            return;
-        } else if (event.getSource().is(CBCmg)||event.getSource().is(CBCmgwat)) {
+       if (event.getSource().is(CBCmg)||event.getSource().is(CBCmgwat)) {
             float finalDamage = damageamount;
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
                 h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
@@ -94,15 +103,25 @@ public class HitboxEvents {
             }else {
                 float finalDamage = damageamount;
                 player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleExplosionDamage(finalDamage, true,player);
                 });
             }
             event.setAmount(0);
             return;
-    } else if (isAnyProjectile(event.getSource())){
+    } else if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)){
+            float finalDamageamount = damageamount;
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleExplosionDamage(finalDamageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL),player);
+            });
+            event.setAmount(0);
+            return;
+        }
+
+        else if (isAnyProjectile(event.getSource())){
             Entity directEntity = event.getSource().getDirectEntity();
-            if (!(directEntity instanceof Projectile projectile)) return;
-            Vec3 hitPos = sweepProjectileStep(projectile,player);
+            if ((directEntity instanceof Projectile projectile)) {
+                ;
+                Vec3 hitPos = sweepProjectileStep(projectile, player);
 
             /*
             if (event.getSource().getEntity() instanceof Player pp){
@@ -113,26 +132,20 @@ public class HitboxEvents {
              */
 
 
-            // Your custom hit sector logic
-            HitSector hit = detectHit(player, hitPos);
-            // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
-            float finalDamage = damageamount;
+                // Your custom hit sector logic
+                HitSector hit = detectHit(player, hitPos);
+                // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
+                float finalDamage = damageamount;
 
-            // Call into your capability with final damage
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleProjectileDamage(hit, finalDamage,player);
-            });
-            event.setAmount(0);
-            return;
+                // Call into your capability with final damage
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                    h.handleProjectileDamage(hit, finalDamage, player);
+                });
+                event.setAmount(0);
+                return;
+            }
         }
-       else if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)){
-            float finalDamageamount = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-               h.handleExplosionDamage(finalDamageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL),player);
-           });
-            event.setAmount(0);
-            return;
-       } else if (event.getSource().is(ModDamageTypeTags.MAGIC)||event.getSource().is(DamageTypes.MAGIC)) {
+        else if (event.getSource().is(ModDamageTypeTags.MAGIC)||event.getSource().is(DamageTypes.MAGIC)) {
             float finalDamageamount = damageamount;
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 h.handleMagicDamage(finalDamageamount);
@@ -161,12 +174,21 @@ public class HitboxEvents {
             event.setAmount(0);
             return;
         }
+        else if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)){
+            float finalDamageamount = damageamount;
+
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleRandomDamage(finalDamageamount,player);
+            });
+            event.setAmount(0);
+            return;
+        }
+        //fuck you warium
         float finalDamageamount = damageamount;
 
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             h.handleRandomDamage(finalDamageamount,player);
         });
-
         event.setAmount(0);
     }
 

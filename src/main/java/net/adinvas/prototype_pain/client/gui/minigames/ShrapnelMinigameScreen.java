@@ -30,6 +30,7 @@ public class ShrapnelMinigameScreen extends Screen {
     private final Limb limb;
     private double lastpMouseX=this.width/2,lastpMouseY=this.height/2;
     private final boolean ignorevel;
+    private int RememberShrapnel;
 
     private List<ShrapnelObject> shrapnelObjects = new ArrayList<>();
     private List<Integer> xlists = new ArrayList<>();
@@ -44,14 +45,36 @@ public class ShrapnelMinigameScreen extends Screen {
         this.ignorevel = ignorevel;
     }
 
+    public boolean isAmputated(){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player==null) return false;
+        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+            for (Limb l:limb.availableHandsForAction()){
+                if (!h.isAmputated(l)){
+                    return false;
+                }
+            }
+            return true;
+        }).orElse(false);
+    }
+
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(ignorevel?HandObject.SpriteType.TWEEZERS:HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
+        HandObject.SpriteType spriteType;
+        if (ignorevel){
+            spriteType= HandObject.SpriteType.TWEEZERS;
+        } else if (isAmputated()) {
+            spriteType= HandObject.SpriteType.GONE;
+        }else {
+            spriteType= HandObject.SpriteType.NORMAL;
+        }
+        handObject = new HandObject(spriteType,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
         int ShrapnelAmount = target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.hasLimbShrapnell(limb)).orElse(0);
+        RememberShrapnel = ShrapnelAmount;
         int x = this.width/2-16;
         shrapnelObjects.clear();
         xlists.clear();
@@ -110,7 +133,7 @@ public class ShrapnelMinigameScreen extends Screen {
     }
 
 
-
+    private boolean IgnoreResult= false;
     @Override
     public void tick() {
         parent.tick();
@@ -131,18 +154,28 @@ public class ShrapnelMinigameScreen extends Screen {
             handObject.setStiffness(consscale);
         }
         Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            if (h.getContiousness()<=4)
+            if (h.getContiousness()<=10)
                 onClose();
+        });
+
+        target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            if(h.hasLimbShrapnell(limb)!=RememberShrapnel){
+                IgnoreResult = true;
+                onClose();
+            }
         });
         super.tick();
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if (handObject.spriteType!=HandObject.SpriteType.GONE){
         for (ShrapnelObject shrapnelObject:shrapnelObjects){
             shrapnelObject.mouseClicked(handObject.x,handObject.y,0);
         }
-        handObject.mouseClicked();
+
+            handObject.mouseClicked();
+        }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
@@ -170,8 +203,10 @@ public class ShrapnelMinigameScreen extends Screen {
         if (parent instanceof HealthScreen hp){
             hp.BGmode = false;
         }
-        int shrapnellLeft = (int) shrapnelObjects.stream().filter(ShrapnelObject::isSticked).count();
-        ModNetwork.CHANNEL.sendToServer(new AdjustShrapnelPacket(target.getUUID(),limb,shrapnellLeft));
+        if (!IgnoreResult) {
+            int shrapnellLeft = (int) shrapnelObjects.stream().filter(ShrapnelObject::isSticked).count();
+            ModNetwork.CHANNEL.sendToServer(new AdjustShrapnelPacket(target.getUUID(), limb, shrapnellLeft));
+        }
         Minecraft.getInstance().setScreen(parent);
     }
 

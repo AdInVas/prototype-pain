@@ -57,10 +57,29 @@ public class BandageMinigameScreen extends Screen {
         this.slot = slot;
     }
 
+    public boolean isAmputated(){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player==null) return false;
+        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+            for (Limb l:limb.availableHandsForAction()){
+                if (!h.isAmputated(l)){
+                    return false;
+                }
+            }
+            return true;
+        }).orElse(false);
+    }
+
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
+        HandObject.SpriteType spriteType;
+        if (isAmputated()) {
+            spriteType= HandObject.SpriteType.GONE;
+        }else {
+            spriteType= HandObject.SpriteType.NORMAL;
+        }
+        handObject = new HandObject(spriteType,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
@@ -98,7 +117,7 @@ public class BandageMinigameScreen extends Screen {
             handObject.setStiffness(consscale);
         }
         Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            if (h.getContiousness()<=4)
+            if (h.getContiousness()<=10)
                 onClose();
         });
         if (bandageObject.isEndCondition()){
@@ -109,8 +128,11 @@ public class BandageMinigameScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        bandageObject.mouseClicked(handObject.x,handObject.y,pButton);
-        handObject.mouseClicked();
+        if (handObject.spriteType!=HandObject.SpriteType.GONE){
+            bandageObject.mouseClicked(handObject.x,handObject.y,pButton);
+            handObject.mouseClicked();
+        }
+
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 

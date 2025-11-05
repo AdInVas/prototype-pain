@@ -83,7 +83,7 @@ public class DislocationMinigameScreen extends Screen {
             }
         }
         Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            if (h.getContiousness()<=4)
+            if (h.getContiousness()<=10)
                 onClose();
         });
 
@@ -126,10 +126,29 @@ public class DislocationMinigameScreen extends Screen {
         return super.mouseReleased(pMouseX, pMouseY, pButton);
     }
 
+    public boolean isAmputated(){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player==null) return false;
+        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+            for (Limb l:limb.availableHandsForAction()){
+                if (!h.isAmputated(l)){
+                    return false;
+                }
+            }
+            return true;
+        }).orElse(false);
+    }
+
     @Override
     protected void init() {
         super.init();
-        handObject = new HandObject(HandObject.SpriteType.NORMAL,this.width/2,this.height/2,this.width,this.height/3*2);
+        HandObject.SpriteType spriteType;
+        if (isAmputated()) {
+            spriteType= HandObject.SpriteType.GONE;
+        }else {
+            spriteType= HandObject.SpriteType.NORMAL;
+        }
+        handObject = new HandObject(spriteType,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }

@@ -58,8 +58,6 @@ public class PrototypePain {
         ModBlocks.BLOCKS.register(modEventBus);
         ModRecipes.register(modEventBus);
         ModLootModifier.register(modEventBus);
-        OverlayController.registerOverlay(new PainOverlay());
-        OverlayController.registerOverlay(new ContiousnessOverlay());
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);

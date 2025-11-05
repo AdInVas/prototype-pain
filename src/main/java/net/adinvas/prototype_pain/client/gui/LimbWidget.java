@@ -24,6 +24,22 @@ public class LimbWidget extends AbstractWidget {
     private int txt_height;
     private int txt_width;
 
+    private boolean LeftEyeGone= false;
+    private boolean RightEyeGone = false;
+    private boolean MouthGone = false;
+
+    public void setMouthGone(boolean mouthGone) {
+        MouthGone = mouthGone;
+    }
+
+    public void setRightEyeGone(boolean rightEyeGone) {
+        RightEyeGone = rightEyeGone;
+    }
+
+    public void setLeftEyeGone(boolean leftEyeGone) {
+        LeftEyeGone = leftEyeGone;
+    }
+
     public void setAmputated(boolean amputated) {
         this.amputated = amputated;
     }
@@ -134,7 +150,15 @@ public class LimbWidget extends AbstractWidget {
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         expanded = isHoveredOrFocused();
         updateSubSpritePositions();
-
+        if (LeftEyeGone){
+            guiGraphics.blit(new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/limbs/left_eye.png"), (int) shakex, (int) shakey,0,0,this.width,this.height,this.txt_width,this.txt_height);
+        }
+        if(RightEyeGone){
+            guiGraphics.blit(new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/limbs/right_eye.png"), (int) shakex, (int) shakey,0,0,this.width,this.height,this.txt_width,this.txt_height);
+        }
+        if (MouthGone){
+            guiGraphics.blit(new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/limbs/mouth.png"), (int) shakex, (int) shakey,0,0,this.width,this.height,this.txt_width,this.txt_height);
+        }
     }
 
     public void renderSprites(GuiGraphics guiGraphics){

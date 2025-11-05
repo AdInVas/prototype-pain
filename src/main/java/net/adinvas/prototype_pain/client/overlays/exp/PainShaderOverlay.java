@@ -1,9 +1,9 @@
 package net.adinvas.prototype_pain.client.overlays.exp;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.events.ClientShaderEvents;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.minecraft.client.Minecraft;
@@ -14,35 +14,45 @@ import net.minecraft.util.Mth;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber
 public class PainShaderOverlay implements IShaderOverlay {
     public static float prevPain = 0f;
 
-    public void render(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
 
+    @Override
+    public boolean shouldRender() {
+        Minecraft mc = Minecraft.getInstance();
+        float pain = (float)(mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
+                .map(PlayerHealthData::getTotalPain).orElse(0d) / 100f);
+
+        return pain>0.1;
+    }
+
+    public void render(RenderLevelStageEvent event, RenderTarget input, RenderTarget output) {
+        Minecraft mc = Minecraft.getInstance();
         ShaderInstance shader = ClientShaderEvents.PAIN_SHADER;
         if (shader == null) return;
+
+        output.bindWrite(true);
 
         float time = (mc.level.getGameTime() + event.getPartialTick()) * 0.05f;
 
         // interpolate between last tick and current tick values
         float pain = (float)(mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
                 .map(PlayerHealthData::getTotalPain).orElse(0d) / 100f);
+        float Consiousness = (mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
+                .map(PlayerHealthData::getContiousness).orElse(0f));
+        if (Consiousness<10){
+            pain = 0.1f;
+        }
         pain = Mth.clamp(pain, 0f, 1f);
 
 
         float displayedPain = Mth.lerp(0.1f, prevPain, pain);
-        if (displayedPain<0.1&&pain<0.1)return;
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+
+
 
         // Tell Minecraft to use our shader
-        RenderSystem.setShaderTexture(0, mc.getMainRenderTarget().getColorTextureId());
+        RenderSystem.setShaderTexture(0, input.getColorTextureId());
         RenderSystem.setShaderTexture(1, new ResourceLocation("prototype_pain:textures/shaders/pain_vignette.png"));
         RenderSystem.setShader(() -> shader);
         shader.safeGetUniform("Intensity").set(displayedPain);
@@ -60,20 +70,11 @@ public class PainShaderOverlay implements IShaderOverlay {
 
         BufferUploader.drawWithShader(buf.end());
 
+
         RenderSystem.setShaderTexture(0, 0);
         RenderSystem.setShaderTexture(1, 0);
 
-        // 2. Explicitly disable blending
-        RenderSystem.disableBlend();
 
-        // 3. Reset the shader
-        RenderSystem.setShader(GameRenderer::getPositionTexShader); // <--- You have this, which is good
-
-        RenderSystem.enableDepthTest(); // <--- You have this, which is good
-        RenderSystem.depthMask(true); // <--- You have this, which is good
-
-        // 4. IMPORTANT: Ensure the main FBO is bound for subsequent rendering
-        mc.getMainRenderTarget().bindWrite(false);
         prevPain = displayedPain;
     }
 }

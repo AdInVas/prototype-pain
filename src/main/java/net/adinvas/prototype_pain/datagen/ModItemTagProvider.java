@@ -58,5 +58,13 @@ public class ModItemTagProvider extends ItemTagsProvider {
                         Items.SWEET_BERRIES
                 );
 
+        this.tag(ModItemTags.CAUTERIZE)
+                .add(
+                        Items.TORCH,
+                        Items.SOUL_TORCH,
+                        Items.MAGMA_BLOCK,
+                        Items.LAVA_BUCKET
+                );
+
     }
 }

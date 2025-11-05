@@ -17,6 +17,9 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> RINGING = register("ring");
     public static final RegistryObject<SoundEvent> PILL = register("pill");
     public static final RegistryObject<SoundEvent> PAINDRONE = register("pain_drone");
+    public static final RegistryObject<SoundEvent> BROKEN_BONE = register("bone_break");
+    public static final RegistryObject<SoundEvent> AMPUTATION = register("amputation");
+    public static final RegistryObject<SoundEvent> LAST_STAND = register("laststand");
 
 
 

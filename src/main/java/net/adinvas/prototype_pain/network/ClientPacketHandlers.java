@@ -1,7 +1,9 @@
 package net.adinvas.prototype_pain.network;
 
+import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.client.SoundMenager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +27,10 @@ public class ClientPacketHandlers {
                 cap.deserializeNBT(msg.tag);
             });
         }
+    }
+
+    public static void handleLastStand(){
+        Minecraft.getInstance().player.playSound(ModSounds.LAST_STAND.get(),1f,1f);
     }
 
 }

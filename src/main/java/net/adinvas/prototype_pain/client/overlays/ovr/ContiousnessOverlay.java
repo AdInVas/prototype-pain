@@ -18,11 +18,6 @@ public class ContiousnessOverlay implements IOverlay {
 
     private float lastInt=0;
 
-
-    public void setIntensity(float intensity) {
-        this.intensity = intensity;
-    }
-
     @Override
     public void render(GuiGraphics ms, float partialTicks) {
         Minecraft mc = Minecraft.getInstance();
@@ -36,7 +31,7 @@ public class ContiousnessOverlay implements IOverlay {
             RenderSystem.enableBlend();
 
             // Use multiplicative blending so white is transparent, black darkens screen
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR);
             float intensity2 = (float) Math.pow(intensity,2);
             ms.setColor(intensity2, intensity2, intensity2, 1f);
             ms.blit(

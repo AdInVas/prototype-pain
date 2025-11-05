@@ -1,0 +1,13 @@
+{
+  "vertex": "prototype_pain:pass_trough",
+  "fragment": "prototype_pain:leftblind",
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "uniforms": [
+  ]
+}

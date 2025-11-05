@@ -15,10 +15,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class FractureMoodle extends AbstractMoodleVisual{
+    public static List<Limb> checkList = new ArrayList<>();
+    static {
+        checkList.add(Limb.LEFT_ARM);
+        checkList.add(Limb.RIGHT_FOOT);
+        checkList.add(Limb.RIGHT_LEG);
+        checkList.add(Limb.RIGHT_ARM);
+        checkList.add(Limb.RIGHT_HAND);
+        checkList.add(Limb.LEFT_FOOT);
+        checkList.add(Limb.LEFT_LEG);
+        checkList.add(Limb.LEFT_HAND);
+    }
     @Override
     MoodleStatus calculateStatus(Player player) {
         Optional<Boolean> fractured = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
-            for (Limb limb: Limb.values()){
+            for (Limb limb: checkList){
                 if (h.getLimbFracture(limb)>0){
                     return true;
                 }

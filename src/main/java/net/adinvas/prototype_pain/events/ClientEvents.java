@@ -1,7 +1,6 @@
 package net.adinvas.prototype_pain.events;
 
 import com.mojang.blaze3d.pipeline.MainTarget;
-import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,6 +13,7 @@ import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.overlays.OverlayController;
 import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
+import net.adinvas.prototype_pain.client.ticksounds.MuffledSound;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
@@ -26,6 +26,9 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -38,7 +41,11 @@ import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
+import net.minecraftforge.client.event.sound.SoundEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -49,39 +56,47 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Mod.EventBusSubscriber(modid = PrototypePain.MOD_ID, value = Dist.CLIENT)
 public class ClientEvents {
     static int GiveUpTime = 40;
+    static int WaitTimer = 0;
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.ClientTickEvent event){
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         ProfilerFiller profiler = mc.getProfiler();
         SoundMenager.tick();
+        if (WaitTimer>0){
+            WaitTimer--;
+        }
         profiler.push("prototype_pain:client_misc");
         if (player==null)return;
         if (event.side== LogicalSide.CLIENT) {
             AtomicBoolean uncontious = new AtomicBoolean(false);
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                if (h.getContiousness()<=4){
+                if (h.getContiousness()<=10){
                     uncontious.set(true);
                 }
             });
             if (Keybinds.OPEN_PAIN_GUI.isDown()&&!uncontious.get()) {
                 Keybinds.OPEN_PAIN_GUI.consumeClick();
+                if (WaitTimer<=0) {
+                    Player target = ModEvents.getLookedAtPlayer(player, 2);
+                    boolean self = target == null || player.isShiftKeyDown();
 
-                Player target = ModEvents.getLookedAtPlayer(player, 2);
-                boolean self = target == null || player.isShiftKeyDown();
 
-                if (self) {
-                    Minecraft.getInstance().setScreen(new HealthScreen(player.getUUID()));
-                } else {
-                    Minecraft.getInstance().setScreen(new HealthScreen(target.getUUID()));
+                    if (self) {
+                        Minecraft.getInstance().setScreen(new HealthScreen(player.getUUID()));
+                    } else {
+                        Minecraft.getInstance().setScreen(new HealthScreen(target.getUUID()));
+                    }
+
+                }else{
+                    Keybinds.OPEN_PAIN_GUI.setDown(false);
                 }
-
             }
 
 
 
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                if (h.getContiousness()<=4){
+                if (h.getContiousness()<=10){
                     if (Keybinds.GIVE_UP.isDown()){
                         GiveUpTime--;
                     }else {
@@ -95,16 +110,11 @@ public class ClientEvents {
             }
             profiler.pop();
         }
-        PainOverlay overlay = OverlayController.getOverlay(PainOverlay.class);
-        ContiousnessOverlay conc = OverlayController.getOverlay(ContiousnessOverlay.class);
-
-        overlay.calculate(player);
-        conc.calculate(player);
 
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 float contiousness = (100-h.getContiousness())/100;
 
-                if (contiousness<=4){
+                if (contiousness<=10){
                     mc.player.setYRot(mc.player.yRotO); // reset yaw
                     mc.player.setXRot(mc.player.xRotO); // reset pitch
                 }
@@ -115,7 +125,16 @@ public class ClientEvents {
     public static void onScreenKey(ScreenEvent.KeyPressed.Post event){
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-
+        if (event.getScreen() instanceof HealthScreen){
+            if (Keybinds.OPEN_PAIN_GUI.matches(event.getKeyCode(),event.getScanCode())) {
+                Keybinds.OPEN_PAIN_GUI.setDown(false);
+                    event.getScreen().onClose();
+                    mc.setScreen(null);
+                Keybinds.OPEN_PAIN_GUI.setDown(false);
+                Keybinds.OPEN_PAIN_GUI.consumeClick();
+                WaitTimer = 5;
+            }
+        }
         // Check if the current screen is an inventory or container
         if (event.getScreen() instanceof AbstractContainerScreen<?> screen) {
             if (Keybinds.OPEN_FLUID_SCREEN.matches(event.getKeyCode(), event.getScanCode())) {
@@ -138,7 +157,7 @@ public class ClientEvents {
         Player player = event.getEntity();
         if (player!=null){
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                if (h.getContiousness()<5) { // your condition here
+                if (h.getContiousness()<10) { // your condition here
                     event.getInput().down = false;
                     event.getInput().forwardImpulse = 0;
                     event.getInput().jumping = false;
@@ -216,4 +235,20 @@ public class ClientEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void onPlaySound(PlayLevelSoundEvent event){
+        Minecraft mc =  Minecraft.getInstance();
+        if (mc.player==null)return;
+        float soundPenalty = mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getHearingLoss).orElse(0f);
+        if (soundPenalty>0){
+            event.setNewVolume(event.getOriginalVolume()*(1-soundPenalty));
+        }else{
+            return;
+        }
+
+        if (event.getNewVolume()<=0){
+            event.setCanceled(true);
+        }
+
+    }
 }

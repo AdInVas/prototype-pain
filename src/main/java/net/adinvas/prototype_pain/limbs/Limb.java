@@ -142,5 +142,23 @@ public enum Limb { HEAD, CHEST, LEFT_ARM, RIGHT_ARM,RIGHT_HAND,LEFT_HAND, LEFT_L
         }
     }
 
+
+    public List<Limb> availableHandsForAction(){
+        List<Limb> limbList = new ArrayList<>();
+        switch (this){
+            case RIGHT_HAND,RIGHT_ARM -> {
+                limbList.add(Limb.LEFT_HAND);
+            }
+            case LEFT_ARM,LEFT_HAND ->{
+                limbList.add(Limb.RIGHT_HAND);
+            }
+            default -> {
+                limbList.add(Limb.LEFT_HAND);
+                limbList.add(Limb.RIGHT_HAND);
+            }
+        }
+        return limbList;
+    }
+
 }
 

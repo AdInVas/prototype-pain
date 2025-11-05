@@ -11,10 +11,8 @@ import net.adinvas.prototype_pain.item.fluid_vials.SyringeItem;
 import net.adinvas.prototype_pain.client.gui.minigames.InjectMingameScreen;
 
 import net.adinvas.prototype_pain.limbs.Limb;
-import net.adinvas.prototype_pain.network.GuiSyncTogglePacket;
-import net.adinvas.prototype_pain.network.ModNetwork;
-import net.adinvas.prototype_pain.network.UseBagMedItemPacket;
-import net.adinvas.prototype_pain.network.UseMedItemPacket;
+import net.adinvas.prototype_pain.network.*;
+import net.adinvas.prototype_pain.tags.ModItemTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -43,7 +41,7 @@ public class HealthScreen extends Screen {
     private ItemWidget LeftItem;
     private List<ItemWidget> LeftItemsubWidgets = new ArrayList<>();
     private HealthInfoBoxWidget healthbox;
-
+    private CPRButton cprButton;
     private Player target;
 
     private List<CustomButton> buttonList = new ArrayList<>();
@@ -86,6 +84,7 @@ public class HealthScreen extends Screen {
         L_Foot = new LimbWidget(start_x+16,start_y+32+64+48,16,16,Component.empty(),Limb.LEFT_FOOT);
         R_Foot = new LimbWidget(start_x,start_y+32+64+48,16,16,Component.empty(),Limb.RIGHT_FOOT);
         healthbox = new HealthInfoBoxWidget(0,0,128,196,Component.empty());
+        cprButton = new CPRButton(this.width-36,this.height-36,this,target);
 
         Player player = Minecraft.getInstance().player;
         if (player != null) {
@@ -125,6 +124,7 @@ public class HealthScreen extends Screen {
         addRenderableWidget(LeftItem);
         addRenderableWidget(RightItem);
         addRenderableWidget(healthbox);
+        addRenderableWidget(cprButton);
         Head.populate_sprites();
         Chest.populate_sprites();
         L_Arm.populate_sprites();
@@ -135,6 +135,11 @@ public class HealthScreen extends Screen {
         R_Foot.populate_sprites();
         R_Hand.populate_sprites();
         R_Leg.populate_sprites();
+        if (target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.getContiousness()<10).orElse(false)){
+            cprButton.visible= true;
+        }else{
+            cprButton.visible = false;
+        }
 
         ModNetwork.CHANNEL.sendToServer(new GuiSyncTogglePacket(true,target.getUUID()));
         lastHovered = Head;
@@ -269,6 +274,11 @@ public class HealthScreen extends Screen {
     @Override
     public void tick() {
         super.tick();
+        if (target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.getContiousness()<10).orElse(false)&&(target!=Minecraft.getInstance().player)){
+            cprButton.visible= true;
+        }else{
+            cprButton.visible = false;
+        }
         if (heartBeatSound != null && Minecraft.getInstance().player != null) {
             target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 float bpm = h.getBPM();
@@ -396,7 +406,11 @@ public class HealthScreen extends Screen {
                     continue;
                 }
                 widget.setAmputated(false);
-
+                if (limb==Limb.HEAD){
+                    widget.setLeftEyeGone(health.isLeftEyeBlind());
+                    widget.setMouthGone(health.isMouthRemoved());
+                    widget.setRightEyeGone(health.isRightEyeBlind());
+                }
                 // collect values once
                 float bleed = health.getLimbBleedRate(limb);
                 boolean isBleeding = bleed > 0&& !health.getTourniquet(limb)&& !health.isOppositeToChestUnderTourniquet(limb);
@@ -459,12 +473,9 @@ public class HealthScreen extends Screen {
                     if (itemstack.getItem() instanceof IMedicalMinigameUsable helper) {
                         helper.openMinigameScreen(target, itemstack, limb, getHand(HumanoidArm.RIGHT, minecraft.player));
                     }
-                /*
-                if (itemstack.getItem() instanceof SyringeItem){
-                    Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.RIGHT, minecraft.player)));
-                }
-
-                 */
+                    if (itemstack.is(ModItemTags.CAUTERIZE)){
+                        ModNetwork.CHANNEL.sendToServer(new CauterizeActionPacket(limb,target.getUUID()));
+                    }
                     ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), getHand(HumanoidArm.RIGHT, minecraft.player) == InteractionHand.OFF_HAND));
                 }
         }else if (LeftItem.isDragging()){
@@ -475,12 +486,9 @@ public class HealthScreen extends Screen {
                     if (itemstack.getItem() instanceof IMedicalMinigameUsable helper) {
                         helper.openMinigameScreen(target, itemstack, limb, getHand(HumanoidArm.LEFT, minecraft.player));
                     }
-                /*
-                if (itemstack.getItem() instanceof SyringeItem){
-                    Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,limb,getHand(HumanoidArm.LEFT, minecraft.player)));
-                }
-
-                 */
+                    if (itemstack.is(ModItemTags.CAUTERIZE)){
+                        ModNetwork.CHANNEL.sendToServer(new CauterizeActionPacket(limb,target.getUUID()));
+                    }
                     ModNetwork.CHANNEL.sendToServer(new UseMedItemPacket(itemstack, limb, target.getUUID(), getHand(HumanoidArm.LEFT, minecraft.player) == InteractionHand.OFF_HAND));
                 }
         }

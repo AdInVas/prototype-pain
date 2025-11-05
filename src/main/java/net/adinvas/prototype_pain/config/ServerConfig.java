@@ -55,6 +55,7 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue BRAIN_DRAIN;
     public static final ForgeConfigSpec.DoubleValue BRAIN_HEALTH_REGEN;
     public static final ForgeConfigSpec.DoubleValue IMMUNITY_SCALE;
+    public static final ForgeConfigSpec.BooleanValue DO_TEMP_SCALE;
 
 
 
@@ -93,7 +94,7 @@ public class ServerConfig {
                         .defineInRange("bloodRegen",0.001,0,10);
         MAX_BLEED_RATE = BUILDER
                 .comment("The Maximum Rate of Bleeding from one Limb (L/s)")
-                        .defineInRange("maxBleedRate",0.03,0,10);
+                        .defineInRange("maxBleedRate",0.016,0,10);
         BLOOD_VISCOSITY_REGEN = BUILDER
                 .comment("The rate at which Blood viscosity returns to 0 (pts/s)")
                         .defineInRange("bloodViscosityRegen",0.2,0,100);
@@ -182,6 +183,11 @@ public class ServerConfig {
         DISLOCATION_HEAL_RATE = BUILDER
                 .comment("Dislocation Heal rate (%/s)")
                 .defineInRange("dislocationRegen",0.05,0,Double.MAX_VALUE);
+
+
+        DO_TEMP_SCALE = BUILDER
+                .comment("on/off temperature")
+                        .define("doTempChange",true);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractMoodleVisual {
+public abstract class AbstractMoodleVisual implements Cloneable{
     private MoodleStatus moodleStatus;
     private MoodleStatus lastStatus;
     private int sinceChange = 0;
@@ -106,4 +106,13 @@ public abstract class AbstractMoodleVisual {
     }
 
     abstract public ResourceLocation renderIcon(GuiGraphics ms, float partialTicks,int x, int y);
+
+    @Override
+    public AbstractMoodleVisual clone() {
+        try {
+            return (AbstractMoodleVisual) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
+    }
 }

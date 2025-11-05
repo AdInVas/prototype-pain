@@ -32,6 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -40,6 +41,8 @@ public class BrownCapItem extends Item {
     public BrownCapItem() {
         super(new Properties()
                 .food(new FoodProperties.Builder()
+                        .nutrition(1)
+                        .saturationMod(1)
                         .alwaysEat()
                         .build()));
     }
@@ -84,11 +87,28 @@ public class BrownCapItem extends Item {
                 player.getFoodData().setSaturation(player.getFoodData().getSaturationLevel()+5);
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION,100,0));
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,3000,2));
-            }else {
+            }else if (maineffect<99.5) {
                 player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()+1);
                 player.getFoodData().setSaturation(player.getFoodData().getSaturationLevel()+1);
                 player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                     h.setLimbMuscleHealth(Limb.CHEST,0);
+                });
+            }else{
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                    List<Limb> amputated = new ArrayList<>();
+                    for (Limb limb:Limb.values()){
+                        if (h.isAmputated(limb))
+                            amputated.add(limb);
+                    }
+                    Limb toFix = amputated.get(random.nextInt(amputated.size()));
+                    for (Limb limb:toFix.getConnectedLimbs()){
+                        if (h.isAmputated(limb)) {
+                            h.setlimbAmputated(limb, false);
+                            h.setLimbPain(limb,400);
+                        }
+                    }
+                    h.setlimbAmputated(toFix,false);
+                    h.setLimbPain(toFix,400);
                 });
             }
 

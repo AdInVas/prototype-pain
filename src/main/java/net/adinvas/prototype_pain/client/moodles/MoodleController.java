@@ -49,16 +49,42 @@ public class MoodleController {
         registerMoodle(new LifeSupportMoodle());
         registerMoodle(new AdrenalineMoodle());
         registerMoodle(new AmputatedMoodle());
+        registerMoodle(new FractureChestMoodle());
+        registerMoodle(new FractureHeadMoodle());
+        registerMoodle(new DislocationChestMoodle());
+        registerMoodle(new DislocationHeadMoodle());
+        registerMoodle(new BlindMoodle());
+        registerMoodle(new DisfiguredMoodle());
+        registerMoodle(new HearingLossMoodle());
     }
 
     /** Collects all visible moodles for given player */
+    public static int UPDATE_THROTLE = 0;
     public static List<AbstractMoodleVisual> getVisibleMoodles(Player player) {
         List<AbstractMoodleVisual> visible = new ArrayList<>();
-        for (AbstractMoodleVisual m : Moodles) {
-            MoodleStatus status = m.calculateStatus(player);
-            m.setMoodleStatus(status);
-            if (m.shouldRender()) visible.add(m);
+        UPDATE_THROTLE++;
+
+        boolean doUpdate = UPDATE_THROTLE > 20;
+        if (doUpdate) UPDATE_THROTLE = 0;
+
+        for (AbstractMoodleVisual base : Moodles) {
+            // Clone to isolate GUI vs screen moodles
+            AbstractMoodleVisual moodle = base.clone();
+
+            // Always calculate for the given player, so the clone has the right state
+            MoodleStatus status = moodle.calculateStatus(player);
+
+            // Only update the stored status periodically, but still use it for rendering
+            if (doUpdate || moodle.getMoodleStatus() == null) {
+                moodle.setMoodleStatus(status);
+            }
+
+            // Respect shouldRender() based on that updated status
+            if (moodle.shouldRender()) {
+                visible.add(moodle);
+            }
         }
+
         return visible;
     }
 
