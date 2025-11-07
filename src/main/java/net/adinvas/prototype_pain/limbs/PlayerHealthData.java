@@ -691,7 +691,7 @@ public class PlayerHealthData {
         float skinpenalty = (100-getLimbSkinHealth(limb))/100 *-5;
         damage_treshold += musclepenalty+skinpenalty;
         if (damage>=damage_treshold/2){
-            if (Math.random()<damage/(damage_treshold))return false;
+            if (Math.random()>damage/(damage_treshold))return false;
             if (limb==Limb.HEAD && !skipOthers){
                 Random random = new Random();
                 int chance = random.nextInt(3);
@@ -850,7 +850,7 @@ public class PlayerHealthData {
         }
 
 
-        if (stats.infection<=0&& limb==Limb.HEAD&&stats.muscleHealth<15){   
+        if (stats.infection<=0&& limb==Limb.HEAD&&stats.muscleHealth<15){
             stats.muscleHealth += getBOOSTED_LIMB_HEAL_RATE()*3;
         }
 
@@ -1927,7 +1927,7 @@ public class PlayerHealthData {
             setLimbShrapnell(randomLimb,hasLimbShrapnell(randomLimb)+1);
         }
         hurtArmor(randomLimb,player,damage);
-        boolean amputated = handleAmputation(randomLimb,damage,15+5+6);
+        boolean amputated = handleAmputation(randomLimb,damage,15+5+10);
         if (amputated){
             damage/=4;
         }
@@ -1955,7 +1955,7 @@ public class PlayerHealthData {
             }
             damage-=damage_pass;
             hurtArmor(randLimb,player,damage_pass);
-            boolean amputated = handleAmputation(randLimb,passDamage,15+5+2);
+            boolean amputated = handleAmputation(randLimb,passDamage,15+5+6);
             if (amputated){
                 damage/=4;
             }
