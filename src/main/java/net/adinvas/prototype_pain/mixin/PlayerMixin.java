@@ -1,6 +1,8 @@
 package net.adinvas.prototype_pain.mixin;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
+import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
+import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -21,8 +23,10 @@ public abstract class PlayerMixin {
         Player self = (Player)(Object)this;
         self.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
             if (h.getContiousness() <= 10) {
-                self.setPose(Pose.SWIMMING);
-                ci.cancel(); // prevent vanilla from picking another pose
+                if (!(PhysicsUtil.isPhysicsLoaded()&& ServerConfig.PHYS_INTEGRATION.get())) {
+                    self.setPose(Pose.SWIMMING);
+                    ci.cancel(); // prevent vanilla from picking another pose
+                }
             }
             if (h.isAmputated(Limb.RIGHT_LEG)&&h.isAmputated(Limb.LEFT_LEG)&&!self.isPassenger()){
                 self.setPose(Pose.SWIMMING);

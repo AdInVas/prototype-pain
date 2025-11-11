@@ -4,6 +4,7 @@ import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.ModGamerules;
 import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
@@ -12,40 +13,36 @@ import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.TriggerLastStandPacket;
 import net.adinvas.prototype_pain.tags.ModItemTags;
-import net.minecraft.client.Minecraft;
+import net.adinvas.prototype_physics.RagdollPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.Tags;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -89,14 +86,15 @@ public class PlayerHealthData {
     private boolean isMouthRemoved = false;
 
     private boolean LastStand = false;
-
+    private boolean isRagdolled = false;
+    private boolean canBreakOutOffRagdoll = false;
+    private float Stability = 100;
 
     private float painscale = 1;
     /*
     TODO: - Make:
         -MAKE Amputations
      */
-
 
     public String baseToString() {
         return "PlayerHealthData{" +
@@ -132,6 +130,14 @@ public class PlayerHealthData {
 
     public void setAntibiotic_timer(float antibiotic_timer) {
         this.antibiotic_timer = antibiotic_timer;
+    }
+
+    public void setStability(float stability) {
+        Stability = stability;
+    }
+
+    public float getStability() {
+        return Stability;
     }
 
     public float getDrug_addition() {
@@ -677,7 +683,7 @@ public class PlayerHealthData {
         setlimbAmputated(limb,true);
     }
 
-    public boolean handleAmputation(Limb limb,float damage,float base_damage_treshhold){
+    public boolean handleAmputation(Limb limb,float damage,float base_damage_treshhold,Player player){
         if (!getPERNAMENT_DAMAGE())return false;
         boolean skipOthers= false;
         float damage_treshold = base_damage_treshhold;
@@ -702,7 +708,7 @@ public class PlayerHealthData {
                 }else if (!isMouthRemoved){
                     isMouthRemoved=true;
                 }
-                Minecraft.getInstance().player.playSound(ModSounds.AMPUTATION.get());
+                    player.playSound(ModSounds.AMPUTATION.get());
                 return true;
             }
             List<Limb> limbList = limb.getConnectedLimbs();
@@ -713,11 +719,11 @@ public class PlayerHealthData {
                 setAdrenaline(Math.max(getAdrenaline(),125));
             }
             dismember(limb);
-            Minecraft.getInstance().player.playSound(ModSounds.AMPUTATION.get());
+            player.playSound(ModSounds.AMPUTATION.get());
             return true;
         } else if (damage>=6&&!(limb==Limb.CHEST || limb==Limb.HEAD)) {
             if (Math.random()<0.01){
-                handleAmputation(limb,1,0);
+                handleAmputation(limb,1,0,player);
             }
         }
         return false;
@@ -913,18 +919,20 @@ public class PlayerHealthData {
         limbStats.get(limb).MuscleHeal = false;
 
     }
-    public void applyMuscleDamage(Limb limb, float damage){
+    public void applyMuscleDamage(Limb limb, float damage,Player player){
         if (limbStats.get(limb).muscleHealth<100&&damage>2){
             float bone_damage_chance = (float) ((100-limbStats.get(limb).muscleHealth)/100*getFRAC_DISL_FROM_MUSCLE_DAMAGE_CHANCE());
             if (Math.random()>0.5){
                 if (Math.random()<bone_damage_chance||damage>15){
                     setLimbFracture(limb,Math.max(getLimbFracture(limb),30+(damage/10)*70));
-                    Minecraft.getInstance().player.playSound(ModSounds.BROKEN_BONE.get());
+                    if (player.level().isClientSide())
+                        player.playSound(ModSounds.BROKEN_BONE.get());
                 }
             }else {
                 if (Math.random()<bone_damage_chance||damage>15){
                     setLimbDislocation(limb,Math.max(getLimbDislocated(limb),30+(damage/10)*70));
-                    Minecraft.getInstance().player.playSound(ModSounds.BROKEN_BONE.get());
+                    if (player.level().isClientSide())
+                        player.playSound(ModSounds.BROKEN_BONE.get());
                 }
             }
 
@@ -964,6 +972,10 @@ public class PlayerHealthData {
     boolean JustTriggeredLastStand= false;
     float tempspeedup=0f;
     public void tickUpdate(ServerPlayer player) {
+        isRagdolled = false;
+
+        canBreakOutOffRagdoll = false;
+
          if (JustTriggeredLastStand||(lastStandAnim>0&&!LastStand)) {
              if (JustTriggeredLastStand){
                  lastStandAnim =130;
@@ -1198,8 +1210,26 @@ public class PlayerHealthData {
                 player.xxa = 0;
                 player.yRotO = 0; // Stop looking around
                 player.xRotO = 0;
-            }
 
+            }
+        if (PhysicsUtil.isPhysicsActivated(player)&&PhysicsUtil.isPhysicsLoaded()) {
+            Stability = calculateStability(player);
+            Vec3 vel = PhysicsUtil.getVel(RagdollPart.TORSO,player);
+            isRagdolled = isUnc || Stability <= 10;
+            canBreakOutOffRagdoll = Stability > 50&& vel.length()<0.5f;
+
+            if (isRagdolled) {
+                PhysicsUtil.setPhysics(true, player,20,0);
+                player.fallDistance = 0;
+            } else {
+                if (canBreakOutOffRagdoll) {
+                    PhysicsUtil.setPhysics(false, player,0,0);
+                }
+            }
+            PrototypePain.LOGGER.info("stab {}, {}, {}",Stability,isRagdolled,canBreakOutOffRagdoll);
+        }else{
+            Stability = 100;
+        }
     }
 
     public void calculateBrain(){
@@ -1246,7 +1276,7 @@ public class PlayerHealthData {
                 ((100-getLimbMuscleHealth(Limb.LEFT_ARM))   / 100.0) * 0.25 +
                 ((100-getLimbMuscleHealth(Limb.RIGHT_HAND)) / 100.0) * 0.10 +
                 ((100-getLimbMuscleHealth(Limb.LEFT_HAND))  / 100.0) * 0.25;
-        PrototypePain.LOGGER.info("at {}",attackMultiplier);
+
         if (handpart == HumanoidArm.RIGHT) {
             attackMultiplier = ((100-getLimbMuscleHealth(Limb.RIGHT_ARM))  / 100.0) * 0.10 +
                     ((100-getLimbMuscleHealth(Limb.LEFT_ARM))   / 100.0) * 0.10 +
@@ -1370,7 +1400,11 @@ public class PlayerHealthData {
         nbt.putFloat("HearingLoss",hearingLoss);
         nbt.putFloat("FlashHearing",flashHearingLoss);
         nbt.putBoolean("LastStand",LastStand);
+        /*
+        nbt.putFloat("Stability",Stability);
 
+
+         */
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
             changeList.add(entry.toNBT());
@@ -1454,6 +1488,7 @@ public class PlayerHealthData {
         this.hearingLoss = other.hearingLoss;
         this.flashHearingLoss = other.flashHearingLoss;
         this.LastStand = other.LastStand;
+        this.Stability = other.Stability;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -1546,6 +1581,8 @@ public class PlayerHealthData {
             flashHearingLoss = nbt.getFloat("FlashHearing");
         if (nbt.contains("LastStand"))
             LastStand = nbt.getBoolean("LastStand");
+        if (nbt.contains("Stability"))
+            Stability = nbt.getFloat("Stability");
 
         changeEntries.clear();
         ListTag changeList = nbt.getList("ChangeList", 10);
@@ -1623,6 +1660,8 @@ public class PlayerHealthData {
         hearingLoss = 0;
         flashHearingLoss = 0;
         LastStand = false;
+        isRagdolled = false;
+        Stability = 100;
 
         // passthrough / player-state
         hungerLevel = 20;
@@ -1653,7 +1692,7 @@ public class PlayerHealthData {
                 applyPain(limb,10);
                 int damage = random.nextInt(3);
                 applySkinDamage(limb,damage);
-                applyMuscleDamage(limb,damage);
+                applyMuscleDamage(limb,damage,source);
                 applyBleedDamage(limb,damage/6f,source);
                 if (random.nextFloat()<=getMANUAL_SHRAPNEL_SUCCESS_CHANCE()){
                     setLimbShrapnell(limb,0);
@@ -1692,7 +1731,12 @@ public class PlayerHealthData {
         float remainingDamage = damageValue * 1;
 
         remainingDamage = applyLocationalArmor(Limb.LEFT_FOOT,remainingDamage,player,false,false,false,true);
+        float combined_legs = (getLimbMuscleHealth(Limb.LEFT_FOOT)+getLimbMuscleHealth(Limb.RIGHT_LEG)+getLimbMuscleHealth(Limb.RIGHT_FOOT)+getLimbMuscleHealth(Limb.LEFT_LEG))/4;
+        float ragdolltreshold = 5+(combined_legs/100 * 10);
 
+        if (remainingDamage>=ragdolltreshold){
+            Stability =0;
+        }
 
         float[][] stages = {
                 {0.6f, 0.0f, 0.0f},   // stage 1: feet only
@@ -1712,17 +1756,17 @@ public class PlayerHealthData {
 
             // feet
             if (footMult > 0f) {
-                applyMuscleDamage(Limb.LEFT_FOOT,  remainingDamage * footMult);
+                applyMuscleDamage(Limb.LEFT_FOOT,  remainingDamage * footMult,player);
                 applyPain(Limb.LEFT_FOOT,  painFromDamage(remainingDamage * footMult));
-                applyMuscleDamage(Limb.RIGHT_FOOT,  remainingDamage * footMult);
+                applyMuscleDamage(Limb.RIGHT_FOOT,  remainingDamage * footMult,player);
                 applyPain(Limb.RIGHT_FOOT,  painFromDamage(remainingDamage * footMult));
             }
 
             // legs
             if (legMult > 0f) {
-                applyMuscleDamage(Limb.LEFT_LEG,  remainingDamage * legMult);
+                applyMuscleDamage(Limb.LEFT_LEG,  remainingDamage * legMult,player);
                 applyPain(Limb.LEFT_LEG,  painFromDamage(remainingDamage * legMult));
-                applyMuscleDamage(Limb.RIGHT_LEG,  remainingDamage * legMult);
+                applyMuscleDamage(Limb.RIGHT_LEG,  remainingDamage * legMult,player);
                 applyPain(Limb.RIGHT_LEG,  painFromDamage(remainingDamage * legMult));
             }
 
@@ -1738,10 +1782,34 @@ public class PlayerHealthData {
 
     }
 
-    public void handleMagicDamage(float damage){
+    public void handleBluntDamage(float damageValue,Player player,Limb limb){
+        Random random = new Random();
+        setAdrenaline(Math.max(getAdrenaline(),damageValue*0.5f));
+        float remainingDamage = damageValue * 1;
+        if (limb==Limb.HEAD)
+            remainingDamage*=0.7f;
+        if (limb==Limb.CHEST)
+            remainingDamage*=0.5f;
+        remainingDamage = applyLocationalArmor(limb,remainingDamage,player,false,false,false,true);
+
+        applyConcussion(limb,(random.nextFloat()/2+0.5f)*remainingDamage*6);
+        setLimbPain(limb,getLimbPain(limb)+(random.nextFloat()/2+0.5f)*remainingDamage*8);
+        applyMuscleDamage(limb,(random.nextFloat()/2+0.5f)*remainingDamage*0.8f,player);
+        if (remainingDamage>5){
+            setLimbSkinHealth(limb,getLimbSkinHealth(limb)-(random.nextFloat()/2+0.5f)*remainingDamage*1);
+            applyBleedDamage(limb,remainingDamage*2,player);
+        }
+        if (remainingDamage>4){
+           for (Limb limb1: limb.getConnectedLimbs()){
+               handleBluntDamage(remainingDamage/2f,player,limb1);
+           }
+        }
+    }
+
+    public void handleMagicDamage(float damage,ServerPlayer player){
         for (Limb limb : limbStats.keySet()){
             setAdrenaline(Math.max(getAdrenaline(),damage*1));
-            applyMuscleDamage(limb, (float) (damage*(Math.random()/4f)));
+            applyMuscleDamage(limb, (float) (damage*(Math.random()/4f)),player);
             applyPain(limb, (float) (damage*(Math.random())));
         }
     }
@@ -1819,7 +1887,7 @@ public class PlayerHealthData {
         d= (float) Math.min(0.75f,0.14f+0.02f*Math.pow(armPoints-1,2));
         r = 1.0f - Math.min(damage / (damage + (2 * tough + 8)), 0.5f);
         float finalReduction = Mth.clamp(d*r,0,1);
-        float magic=0;
+        float magic=1;
         if (prot>0){
             magic = 1f-prot*0.05f;
         }else {
@@ -1870,7 +1938,7 @@ public class PlayerHealthData {
             Limb rLimb = Limb.weigtedRandomLimb();
             passDamage = applyLocationalArmor(rLimb,passDamage,player,false,false,true,false);
             applyConcussion(rLimb,passDamage);
-            applyMuscleDamage(rLimb,passDamage*0.2f);
+            applyMuscleDamage(rLimb,passDamage*0.2f,player);
             applySkinDamage(rLimb,passDamage*0.8f);
             applyPain(rLimb,painFromDamage(passDamage));
             applyBleedDamage(rLimb,passDamage*0.7f,player);
@@ -1879,7 +1947,7 @@ public class PlayerHealthData {
                 setLimbShrapnell(rLimb, (int) (hasLimbShrapnell(rLimb)+(Math.random()*5)));
             }
             hurtArmor(rLimb,player,damage);
-            boolean amputated = handleAmputation(rLimb,passDamage,15+5);
+            boolean amputated = handleAmputation(rLimb,passDamage,15+5,player);
             if (amputated){
                 damage/=4;
             }
@@ -1910,7 +1978,7 @@ public class PlayerHealthData {
         damage = applyLocationalArmor(randomLimb,damage,player,false,true,false,false);
 
         applyConcussion(randomLimb,damage);
-        applyMuscleDamage(randomLimb,(float) (damage*(Math.random()/2f+0.5f)));
+        applyMuscleDamage(randomLimb,(float) (damage*(Math.random()/2f+0.5f)),player);
         applyPain(randomLimb,painFromDamage(damage));
         applySkinDamage(randomLimb, (float) (damage*(Math.random()/2f+0.5f)));
         applyBleedDamage(randomLimb,damage*0.9f,player);
@@ -1927,7 +1995,7 @@ public class PlayerHealthData {
             setLimbShrapnell(randomLimb,hasLimbShrapnell(randomLimb)+1);
         }
         hurtArmor(randomLimb,player,damage);
-        boolean amputated = handleAmputation(randomLimb,damage,15+5+10);
+        boolean amputated = handleAmputation(randomLimb,damage,15+5+10,player);
         if (amputated){
             damage/=4;
         }
@@ -1944,18 +2012,18 @@ public class PlayerHealthData {
             float passDamage = applyLocationalArmor(randLimb,Math.min(2,damage_pass),player,true,false,false,false);
             applyConcussion(randLimb,passDamage);
             applyPain(randLimb,painFromDamage((float) (passDamage*(Math.random()/2+1f))));
-            applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.5f)));
+            applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.5f)),player);
             applySkinDamage(randLimb,(float) (passDamage*(Math.random()/2+0.5f)));
             if (Math.random()<i*0.2){
                 applyPain(randLimb,painFromDamage((float) (passDamage*(Math.random()/2+1.5f))));
-                applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.7f)));
+                applyMuscleDamage(randLimb, (float) (passDamage*(Math.random()/2+0.7f)),player);
                 applySkinDamage(randLimb,(float) (passDamage*(Math.random()/2+0.7f)));
                 applyBleedDamage(randLimb,(float) (passDamage*(Math.random()/2+0.7f)),player);
                 damage-=damage_pass;
             }
             damage-=damage_pass;
             hurtArmor(randLimb,player,damage_pass);
-            boolean amputated = handleAmputation(randLimb,passDamage,15+5+6);
+            boolean amputated = handleAmputation(randLimb,passDamage,15+5+6,player);
             if (amputated){
                 damage/=4;
             }
@@ -2267,6 +2335,40 @@ public class PlayerHealthData {
         return rate;
     }
 
-
-
+    public float calculateStability(ServerPlayer player){
+        float DefaultChange = 2.5f;
+        if (contiousness<50){
+            DefaultChange -= contiousness/20f;
+        }
+        Vec3 velocity = PhysicsUtil.getVel(RagdollPart.TORSO,player);
+        if (velocity.length() > 0f) {
+            DefaultChange -= (float) ((velocity.length()) * 2);
+        }
+        if (Math.abs(player.getDeltaMovement().y)>20/20f&&player.fallDistance>5){
+            DefaultChange -= 5;
+        }
+        if (player.getPose() == Pose.CROUCHING){
+            DefaultChange += 1;
+        }
+        if (player.getPose() == Pose.SWIMMING){
+            DefaultChange +=2;
+        }
+        Vec3 flow = player.level().getFluidState(player.blockPosition()).getFlow(player.level(), player.blockPosition());
+        if (flow.length()>0){
+            DefaultChange -= (float) (flow.length()*3);
+            if (player.hasPose(Pose.CROUCHING)){
+                DefaultChange -=0.5f;
+            }
+        }
+        if (contiousness<10){
+            if (Stability!=0){
+                PhysicsUtil.applyRandomRot(player);
+            }
+            Stability = 0;
+        }else{
+            Stability += DefaultChange;
+        }
+        Stability = Mth.clamp(Stability,0,100);
+        return Stability;
+    }
 }

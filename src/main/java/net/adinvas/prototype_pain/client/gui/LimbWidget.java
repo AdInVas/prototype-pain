@@ -123,8 +123,8 @@ public class LimbWidget extends AbstractWidget {
         Minecraft mc = Minecraft.getInstance();
         mc.getTextureManager().bindForSetup(baseTxt);
 
-        float shakex = getX()+((random.nextFloat() * 2 - 1) * 2);
-        float shakey = getY()+((random.nextFloat() * 2 - 1) * 2);
+        float shakex = (float) (getX()+((random.nextFloat() * 2 - 1) * 2));
+        float shakey = (float) (getY()+((random.nextFloat() * 2 - 1) * 2));
         if (random.nextFloat()>Math.pow(shake,3)) shakex = getX();
         if (random.nextFloat()>Math.pow(shake,3)) shakey = getY();
 

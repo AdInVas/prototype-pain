@@ -31,8 +31,8 @@ public class BrainDamageClientController {
             float brain= player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f);
 
             if (brain < 95 && mc.level != null && mc.player != null) {
-                if (mc.level.getGameTime() % 400 == 0&&mc.level.random.nextFloat()>1-brain/120f) { // every 20s roughly
-                    float alpha = 0.2f + mc.level.random.nextFloat() * 0.3f;
+                if (mc.level.getGameTime() % 400 == 0&&Math.random()>1-brain/120f) { // every 20s roughly
+                    float alpha = (float) (0.2f + Math.random() * 0.3f);
                     GuiGraphics g = event.getGuiGraphics();
                     g.fill(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(),
                             ((int) (alpha * 255) << 24));
@@ -84,8 +84,8 @@ public class BrainDamageClientController {
         // Optional: a very subtle micro jitter when brain <80
         if (brain < 80) {
             float intensity = (80f - brain) / 80f * 0.2f; // subtle
-            float jitterPitch = (mc.level.random.nextFloat() - 0.5f) * intensity;
-            float jitterYaw = (mc.level.random.nextFloat() - 0.5f) * intensity;
+            float jitterPitch = (float) ((Math.random() - 0.5f) * intensity);
+            float jitterYaw = (float) ((Math.random() - 0.5f) * intensity);
             event.setPitch(event.getPitch() + jitterPitch);
             event.setYaw(event.getYaw() + jitterYaw);
         }

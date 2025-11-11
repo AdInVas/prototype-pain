@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.compat.FoodAndDrinkCompat;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
@@ -18,6 +19,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -113,7 +116,19 @@ public class ModEvents {
 
     }
 
+    @SubscribeEvent
+    public void onFoodEaten(LivingEntityUseItemEvent.Finish event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        ItemStack stack = event.getItem();
+        FoodAndDrinkCompat.FoodEntry data = FoodAndDrinkCompat.get(stack.getItem());
+        if (data != null)
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setTemperature(h.getTemperature()+ data.temperature);
+                //TODO thirst
+                //TODO sickness
 
+            });
+    }
 
 
     @SubscribeEvent

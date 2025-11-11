@@ -5,6 +5,8 @@ import net.adinvas.prototype_pain.blocks.ModBlocks;
 import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
 import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
 import net.adinvas.prototype_pain.client.overlays.OverlayController;
+import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsEvents;
+import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
 import net.adinvas.prototype_pain.config.ClientConfig;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.events.ModEvents;
@@ -27,6 +29,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -64,16 +67,15 @@ public class PrototypePain {
         ModSounds.register(modEventBus);
         ModParticles.register(modEventBus);
         modEventBus.addListener(ModGamerules::onCommonSetup);
+        if (ModList.get().isLoaded("prototype_physics")) {
+            MinecraftForge.EVENT_BUS.register(new PhysicsEvents());
+            LOGGER.info("PrototypePhysics detected — registered compatibility listeners");
+        }
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(ModNetwork::register);
     }
-
-    // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-    }
-
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {

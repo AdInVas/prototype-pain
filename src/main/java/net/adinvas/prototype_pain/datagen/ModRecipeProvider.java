@@ -274,7 +274,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,Items.GLASS_BOTTLE)
                 .requires(ModItemTags.VIAL_ITEMS)
                 .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer);
+                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "glass_from_other"));
 
         ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.MorphineVial.get())
                 .requires(Items.FERMENTED_SPIDER_EYE)

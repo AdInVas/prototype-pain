@@ -1,6 +1,5 @@
 package net.adinvas.prototype_pain.network;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.FriendlyByteBuf;

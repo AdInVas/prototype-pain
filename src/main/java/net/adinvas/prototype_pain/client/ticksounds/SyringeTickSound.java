@@ -4,13 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 
 public class SyringeTickSound extends AbstractTickableSoundInstance {
 
     private boolean done = false;
 
     public SyringeTickSound(SoundEvent sound) {
-        super(sound, SoundSource.PLAYERS, Minecraft.getInstance().level.getRandom());
+        super(sound, SoundSource.PLAYERS, RandomSource.create());
         this.looping = true;          // <— keep looping
         this.delay = 0;               // no delay between loops
         this.volume = 1.0f;

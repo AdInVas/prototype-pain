@@ -6,7 +6,6 @@
   "refmap": "prototype_pain.refmap.json",
   "plugin": "net.adinvas.prototype_pain.mixin.MixingConfig",
   "mixins": [
-    "LivingEntityMixin",
     "PlayerMixin"
   ],
   "client": [

@@ -12,7 +12,7 @@ public class BloodParticle extends TextureSheetParticle {
         this.setSize(0.1F, 0.1F);
         this.gravity = 4f;
         this.friction = 0.01f;
-        this.lifetime = 10 + this.random.nextInt(10);
+        this.lifetime = (int) (10 + Math.floor(Math.random()*10));
         this.pickSprite(sprites);
     }
 

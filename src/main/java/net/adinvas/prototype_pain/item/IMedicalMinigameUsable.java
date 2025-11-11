@@ -1,7 +1,6 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.limbs.Limb;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

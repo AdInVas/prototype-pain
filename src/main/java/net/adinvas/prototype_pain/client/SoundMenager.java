@@ -13,6 +13,7 @@ public class SoundMenager {
 
     public static void tick() {
         Minecraft mc = Minecraft.getInstance();
+
         if (mc.player == null) return;
         if (!ClientConfig.EXPERIMENTAL_SOUNDS.get())return;
 

@@ -152,7 +152,7 @@ public class DislocationMinigameScreen extends Screen {
         if (parent instanceof HealthScreen hp){
             hp.BGmode = true;
         }
-        float dislocation = minecraft.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.getLimbDislocated(limb)).orElse(0f);
+        float dislocation = target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.getLimbDislocated(limb)).orElse(0f);
         boneObject = new BoneObject(this.width/2,this.height/2-40,dislocation);
     }
 

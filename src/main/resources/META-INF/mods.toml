@@ -72,3 +72,10 @@ versionRange="[2.5.0,)"
 ordering="AFTER"
 side="BOTH"
 
+[[dependencies."${mod_id}"]]
+modId="prototype_physics"
+mandatory=false
+versionRange="[1.5,)"
+ordering="AFTER"
+side="BOTH"
+

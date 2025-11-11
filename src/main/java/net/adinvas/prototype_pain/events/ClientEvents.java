@@ -184,7 +184,7 @@ public class ClientEvents {
         if (player == null) return;
 
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-            if (h.getContiousness() <= 4) {
+            if (h.getContiousness() <= 10) {
                 event.setCanceled(true); // block opening inventory
             }
         });
@@ -207,6 +207,8 @@ public class ClientEvents {
 
 
     static int tick =0;
+    public static float lastStab = 0;
+    public static float stab_alpha = 0;
     @SubscribeEvent
     public static void onRenderOverlay(RenderGuiOverlayEvent.Pre event) {
         if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()||event.getOverlay() == VanillaGuiOverlay.AIR_LEVEL.type()||event.getOverlay() == VanillaGuiOverlay.ARMOR_LEVEL.type()) {
@@ -219,6 +221,12 @@ public class ClientEvents {
                     .map(PlayerHealthData::getOxygen)
                     .orElse(0f);
 
+            float stab = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
+                    .map(PlayerHealthData::getStability)
+                    .orElse(100f);
+
+            lastStab = Mth.lerp(0.1f,lastStab,stab);
+
             double Pain = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
                             .map(PlayerHealthData::getTotalPain)
                                     .orElse(0d);
@@ -228,9 +236,21 @@ public class ClientEvents {
             int x = mc.getWindow().getGuiScaledWidth() / 2 - 91; // same place as hearts
             int y = mc.getWindow().getGuiScaledHeight() - 39;
 
+            int size = (int) ((lastStab/100)*180);
+            if (stab>=100){
+                stab_alpha = 0;
+            }else {
+                stab_alpha = Mth.lerp(event.getPartialTick(),stab_alpha,1);
+            }
+
+            int alpha = (int) (stab_alpha *255);
+
+            int argb = (alpha << 24) | (0x00FFFF & 0xFFFFFF);
+
             gui.drawString(mc.font,"O₂ "+(int)Oxygen+"%",x,y,0xFFFFFF);
             gui.blit(pain_tex,x+50,y-2,0,0,10,10,10,10);
             gui.drawString(mc.font,Integer.valueOf((int) Pain)+"%",x+60,y,0xFFFFFF);
+            gui.fill(x+(90-size/2),y-20,x+90+(size/2),y-22,argb);
             event.setCanceled(true);
         }
     }

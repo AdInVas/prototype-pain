@@ -57,8 +57,7 @@ public class ServerConfig {
     public static final ForgeConfigSpec.DoubleValue IMMUNITY_SCALE;
     public static final ForgeConfigSpec.BooleanValue DO_TEMP_SCALE;
 
-
-
+    public static final ForgeConfigSpec.BooleanValue PHYS_INTEGRATION;
 
 
 
@@ -188,6 +187,16 @@ public class ServerConfig {
         DO_TEMP_SCALE = BUILDER
                 .comment("on/off temperature")
                         .define("doTempChange",true);
+
+
+
+
+
+        BUILDER.push("Integrations");
+        PHYS_INTEGRATION = BUILDER
+                .define("prototype_physics",false);
+
+
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

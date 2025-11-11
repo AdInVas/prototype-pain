@@ -40,7 +40,7 @@ public class SyringeFailPacket {
                 if (entity instanceof Player target){
                     target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                         Random random = new Random();
-                        h.setLimbPain(msg.limb, h.getLimbPain(msg.limb)+((random.nextFloat()+0.5f)*20));
+                        h.setLimbPain(msg.limb, (float) (h.getLimbPain(msg.limb)+((random.nextFloat()+0.5f)*20)));
                         h.setLimbShrapnell(msg.limb,h.hasLimbShrapnell(msg.limb)+1);
                     });
                 }

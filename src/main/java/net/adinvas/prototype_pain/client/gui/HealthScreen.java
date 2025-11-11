@@ -296,7 +296,7 @@ public class HealthScreen extends Screen {
         double maxDist = 3.0D; // example, 8 blocks
 
         if (distSq > maxDist * maxDist) {
-            onClose(); // too far -> close GUI
+            Minecraft.getInstance().screen.onClose();
             return;
         }
         updateScreen();
