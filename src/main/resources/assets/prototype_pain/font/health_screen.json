@@ -1,0 +1,13 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "prototype_pain:font/bmp.png",
+      "height": 16,
+      "ascent": 16,
+      "chars": [
+        "0"
+      ]
+    }
+  ]
+}
