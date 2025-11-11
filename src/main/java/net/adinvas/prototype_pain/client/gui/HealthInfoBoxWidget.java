@@ -137,7 +137,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         Font font = Minecraft.getInstance().font;
         Component text = Component.literal("000")
                 .setStyle(Style.EMPTY.withFont(new ResourceLocation(PrototypePain.MOD_ID, "health_screen")));
-        guiGraphics.drawString(Minecraft.getInstance().font,text,100,100,0xFFFFFF);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,100,100,0xFFFFFF,false);
         guiGraphics.pose().popPose();
     }
 
