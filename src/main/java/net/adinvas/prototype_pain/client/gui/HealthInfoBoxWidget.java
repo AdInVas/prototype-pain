@@ -1,5 +1,6 @@
 package net.adinvas.prototype_pain.client.gui;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
@@ -12,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec2;
 
 public class HealthInfoBoxWidget extends AbstractWidget {
     private Component name;
@@ -24,6 +26,8 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float brain;
     private float immunity;
     private float temp;
+    private float sickness;
+    private float thrist;
 
     private Component limbname =Component.empty();
     private float skin=100;
@@ -33,6 +37,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float pain2;
     private float bleed2;
     private float infection = 100;
+
 
     private boolean BGMode = false;
 
@@ -53,7 +58,9 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     }
 
     private final ResourceLocation main_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/health_screen/info_box.png");
-
+    private final ResourceLocation cons_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/health_screen/conc_sprites.png");
+    private final ResourceLocation opioid_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/health_screen/opioids.png");
+    private final Style textStyle = Style.EMPTY.withFont(new ResourceLocation(PrototypePain.MOD_ID, "health_screen"));
     public HealthInfoBoxWidget(int pX, int pY, int pWidth, int pHeight, Component pMessage) {
         super(pX, pY, pWidth, pHeight, pMessage);
     }
@@ -120,29 +127,141 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
-        int colorWhite = 0xFFFFFF;
+        int colorWhite = 0x48E38C;
         int colorRed = 0xFF0000;
         if (BGMode){
-            colorWhite = 0x777777;
+            colorWhite = 0x226A41;
             colorRed = 0x770000;
         }
+        PoseStack pose = guiGraphics.pose();
 
         float time = (Minecraft.getInstance().level.getGameTime() + v) / 20f; // seconds
         boolean blink = (int)(time * 6) % 2 == 0; // toggle every 0.5s
 
-        int startoffset = 0;
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(0.625f,0.625f,1);
-        guiGraphics.blit(main_tex,getX()+startoffset,getY(),0,0,196,392,196,392);
-        Component text = Component.literal("4.58l/m")
-                .setStyle(Style.EMPTY.withFont(new ResourceLocation(PrototypePain.MOD_ID, "health_screen")));
-        guiGraphics.drawString(Minecraft.getInstance().font,text,34,100,0xFFFFFF,false);
-        guiGraphics.pose().popPose();
+        pose.pushPose();
+        pose.scale(0.625f,0.625f,1);
+        guiGraphics.blit(main_tex,getX(),getY(),0,0,196,392,196,392);
 
+        int CV = (int) (16*(5-Math.ceil((contiousness/20))));
+        guiGraphics.blit(cons_tex,getX()+9,getY()+57,0,CV,16,16,16,80);
+
+        if (opiates>0){
+            guiGraphics.blit(opioid_tex,getX()+100,getY()+167,0,0,5,33,5,33);
+            float opatescale = Mth.clamp(opiates/100,0,1);
+            if (opiates>100){
+                if (blink)
+                    guiGraphics.fill(getX()+100+2,getY()+167+13,getX()+100+4, (int) (getY()+167+13+(17*opatescale)),0xFF48E38C);
+            }else{
+                guiGraphics.fill(getX()+100+2,getY()+167+13,getX()+100+3, (int) (getY()+167+13+(17*opatescale)),0xFF48E38C);
+            }
+        }
+        float brainscale = Mth.clamp(brain/100,0,1);
+        guiGraphics.fill(getX()+31,getY()+39, (int) (getX()+32+(91*brainscale)), getY()+42,0xFF48E38C);
+        float tempscale = Mth.clamp((temp-28)/14,0,1);
+        guiGraphics.fill(getX()+17, (int) (getY()+148+(28*tempscale)), getX()+19, getY()+176,0xFF48E38C);
+
+
+
+
+        pose.popPose();
+        pose.pushPose();
+        pose.scale(0.75f,0.75f,1);
+
+        Component text = Component.literal(Math.floor(blood*100)/100+"l").setStyle(textStyle);
+        Vec2 pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,34,98);
+        if (blood<3){
+            if (blink){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+
+        text = Component.literal((int)oxygen+"%").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,22,127);
+        if (oxygen<40){
+            if (blink){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)immunity+"%").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,87,127);
+        if (immunity<50){
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)brain+"").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,29,45);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+        text = Component.literal((int)contiousness+"%").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,59);
+        if (contiousness<30){
+            if (blink){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)pain+"%").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,78);
+        if (pain>60){
+            if (blink){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal(Math.floor(temp*10)/10+"C").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,155);
+        if (temp>41.5||temp<29){
+            if (blink){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)sickness+"%").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,28,196);
+        if (sickness>50){
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal(Math.floor(bleed*20*60*100)/100+"l/m").setStyle(textStyle);
+        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,40,111);
+        if (bleed>0.2/20/60){
+            if (blink)
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        pose.popPose();
     }
 
     @Override
     protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
+    }
+
+    public static Vec2 scaleCoordinates(
+            float fromScaleX, float fromScaleY,
+            float toScaleX, float toScaleY,
+            float x, float y) {
+
+        float newX = x * (toScaleX / fromScaleX);
+        float newY = y * (toScaleY / fromScaleY);
+        return new Vec2(newX, newY);
     }
 }
