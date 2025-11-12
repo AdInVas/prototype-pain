@@ -3,10 +3,15 @@
     {
       "type": "bitmap",
       "file": "prototype_pain:font/bmp.png",
-      "height": 16,
-      "ascent": 16,
+      "height": 5,
+      "ascent": 5,
       "chars": [
-        "0"
+        " !\"#$%'()*+,-./0",
+        "123456789:;<=>?@",
+        "ABCDEFGHIJKLMNOP",
+        "QRSTUVWXYZ[\\]^_`",
+        "abcdefghijklmnop",
+        "rstuvwxz{|}~    "
       ]
     }
   ]
