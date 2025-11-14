@@ -1,9 +1,11 @@
 package net.adinvas.prototype_pain.limbs;
 
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.ModGamerules;
 import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.compat.TempCompat;
 import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
@@ -38,16 +40,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class PlayerHealthData {
     private Map<Limb,LimbStatistics> limbStats = new EnumMap<>(Limb.class);
@@ -1300,7 +1306,7 @@ public class PlayerHealthData {
         } else if (temperature < 27) {
             moveMultiplier -= 0.2f;
             contiousness -= (float) ((getContiousnessregen() + 0.25f) / 20f);
-            if (contiousness > 1) {
+            if (contiousness < 10) {
                 isFreezing = true;
             }
             painscale = 1.5f;
@@ -1400,11 +1406,8 @@ public class PlayerHealthData {
         nbt.putFloat("HearingLoss",hearingLoss);
         nbt.putFloat("FlashHearing",flashHearingLoss);
         nbt.putBoolean("LastStand",LastStand);
-        /*
         nbt.putFloat("Stability",Stability);
 
-
-         */
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
             changeList.add(entry.toNBT());
@@ -2150,12 +2153,19 @@ public class PlayerHealthData {
         }
     }
 
-
+    int temperatureTick = 0;
+    float blockheatBonus = 0f;
     public void updateTemperature(Player player){
-        float biomeTemp = player.level().getBiome(player.blockPosition())
-                .value().getBaseTemperature();
+        Level world = player.level();
+        BlockPos pos = player.blockPosition();
 
-        float envTemp = 32.5f + (biomeTemp * 7f);
+        Biome biome = world.getBiome(pos).value();
+
+        Float envTemp = TempCompat.getForPosition(world,pos);
+        //PrototypePain.LOGGER.info("biome {}| env {}", 6,envTemp);
+        if (envTemp==null) {
+            envTemp = 25f + ((biome.getBaseTemperature() + 0.5f) / 2.5f) * 16f;
+        }
 
         int seaLevel = player.level().getSeaLevel();
         double heightDiff = player.getY() - seaLevel;
@@ -2164,36 +2174,34 @@ public class PlayerHealthData {
         envTemp += heightModifier;
 
         BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-        float blockheatBonus = 0f;
 
-        for (int dx = -3; dx <= 3; dx++) {
-            for (int dy = -2; dy <= 2; dy++) {
-                for (int dz = -3; dz <= 3; dz++) {
-                    checkPos.set(player.blockPosition().offset(dx, dy, dz));
-                    BlockState state = player.level().getBlockState(checkPos);
+        if (temperatureTick++>20) {
+            blockheatBonus =0;
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    for (int dz = -3; dz <= 3; dz++) {
+                        checkPos.set(player.blockPosition().offset(dx, dy, dz));
+                        BlockState state = player.level().getBlockState(checkPos);
 
-                    float base = 0f;
+                        float base = 0f;
 
-                    if (state.is(Blocks.LAVA)) base += 3f;
-                    else if (state.is(Blocks.FIRE)) base += 2f;
-                    else if (state.is(Blocks.TORCH)) base += 0.5f;
-                    else if (state.is(Blocks.MAGMA_BLOCK)) base += 3f;
-                    else if (state.is(Blocks.CAMPFIRE)) base += 2.5f;
-                    else if (state.is(Blocks.ICE)) base -= 3f;
-                    else if (state.is(Blocks.POWDER_SNOW)) base -= 3f;
-                    if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
-                        base += 1f;
-                    }
+                        base = TempCompat.get(state.getBlock()) != null ? TempCompat.get(state.getBlock()) : 0;
+                        if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
+                            base += 1f;
+                        }
 
-                    if (base != 0f) {
-                        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                        float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
-                        blockheatBonus += base * falloff;
+                        if (base != 0f) {
+                            double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                            float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
+                            blockheatBonus += base * falloff;
+                        }
                     }
                 }
             }
+            temperatureTick = 0;
+            blockheatBonus = Mth.clamp(blockheatBonus,-30,30);
         }
-        blockheatBonus = Mth.clamp(blockheatBonus,-12,15);
+
         if (player.isSprinting()) envTemp += 1.5f;
         else if (player.isSwimming()) envTemp -= 1f;
         if (player.getFoodData().getFoodLevel() < 6) envTemp -= 0.5f;
@@ -2211,7 +2219,7 @@ public class PlayerHealthData {
             blockheatBonus *= 0.5f; // less effect indoors
         }
 
-        if (player.level().isRainingAt(player.blockPosition())) generalheatbonus -= 2f;
+        if (player.isInWaterOrRain())generalheatbonus -= 2f;
         if (player.level().isThundering()) generalheatbonus -= 3f;
         if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) generalheatbonus += 1f;
 
@@ -2227,17 +2235,37 @@ public class PlayerHealthData {
         float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
         float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
 
-// Base adjustment rate — faster when in water
-        float baseRate = (player.isInWater() ? 0.01f : 0.005f) / 20f;
-
-// Reduce change rate by insulation
+        float baseRate = 0.005f / 20f;
         float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
         adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
 
-// Smoothly adjust toward target
-        float targetTemp = Mth.clamp(envTemp,18,50);
+        float targetTemp = Mth.clamp(envTemp, 18f, 44f);
+        float optimalTemp = 36.6f;
 
-        temperature += (targetTemp - temperature) * adjustmentRate;
+// Difference between environment and player temperature
+        float delta = targetTemp - temperature;
+
+// How far we are from the optimal zone
+        float distanceFromOpt = Math.abs(temperature - optimalTemp);
+
+// --- DIRECTION-SENSITIVE SPEED ---
+// When moving TOWARD 36.6 → accelerate
+// When moving AWAY from 36.6 → decelerate
+
+// Base curve: 1.0 near 36.6, down to ~0.2 at ±7 °C deviation
+        float curveFactor = Mth.clamp(1f - (distanceFromOpt / 10f) * 0.8f, 0.1f, 1.5f);
+
+// Determine direction
+        boolean movingTowardOpt = Math.signum(delta) != Math.signum(temperature - optimalTemp);
+
+// If moving toward optimal → speed up (×2), else slow down (×0.5)
+        float directionFactor = movingTowardOpt ? 4.0f : 1.0f;
+
+// Combine modifiers
+        float finalRate = adjustmentRate * curveFactor * directionFactor;
+        //PrototypePain.LOGGER.info("target {}| {} | actuall {}| Env {}",targetTemp,finalRate,temperature,envTemp);
+// Apply the change
+        temperature += delta * finalRate;
     }
 
     public void calculateImmunity(){

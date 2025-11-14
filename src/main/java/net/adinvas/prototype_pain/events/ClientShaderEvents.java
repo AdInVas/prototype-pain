@@ -19,6 +19,9 @@ public class ClientShaderEvents {
     public static ShaderInstance RIGHT_EYE_BLIND;
     public static ShaderInstance FULL_BLIND;
     public static ShaderInstance WARP_CHROMAABB;
+    public static ShaderInstance SICKNESS;
+    public static ShaderInstance HEAT;
+    public static ShaderInstance COLD;
     @SubscribeEvent
     public static void registerShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(
@@ -55,6 +58,24 @@ public class ClientShaderEvents {
                         new ResourceLocation(PrototypePain.MOD_ID, "warp_chromaabb"),
                         DefaultVertexFormat.POSITION_TEX),
                 shader -> WARP_CHROMAABB = shader
+        );
+        event.registerShader(
+                new ShaderInstance(event.getResourceProvider(),
+                        new ResourceLocation(PrototypePain.MOD_ID, "sickness"),
+                        DefaultVertexFormat.POSITION_TEX),
+                shader -> SICKNESS = shader
+        );
+        event.registerShader(
+                new ShaderInstance(event.getResourceProvider(),
+                        new ResourceLocation(PrototypePain.MOD_ID, "heat"),
+                        DefaultVertexFormat.POSITION_TEX),
+                shader -> HEAT = shader
+        );
+        event.registerShader(
+                new ShaderInstance(event.getResourceProvider(),
+                        new ResourceLocation(PrototypePain.MOD_ID, "cold"),
+                        DefaultVertexFormat.POSITION_TEX),
+                shader -> COLD = shader
         );
 
     }
