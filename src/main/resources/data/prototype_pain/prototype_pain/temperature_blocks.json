@@ -1,0 +1,21 @@
+{
+  "minecraft:ice": {"temperature": -0.4},
+  "minecraft:fire": {"temperature": 1.0},
+  "minecraft:soul_fire": {"temperature": -1.0},
+  "minecraft:lava": {"temperature": 1.0},
+  "minecraft:magma_block": {"temperature": 1.5},
+  "minecraft:glowstone": {"temperature": 0.5},
+  "minecraft:shroomlight": {"temperature": 0.5},
+  "minecraft:lava_cauldron": {"temperature": 0.7},
+  "minecraft:nether_portal": {"temperature": 0.5},
+  "minecraft:soul_torch": {"temperature": -0.5},
+  "minecraft:soul_lantern": {"temperature": -0.7},
+  "minecraft:lantern": {"temperature": 0.5},
+  "minecraft:torch": {"temperature": 0.5},
+  "minecraft:packed_ice": {"temperature": -0.7},
+  "minecraft:blue_ice": {"temperature": -1.5},
+  "minecraft:frosted_ice": {"temperature": -0.2},
+  "minecraft:snow": {"temperature": -0.1},
+  "minecraft:snow_block": {"temperature": -0.2},
+  "minecraft:powder_snow": {"temperature": -0.9}
+}

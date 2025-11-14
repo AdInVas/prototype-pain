@@ -1,6 +1,6 @@
 {
   "vertex": "prototype_pain:pass_trough",
-  "fragment": "prototype_pain:pain_vignette",
+  "fragment": "prototype_pain:cold",
   "samplers": [
     { "name": "Sampler0" },
     { "name": "Sampler1" }
