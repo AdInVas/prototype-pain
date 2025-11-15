@@ -125,6 +125,9 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         this.dislocated = dislocated;
     }
 
+    float uiScale = 0.66f;
+    float textScale = 0.75f;
+
     @Override
     protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
         int colorWhite = 0x48E38C;
@@ -138,8 +141,9 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         float time = (Minecraft.getInstance().level.getGameTime() + v) / 20f; // seconds
         boolean blink = (int)(time * 6) % 2 == 0; // toggle every 0.5s
 
+
         pose.pushPose();
-        pose.scale(0.625f,0.625f,1);
+        pose.scale(uiScale,uiScale,1);
         guiGraphics.blit(main_tex,getX(),getY(),0,0,196,392,196,392);
 
         int CV = (int) (16*(5-Math.ceil((contiousness/20))));
@@ -156,19 +160,19 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             }
         }
         float brainscale = Mth.clamp(brain/100,0,1);
-        guiGraphics.fill(getX()+31,getY()+39, (int) (getX()+32+(91*brainscale)), getY()+42,0xFF48E38C);
-        float tempscale = Mth.clamp((temp-28)/14,0,1);
-        guiGraphics.fill(getX()+17, (int) (getY()+148+(28*tempscale)), getX()+19, getY()+176,0xFF48E38C);
+        guiGraphics.fill(getX()+32,getY()+39, (int) (getX()+33+(91*brainscale)), getY()+42,0xFF48E38C);
+        float tempscale = Mth.clamp(1-(temp-28)/14,0,1);
+        guiGraphics.fill(getX()+18, (int) (getY()+148+(28*tempscale)), getX()+19, getY()+176,0xFF48E38C);
 
 
 
 
         pose.popPose();
         pose.pushPose();
-        pose.scale(0.75f,0.75f,1);
+        pose.scale(textScale,textScale,1);
 
         Component text = Component.literal(Math.floor(blood*100)/100+"l").setStyle(textStyle);
-        Vec2 pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,34,98);
+        Vec2 pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,35,98);
         if (blood<3){
             if (blink){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -179,7 +183,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
 
         text = Component.literal((int)oxygen+"%").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,22,127);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,22,127);
         if (oxygen<40){
             if (blink){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -189,7 +193,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal((int)immunity+"%").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,87,127);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,87,127);
         if (immunity<50){
             guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
         }else {
@@ -197,11 +201,11 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal((int)brain+"").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,29,45);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,29,45);
         guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
 
-        text = Component.literal((int)contiousness+"%").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,59);
+        text = Component.literal((int)contiousness+"% CONS").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,27,59);
         if (contiousness<30){
             if (blink){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -210,8 +214,8 @@ public class HealthInfoBoxWidget extends AbstractWidget {
             guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
         }
 
-        text = Component.literal((int)pain+"%").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,78);
+        text = Component.literal((int)pain+"% PAIN").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,27,78);
         if (pain>60){
             if (blink){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -221,7 +225,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal(Math.floor(temp*10)/10+"C").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,27,155);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,27,155);
         if (temp>41.5||temp<29){
             if (blink){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -231,7 +235,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal((int)sickness+"%").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,28,196);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,28,196);
         if (sickness>50){
             guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
         }else {
@@ -239,13 +243,115 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal(Math.floor(bleed*20*60*100)/100+"l/m").setStyle(textStyle);
-        pos = scaleCoordinates(0.75f,0.75f,0.625f,0.625f,40,111);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,40,111);
         if (bleed>0.2/20/60){
             if (blink)
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
         }else {
             guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
         }
+
+        text = limbname.copy().setStyle(textStyle).withStyle(ChatFormatting.BOLD);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,69,292);
+        drawCenteredText(guiGraphics,Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+
+        text = Component.literal("SKIN   -").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,10,308);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+
+        text = Component.literal("MUSCLE -").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,10,325);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+
+        text = Component.literal(name.getString().toUpperCase()).setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,69,13);
+
+        drawCenteredText(guiGraphics,Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+
+        text = Component.literal((int)muscle+"").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,108,319);
+        if (muscle<20){
+            if (blink)
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)skin+"").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,63,315);
+        if (skin<20){
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else {
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal("FRACT").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,10,340);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+        text = Component.literal("DISL").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,10,350);
+        guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+
+        if (dislocated>0){
+            text = Component.literal((int)dislocated+"%").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,50,350);
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else{
+            text = Component.literal("----").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,50,350);
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        if (fracture>0){
+            text = Component.literal((int)fracture+"%").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,50,340);
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else{
+            text = Component.literal("----").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,50,340);
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        if (infection>25){
+            text = Component.literal((int)infection+"").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,80,340);
+            if (infection>80){
+                if (blink)
+                    guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+            }else{
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+            }
+        }else{
+            text = Component.literal("---").setStyle(textStyle);
+            pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,80,340);
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        text = Component.literal((int)pain2+"").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,80,356);
+        if (pain2>60){
+            if (blink)
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else{
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
+        }
+
+        if (bleed2>0) {
+            text = Component.literal((int) (bleed2 * 20 * 60) + "l/m").setStyle(textStyle);
+            pos = scaleCoordinates(textScale, textScale, uiScale, uiScale, 80, 372);
+            if (bleed2 * 20 * 60 > 0.2) {
+                if (blink)
+                    guiGraphics.drawString(Minecraft.getInstance().font, text, (int) pos.x, (int) pos.y, colorRed, false);
+            } else {
+                guiGraphics.drawString(Minecraft.getInstance().font, text, (int) pos.x, (int) pos.y, colorWhite, false);
+            }
+        }
+
 
         pose.popPose();
     }
@@ -263,5 +369,24 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         float newX = x * (toScaleX / fromScaleX);
         float newY = y * (toScaleY / fromScaleY);
         return new Vec2(newX, newY);
+    }
+
+    public static void drawCenteredText(
+            GuiGraphics gui,
+            Font font,
+            Component text,
+            float x,
+            float y,
+            int color,
+            boolean dropShadow
+    ) {
+        // Measure text width using the styled component
+        int width = font.width(text);
+
+        // Center position
+        int drawX = (int)(x - width / 2f);
+        int drawY = (int)y;
+
+        gui.drawString(font, text, drawX, drawY, color, dropShadow);
     }
 }
