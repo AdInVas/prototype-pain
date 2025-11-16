@@ -58,7 +58,6 @@ public class BrownCapItem extends Item {
         if (pLivingEntity instanceof ServerPlayer player){
             Random random = new Random();
             float maineffect = random.nextFloat(100f);
-
             if (maineffect<20){
                 player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()+3);
                 player.getFoodData().setSaturation(player.getFoodData().getSaturationLevel()+3);
@@ -100,15 +99,25 @@ public class BrownCapItem extends Item {
                         if (h.isAmputated(limb))
                             amputated.add(limb);
                     }
-                    Limb toFix = amputated.get(random.nextInt(amputated.size()));
-                    for (Limb limb:toFix.getConnectedLimbs()){
-                        if (h.isAmputated(limb)) {
-                            h.setlimbAmputated(limb, false);
-                            h.setLimbPain(limb,400);
+                    if (!amputated.isEmpty()) {
+                        Limb toFix = amputated.get(random.nextInt(amputated.size()));
+                        for (Limb limb : toFix.getConnectedLimbs()) {
+                            if (h.isAmputated(limb)) {
+                                h.setlimbAmputated(limb, false);
+                                h.setLimbPain(limb, 400);
+                            }
+                        }
+                        h.setlimbAmputated(toFix, false);
+                        h.setLimbPain(toFix, 400);
+                    }else {
+                        if (h.isRightEyeBlind()){
+                            h.setRightEyeBlind(false);
+                        } else if (h.isLeftEyeBlind()) {
+                            h.setLeftEyeBlind(false);
+                        }else if (h.isMouthRemoved()){
+                            h.setMouthRemoved(false);
                         }
                     }
-                    h.setlimbAmputated(toFix,false);
-                    h.setLimbPain(toFix,400);
                 });
             }
 

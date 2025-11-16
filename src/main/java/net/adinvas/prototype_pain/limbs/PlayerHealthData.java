@@ -1,12 +1,12 @@
 package net.adinvas.prototype_pain.limbs;
 
-import cpw.mods.modlauncher.api.IEnvironment;
 import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.ModGamerules;
 import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.compat.TempCompat;
 import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
+import net.adinvas.prototype_pain.compat.serene_seasons.SereneSeasonsUtil;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
@@ -48,12 +48,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.BooleanUtils;
 
 import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class PlayerHealthData {
     private Map<Limb,LimbStatistics> limbStats = new EnumMap<>(Limb.class);
@@ -2154,29 +2152,56 @@ public class PlayerHealthData {
     }
 
     int temperatureTick = 0;
-    float blockheatBonus = 0f;
+    float envTemp = 36.6f;
     public void updateTemperature(Player player){
-        Level world = player.level();
-        BlockPos pos = player.blockPosition();
-
-        Biome biome = world.getBiome(pos).value();
-
-        Float envTemp = TempCompat.getForPosition(world,pos);
-        //PrototypePain.LOGGER.info("biome {}| env {}", 6,envTemp);
-        if (envTemp==null) {
-            envTemp = 25f + ((biome.getBaseTemperature() + 0.5f) / 2.5f) * 16f;
+        if (temperatureTick++>20) {
+            temperatureTick = 0;
+            envTemp = getAmbientTemperature(player);
         }
+        //PrototypePain.LOGGER.info("temp : {}",envTemp);
+        float armorInsulation = 0f;
+        armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
+
+        float INSULATION_PER_POINT = 0.05f;
+        float MAX_INSULATION_SCALE = 0.85f;
+        float MIN_RATE = 1e-5f;
+
+        float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
+        float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
+
+        float baseRate = 0.005f / 20f;
+        float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
+        adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
+
+        float targetTemp = Mth.clamp(envTemp, 18f, 44f);
+        float optimalTemp = 36.6f;
+
+        float delta = targetTemp - temperature;
+
+        float distanceFromOpt = Math.abs(temperature - optimalTemp);
+
+        float curveFactor = Mth.clamp(1f - (distanceFromOpt / 10f) * 0.8f, 0.1f, 1.5f);
+
+        boolean movingTowardOpt = Math.signum(delta) != Math.signum(temperature - optimalTemp);
+
+        float directionFactor = movingTowardOpt ? 4.0f : 1.0f;
+
+        float finalRate = adjustmentRate * curveFactor * directionFactor;
+
+        temperature += delta * finalRate;
+    }
+
+    public Float getAmbientTemperature(Player player){
+        float outData = getBiomeTemperature(player);
 
         int seaLevel = player.level().getSeaLevel();
         double heightDiff = player.getY() - seaLevel;
 
         float heightModifier = (float) Mth.clamp(-heightDiff * 0.025f, -4f, 4f);
-        envTemp += heightModifier;
+        outData += heightModifier;
 
         BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-
-        if (temperatureTick++>20) {
-            blockheatBonus =0;
+            float tblockheatBonus =0;
             for (int dx = -3; dx <= 3; dx++) {
                 for (int dy = -2; dy <= 2; dy++) {
                     for (int dz = -3; dz <= 3; dz++) {
@@ -2193,79 +2218,60 @@ public class PlayerHealthData {
                         if (base != 0f) {
                             double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
                             float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
-                            blockheatBonus += base * falloff;
+                            tblockheatBonus += base * falloff;
                         }
                     }
                 }
             }
-            temperatureTick = 0;
-            blockheatBonus = Mth.clamp(blockheatBonus,-30,30);
-        }
+        tblockheatBonus = Mth.clamp(tblockheatBonus,-30,30);
 
-        if (player.isSprinting()) envTemp += 1.5f;
-        else if (player.isSwimming()) envTemp -= 1f;
-        if (player.getFoodData().getFoodLevel() < 6) envTemp -= 0.5f;
+        if (player.isSprinting()) outData += 1.5f;
+        else if (player.isSwimming()) outData -= 1f;
+        if (player.getFoodData().getFoodLevel() < 6) outData -= 0.5f;
 
         float generalheatbonus = 0f;
 
         if (player.isInWater()) generalheatbonus -= 3f; // cold water
         if (player.isOnFire()) generalheatbonus += 10f;
 
-        float armorInsulation = 0f;
-        armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
-
         boolean skyVisible = player.level().canSeeSkyFromBelowWater(player.blockPosition());
         if (!skyVisible) {
-            blockheatBonus *= 0.5f; // less effect indoors
+            tblockheatBonus *= 0.5f; // less effect indoors
         }
 
         if (player.isInWaterOrRain())generalheatbonus -= 2f;
         if (player.level().isThundering()) generalheatbonus -= 3f;
         if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) generalheatbonus += 1f;
 
-        envTemp += (blockheatBonus + generalheatbonus);
+        outData += (tblockheatBonus + generalheatbonus);
+        return outData;
+    }
 
-// --- Armor insulation slows down temperature change ---
-// Each point of insulation reduces how fast body temperature changes toward environment
-        float INSULATION_PER_POINT = 0.05f;   // 5% slower per insulation point
-        float MAX_INSULATION_SCALE = 0.85f;   // max 85% slower (still allows change)
-        float MIN_RATE = 1e-5f;               // avoid stalling
+    public float getBiomeTemperature(Player player){
+        Level world = player.level();
+        BlockPos pos = player.blockPosition();
 
-// Compute insulation effect and clamp it
-        float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
-        float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
+        Biome biome = world.getBiome(pos).value();
+        float sunScale =0;
+        float sunAngle = (float) Math.toDegrees(world.getSunAngle(0));
 
-        float baseRate = 0.005f / 20f;
-        float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
-        adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
+        if (sunAngle>90&&sunAngle<270){
+            if (sunAngle>180){
+                sunAngle -= 180;
+            }
+           sunScale = Mth.clamp(Math.abs((sunAngle-90)/30),0,1);
+        }
+        TempCompat.BiomeTemperatureEntry temperatureEntry = TempCompat.getForPosition(world,pos);
+        Float outData = null;
+        if (temperatureEntry!=null){
+            outData = SereneSeasonsUtil.getSeasonScale(world,temperatureEntry);
+            outData += (temperatureEntry.nightChange*sunScale);
+        }
 
-        float targetTemp = Mth.clamp(envTemp, 18f, 44f);
-        float optimalTemp = 36.6f;
-
-// Difference between environment and player temperature
-        float delta = targetTemp - temperature;
-
-// How far we are from the optimal zone
-        float distanceFromOpt = Math.abs(temperature - optimalTemp);
-
-// --- DIRECTION-SENSITIVE SPEED ---
-// When moving TOWARD 36.6 → accelerate
-// When moving AWAY from 36.6 → decelerate
-
-// Base curve: 1.0 near 36.6, down to ~0.2 at ±7 °C deviation
-        float curveFactor = Mth.clamp(1f - (distanceFromOpt / 10f) * 0.8f, 0.1f, 1.5f);
-
-// Determine direction
-        boolean movingTowardOpt = Math.signum(delta) != Math.signum(temperature - optimalTemp);
-
-// If moving toward optimal → speed up (×2), else slow down (×0.5)
-        float directionFactor = movingTowardOpt ? 4.0f : 1.0f;
-
-// Combine modifiers
-        float finalRate = adjustmentRate * curveFactor * directionFactor;
-        //PrototypePain.LOGGER.info("target {}| {} | actuall {}| Env {}",targetTemp,finalRate,temperature,envTemp);
-// Apply the change
-        temperature += delta * finalRate;
+        if (outData==null) {
+            outData = 25f + ((biome.getBaseTemperature() + 0.5f) / 2.5f) * 16f;
+        }
+        return outData;
     }
 
     public void calculateImmunity(){
