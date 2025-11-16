@@ -1230,7 +1230,6 @@ public class PlayerHealthData {
                     PhysicsUtil.setPhysics(false, player,0,0);
                 }
             }
-            PrototypePain.LOGGER.info("stab {}, {}, {}",Stability,isRagdolled,canBreakOutOffRagdoll);
         }else{
             Stability = 100;
         }
@@ -2158,7 +2157,6 @@ public class PlayerHealthData {
             temperatureTick = 0;
             envTemp = getAmbientTemperature(player);
         }
-        //PrototypePain.LOGGER.info("temp : {}",envTemp);
         float armorInsulation = 0f;
         armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
 

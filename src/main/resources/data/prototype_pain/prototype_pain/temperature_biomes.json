@@ -97,7 +97,6 @@
     "summer": 33,
     "fall": 32
   },
-
   "minecraft:desert": {
     "temperature": 45,
     "nightChange": -25,
@@ -106,7 +105,6 @@
     "summer": 50,
     "fall": 45
   },
-
   "minecraft:dripstone_caves": {
     "temperature": 34,
     "nightChange": -1

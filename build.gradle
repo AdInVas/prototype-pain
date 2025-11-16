@@ -186,8 +186,8 @@ dependencies {
     //implementation(fg.deobf("maven.modrinth:uwrad:1.1.0+forge"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-    runtimeOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
-    runtimeOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
+    //runtimeOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
+    //runtimeOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
 
     //runtimeOnly(fg.deobf("maven.modrinth:figura:4HqSmvZ6"))
     //runtimeOnly(fg.deobf("maven.modrinth:simple-voice-chat:forge-1.20.1-2.5.35"))
