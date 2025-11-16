@@ -22,7 +22,7 @@ public class HeatOverlay implements IShaderOverlay {
         float temp = (float)(mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
                 .map(PlayerHealthData::getTemperature).orElse(36.6f) );
 
-        return temp>38;
+        return temp>40;
     }
 
     public void render(RenderLevelStageEvent event, RenderTarget input, RenderTarget output) {
@@ -38,7 +38,7 @@ public class HeatOverlay implements IShaderOverlay {
         float temp = (mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)
                 .map(PlayerHealthData::getTemperature).orElse(36.6f) );
 
-        temp = Mth.clamp((temp-38)/4, 0f, 1f);
+        temp = Mth.clamp((temp-40)/2, 0f, 1f);
 
 
         float displayedPain = Mth.lerp(0.1f, prevTemp, temp);

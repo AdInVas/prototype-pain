@@ -120,6 +120,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.Thermometer.get())
+                .pattern(" C ")
+                .pattern("CRC")
+                .pattern("CGC")
+                .define('C',Items.COPPER_INGOT)
+                .define('R',Items.REDSTONE)
+                .define('G',Items.GOLD_INGOT)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer);
+
         ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.LRD.get())
                 .requires(Items.DIAMOND)
                 .requires(ModItems.MakeshiftLRD.get())

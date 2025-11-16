@@ -3,7 +3,6 @@ package net.adinvas.prototype_pain.compat;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -35,7 +34,7 @@ public class TempCompatLoader extends SimpleJsonResourceReloadListener {
                     try {
                         ResourceLocation blockId = new ResourceLocation(key);
                         JsonObject obj = json.getAsJsonObject(key);
-                        float value = obj.has("temperature") ? obj.get("temperature").getAsFloat() : 0f;
+                        float value = obj.has("temperature") ? obj.get("temperature").getAsFloat() : 36.6f;
 
                         TempCompat.addEntryBlock(blockId, value);
                     } catch (Exception e) {
@@ -48,9 +47,23 @@ public class TempCompatLoader extends SimpleJsonResourceReloadListener {
                     try {
                         ResourceLocation blockId = new ResourceLocation(key);
                         JsonObject obj = json.getAsJsonObject(key);
-                        float value = obj.has("temperature") ? obj.get("temperature").getAsFloat() : 0f;
-                        PrototypePain.LOGGER.info("temp {}, biome {}",blockId,value);
-                        TempCompat.addEntryBiome(blockId, value);
+                        float day = obj.has("temperature") ? obj.get("temperature").getAsFloat() : null;
+                        float night = obj.has("nightChange") ? obj.get("nightChange").getAsFloat() : 0;
+                        float spring = obj.has("spring") ? obj.get("spring").getAsFloat() : day;
+                        float summer = obj.has("summer") ? obj.get("summer").getAsFloat() : day;
+                        float fall = obj.has("fall") ? obj.get("fall").getAsFloat() : day;
+                        float winter = obj.has("winter") ? obj.get("winter").getAsFloat() : day;
+
+                        if (!Float.isNaN(day)){
+                            TempCompat.BiomeTemperatureEntry entry = new TempCompat.BiomeTemperatureEntry();
+                            entry.temperature = day;
+                            entry.nightChange = night;
+                            entry.summer = summer;
+                            entry.fall = fall;
+                            entry.spring = spring;
+                            entry.winter = winter;
+                            TempCompat.addEntryBiome(blockId,entry);
+                        }
                     } catch (Exception e) {
                         System.err.println("[Prototype Pain] Failed to parse temperaturebiome compat entry: " + key);
                     }

@@ -15,13 +15,18 @@ import net.adinvas.prototype_pain.item.ModItems;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagScreen;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagScreen;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagScreen;
+import net.adinvas.prototype_pain.item.usable.ThermometerItem;
 import net.adinvas.prototype_pain.loot.ModLootModifier;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.recipe.ModRecipes;
 import net.adinvas.prototype_pain.visual.particles.BloodParticle;
 import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +42,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
+
+import java.util.function.Function;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(PrototypePain.MOD_ID)
@@ -103,6 +110,11 @@ public class PrototypePain {
         @SubscribeEvent
         public static void registerParticleProvider(RegisterParticleProvidersEvent event){
             event.registerSpriteSet(ModParticles.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
+        }
+
+        @SubscribeEvent
+        public static void registerTooltips(RegisterClientTooltipComponentFactoriesEvent event){
+            event.register(ThermometerItem.ClientThermoTooltip.class, Function.identity());
         }
     }
 }

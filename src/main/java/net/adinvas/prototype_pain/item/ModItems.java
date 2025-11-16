@@ -1,7 +1,6 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.blocks.BrownCapBlock;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
 import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
@@ -75,6 +74,7 @@ public class ModItems {
     public static final RegistryObject<Item> BrownCap = ITEMS.register("brown_cap", BrownCapItem::new);
     public static final RegistryObject<Item> AutoPump = ITEMS.register("auto_pump", AutoPumpItem::new);
 
+    public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
 
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));

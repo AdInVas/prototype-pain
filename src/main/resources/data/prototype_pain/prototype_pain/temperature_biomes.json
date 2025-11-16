@@ -1,66 +1,446 @@
 {
-  "minecraft:badlands" : {"temperature": 41.5},
-  "minecraft:bamboo_jungle": {"temperature": 39.0},
-  "minecraft:basalt_deltas": {"temperature": 43},
-  "minecraft:beach": {"temperature": 34},
-  "minecraft:birch_forest": {"temperature": 35},
-  "minecraft:cherry_grove": {"temperature": 35},
-  "minecraft:cold_ocean": {"temperature": 27},
-  "minecraft:crimson_forest": {"temperature": 45},
-  "minecraft:dark_forest": {"temperature": 33},
-  "minecraft:deep_cold_ocean": {"temperature": 25},
-  "minecraft:deep_dark": {"temperature": 38},
-  "minecraft:deep_frozen_ocean": {"temperature": 25},
-  "minecraft:deep_lukewarm_ocean": {"temperature": 32},
-  "minecraft:deep_ocean": {"temperature": 30},
-  "minecraft:desert": {"temperature": 42},
-  "minecraft:dripstone_caves": {"temperature": 34},
-  "minecraft:end_barrens": {"temperature": 30},
-  "minecraft:end_highlands": {"temperature": 30},
-  "minecraft:end_midlands": {"temperature": 30},
-  "minecraft:eroded_badlands": {"temperature": 41.5},
-  "minecraft:flower_forest": {"temperature": 36},
-  "minecraft:forest": {"temperature": 34},
-  "minecraft:frozen_ocean": {"temperature": 20},
-  "minecraft:frozen_peaks": {"temperature": 22},
-  "minecraft:frozen_river": {"temperature": 24},
-  "minecraft:grove": {"temperature": 25},
-  "minecraft:ice_spikes": {"temperature": 10},
-  "minecraft:jagged_peaks": {"temperature": 29},
-  "minecraft:jungle": {"temperature": 40},
-  "minecraft:lukewarm_ocean": {"temperature": 33},
-  "minecraft:lush_caves": {"temperature": 32},
-  "minecraft:mangrove_swamp": {"temperature": 33},
-  "minecraft:meadow": {"temperature": 35},
-  "minecraft:mushroom_fields": {"temperature": 35},
-  "minecraft:nether_wastes": {"temperature": 45},
-  "minecraft:ocean": {"temperature": 32},
-  "minecraft:old_growth_birch_forest": {"temperature": 34},
-  "minecraft:old_growth_pine_taiga": {"temperature": 30},
-  "minecraft:old_growth_spruce_taiga": {"temperature": 29},
-  "minecraft:plains": {"temperature": 36},
-  "minecraft:river": {"temperature": 34},
-  "minecraft:savanna": {"temperature": 38},
-  "minecraft:savanna_plateau": {"temperature": 38},
-  "minecraft:small_end_islands": {"temperature": 30},
-  "minecraft:snowy_beach": {"temperature": 30},
-  "minecraft:snowy_plains": {"temperature": 30},
-  "minecraft:snowy_slopes": {"temperature": 29},
-  "minecraft:snowy_taiga": {"temperature": 26},
-  "minecraft:soul_sand_valley": {"temperature": 37},
-  "minecraft:sparse_jungle": {"temperature": 39},
-  "minecraft:stony_peaks": {"temperature": 33},
-  "minecraft:stony_shore": {"temperature": 33},
-  "minecraft:sunflower_plains": {"temperature": 36},
-  "minecraft:swamp": {"temperature": 34},
-  "minecraft:taiga": {"temperature": 28},
-  "minecraft:the_end": {"temperature": 30},
-  "minecraft:the_void": {"temperature": 36.6},
-  "minecraft:warm_ocean": {"temperature": 33},
-  "minecraft:warped_forest": {"temperature": 40},
-  "minecraft:windswept_forest": {"temperature": 34},
-  "minecraft:windswept_gravelly_hills": {"temperature": 32},
-  "minecraft:windswept_hills": {"temperature":  32},
-  "minecraft:windswept_savanna": {"temperature":  38},
-  "minecraft:wooded_badlands": {"temperature":  40}
+  "minecraft:badlands": {
+    "temperature": 41,
+    "nightChange": -8,
+    "winter": 38,
+    "spring": 42,
+    "summer": 46,
+    "fall": 42
+  },
+  "minecraft:bamboo_jungle": {
+    "temperature": 41.5,
+    "nightChange": -3,
+    "winter": 37,
+    "spring": 41,
+    "summer": 44,
+    "fall": 41
+  },
+  "minecraft:basalt_deltas": {
+    "temperature": 46
+  },
+  "minecraft:beach": {
+    "temperature": 34,
+    "nightChange": -4,
+    "winter": 32,
+    "spring": 34,
+    "summer": 36,
+    "fall": 33
+  },
+  "minecraft:birch_forest": {
+    "temperature": 35,
+    "nightChange": -5,
+    "winter": 30,
+    "spring": 35,
+    "summer": 37,
+    "fall": 34
+  },
+  "minecraft:cherry_grove": {
+    "temperature": 35,
+    "nightChange": -5,
+    "winter": 30,
+    "spring": 35,
+    "summer": 37,
+    "fall": 34
+  },
+  "minecraft:cold_ocean": {
+    "temperature": 23,
+    "nightChange": -2,
+    "winter": 20,
+    "spring": 23,
+    "summer": 26,
+    "fall": 23
+  },
+  "minecraft:crimson_forest": {
+    "temperature": 45
+  },
+  "minecraft:dark_forest": {
+    "temperature": 33,
+    "nightChange": -4,
+    "winter": 28,
+    "spring": 33,
+    "summer": 36,
+    "fall": 32
+  },
+  "minecraft:deep_cold_ocean": {
+    "temperature": 25,
+    "nightChange": -3,
+    "winter": 22,
+    "spring": 25,
+    "summer": 28,
+    "fall": 24
+  },
+  "minecraft:deep_dark": {
+    "temperature": 38,
+    "nightChange": 2
+  },
+  "minecraft:deep_frozen_ocean": {
+    "temperature": 25,
+    "nightChange": -5,
+    "winter": 20,
+    "spring": 25,
+    "summer": 27,
+    "fall": 23
+  },
+  "minecraft:deep_lukewarm_ocean": {
+    "temperature": 32,
+    "nightChange": -4,
+    "winter": 30,
+    "spring": 32,
+    "summer": 35,
+    "fall": 31
+  },
+  "minecraft:deep_ocean": {
+    "temperature": 30,
+    "nightChange": -2,
+    "winter": 27,
+    "spring": 30,
+    "summer": 33,
+    "fall": 32
+  },
+  "minecraft:desert": {
+    "temperature": 45,
+    "nightChange": -25,
+    "winter": 40,
+    "spring": 45,
+    "summer": 50,
+    "fall": 45
+  },
+  "minecraft:dripstone_caves": {
+    "temperature": 34,
+    "nightChange": -1
+  },
+  "minecraft:end_barrens": {
+    "temperature": 30
+  },
+  "minecraft:end_highlands": {
+    "temperature": 30
+  },
+  "minecraft:end_midlands": {
+    "temperature": 30
+  },
+  "minecraft:eroded_badlands": {
+    "temperature": 41.5,
+    "nightChange": -8,
+    "winter": 38,
+    "spring": 41.5,
+    "summer": 47,
+    "fall": 41
+  },
+  "minecraft:flower_forest": {
+    "temperature": 36,
+    "nightChange": -3,
+    "winter": 32,
+    "spring": 36,
+    "summer": 38,
+    "fall": 35
+  },
+  "minecraft:forest": {
+    "temperature": 34,
+    "nightChange": -4,
+    "winter": 31,
+    "spring": 34,
+    "summer": 36,
+    "fall": 33
+  },
+  "minecraft:frozen_ocean": {
+    "temperature": 20,
+    "nightChange": -4,
+    "winter": 18,
+    "spring": 20,
+    "summer": 24,
+    "fall": 20
+  },
+  "minecraft:frozen_peaks": {
+    "temperature": 22,
+    "nightChange": -6,
+    "winter": 22,
+    "spring": 22,
+    "summer": 25,
+    "fall": 22
+  },
+  "minecraft:frozen_river": {
+    "temperature": 24,
+    "nightChange": -4,
+    "winter": 23,
+    "spring": 24,
+    "summer": 26,
+    "fall": 24
+  },
+  "minecraft:grove": {
+    "temperature": 25,
+    "nightChange": -2,
+    "winter": 23,
+    "spring": 25,
+    "summer": 28,
+    "fall": 25
+  },
+  "minecraft:ice_spikes": {
+    "temperature": 10,
+    "nightChange": -2,
+    "winter": 10,
+    "spring": 10,
+    "summer": 12,
+    "fall": 10
+  },
+  "minecraft:jagged_peaks": {
+    "temperature": 26,
+    "nightChange": -2,
+    "winter": 25,
+    "spring": 26,
+    "summer": 27,
+    "fall": 26
+  },
+  "minecraft:jungle": {
+    "temperature": 42,
+    "nightChange": -2,
+    "winter": 38,
+    "spring": 42,
+    "summer": 48,
+    "fall": 42
+  },
+  "minecraft:lukewarm_ocean": {
+    "temperature": 33,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 33,
+    "summer": 36,
+    "fall": 32
+  },
+  "minecraft:lush_caves": {
+    "temperature": 32
+  },
+  "minecraft:mangrove_swamp": {
+    "temperature": 33,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 33,
+    "summer": 36,
+    "fall": 33
+  },
+  "minecraft:meadow": {
+    "temperature": 35,
+    "nightChange": -2,
+    "winter": 32,
+    "spring": 35,
+    "summer": 38,
+    "fall": 34
+  },
+  "minecraft:mushroom_fields": {
+    "temperature": 35,
+    "nightChange": -2,
+    "winter": 32,
+    "spring": 35,
+    "summer": 39,
+    "fall": 35
+  },
+  "minecraft:nether_wastes": {
+    "temperature": 45
+  },
+  "minecraft:ocean": {
+    "temperature": 30,
+    "nightChange": -2,
+    "winter": 28,
+    "spring": 30,
+    "summer": 33,
+    "fall": 30
+  },
+  "minecraft:old_growth_birch_forest": {
+    "temperature": 34,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 34,
+    "summer": 38,
+    "fall": 33
+  },
+  "minecraft:old_growth_pine_taiga": {
+    "temperature": 27,
+    "nightChange": -3,
+    "winter": 25,
+    "spring": 28,
+    "summer": 30,
+    "fall": 27
+  },
+  "minecraft:old_growth_spruce_taiga": {
+    "temperature": 28,
+    "nightChange": -2,
+    "winter": 26,
+    "spring": 28,
+    "summer": 32,
+    "fall": 28
+  },
+  "minecraft:plains": {
+    "temperature": 36,
+    "nightChange": -4,
+    "winter": 30,
+    "spring": 36,
+    "summer": 40,
+    "fall": 35
+  },
+  "minecraft:river": {
+    "temperature": 32,
+    "nightChange": -3,
+    "winter": 29,
+    "spring": 32,
+    "summer": 37,
+    "fall": 33
+  },
+  "minecraft:savanna": {
+    "temperature": 41,
+    "nightChange": -7,
+    "winter": 37,
+    "spring": 41,
+    "summer": 48,
+    "fall": 40
+  },
+  "minecraft:savanna_plateau": {
+    "temperature": 41,
+    "nightChange": -7,
+    "winter": 37,
+    "spring": 41,
+    "summer": 48,
+    "fall": 40
+  },
+  "minecraft:small_end_islands": {
+    "temperature": 30
+  },
+  "minecraft:snowy_beach": {
+    "temperature": 28,
+    "nightChange": -3,
+    "winter": 25,
+    "spring": 28,
+    "summer": 30,
+    "fall": 27
+  },
+  "minecraft:snowy_plains": {
+    "temperature": 28,
+    "nightChange": -3,
+    "winter": 25,
+    "spring": 28,
+    "summer": 30,
+    "fall": 27
+  },
+  "minecraft:snowy_slopes": {
+    "temperature": 28,
+    "nightChange": -4,
+    "winter": 25,
+    "spring": 28,
+    "summer": 30,
+    "fall": 27
+  },
+  "minecraft:snowy_taiga": {
+    "temperature": 26,
+    "nightChange": -4,
+    "winter": 24,
+    "spring": 26,
+    "summer": 32,
+    "fall": 27
+  },
+  "minecraft:soul_sand_valley": {
+    "temperature": 37
+  },
+  "minecraft:sparse_jungle": {
+    "temperature": 41.5,
+    "nightChange": -2,
+    "winter": 38,
+    "spring": 42,
+    "summer": 48,
+    "fall": 41.5
+  },
+  "minecraft:stony_peaks": {
+    "temperature": 30,
+    "nightChange": -2,
+    "winter": 27,
+    "spring": 30,
+    "summer": 34,
+    "fall": 29
+  },
+  "minecraft:stony_shore": {
+    "temperature": 30,
+    "nightChange": -2,
+    "winter": 27,
+    "spring": 30,
+    "summer": 34,
+    "fall": 29
+  },
+  "minecraft:sunflower_plains": {
+    "temperature": 36,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 36,
+    "summer": 40,
+    "fall": 35
+  },
+  "minecraft:swamp": {
+    "temperature": 32,
+    "nightChange": -2,
+    "winter": 28,
+    "spring": 32,
+    "summer": 37,
+    "fall": 31
+  },
+  "minecraft:taiga": {
+    "temperature": 25,
+    "nightChange": -2,
+    "winter": 20,
+    "spring": 25,
+    "summer": 30,
+    "fall": 25
+  },
+  "minecraft:the_end": {
+    "temperature": 30
+  },
+  "minecraft:the_void": {
+    "temperature": 36.6
+  },
+  "minecraft:warm_ocean": {
+    "temperature": 33,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 33,
+    "summer": 36,
+    "fall": 33
+  },
+  "minecraft:warped_forest": {
+    "temperature": 42
+  },
+  "minecraft:windswept_forest": {
+    "temperature": 34,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 34,
+    "summer": 36,
+    "fall": 33
+  },
+  "minecraft:windswept_gravelly_hills": {
+    "temperature": 32,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 33,
+    "summer": 37,
+    "fall": 32
+  },
+  "minecraft:windswept_hills": {
+    "temperature": 32,
+    "nightChange": -3,
+    "winter": 30,
+    "spring": 33,
+    "summer": 37,
+    "fall": 32
+  },
+  "minecraft:windswept_savanna": {
+    "temperature": 38,
+    "nightChange": -3,
+    "winter": 35,
+    "spring": 38,
+    "summer": 42,
+    "fall": 37
+  },
+  "minecraft:wooded_badlands": {
+    "temperature": 43,
+    "nightChange": -8,
+    "winter": 40,
+    "spring": 43,
+    "summer": 50,
+    "fall": 42
+  }
 }

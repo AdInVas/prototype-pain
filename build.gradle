@@ -181,9 +181,13 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     compileOnly(fg.deobf("de.maxhenkel.voicechat:voicechat-api:2.5.0"))
     compileOnly(fg.deobf("curse.maven:prototype-physics-1380559:7206624"))
+    compileOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
+    compileOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
     //implementation(fg.deobf("maven.modrinth:uwrad:1.1.0+forge"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    //runtimeOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
+    //runtimeOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
 
     //runtimeOnly(fg.deobf("maven.modrinth:figura:4HqSmvZ6"))
     //runtimeOnly(fg.deobf("maven.modrinth:simple-voice-chat:forge-1.20.1-2.5.35"))
