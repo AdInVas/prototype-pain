@@ -6,6 +6,7 @@ import net.adinvas.prototype_pain.compat.FoodAndDrinkCompat;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
+import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;

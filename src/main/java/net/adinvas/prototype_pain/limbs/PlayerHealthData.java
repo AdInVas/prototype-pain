@@ -15,6 +15,7 @@ import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.TriggerLastStandPacket;
 import net.adinvas.prototype_pain.tags.ModItemTags;
+import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.adinvas.prototype_physics.RagdollPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -95,6 +96,9 @@ public class PlayerHealthData {
     private float Stability = 100;
 
     private float painscale = 1;
+
+    private float sickness= 0;
+    private float thirst= 0;
     /*
     TODO: - Make:
         -MAKE Amputations
@@ -1029,6 +1033,10 @@ public class PlayerHealthData {
         }else {
             temperature = 36.6f;
         }
+        //ThirstCalc
+        thirst -= 0.005f;
+        thirst = Mth.clamp(thirst,-20,150);
+
         calculateImmunity();
         updateDirtyness(player);
         if (flashHearingLoss>0){
@@ -1404,6 +1412,8 @@ public class PlayerHealthData {
         nbt.putFloat("FlashHearing",flashHearingLoss);
         nbt.putBoolean("LastStand",LastStand);
         nbt.putFloat("Stability",Stability);
+        nbt.putFloat("Thirst",thirst);
+        nbt.putFloat("Sickness",sickness);
 
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
@@ -1489,6 +1499,8 @@ public class PlayerHealthData {
         this.flashHearingLoss = other.flashHearingLoss;
         this.LastStand = other.LastStand;
         this.Stability = other.Stability;
+        this.sickness = other.sickness;
+        this.thirst = other.thirst;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -1583,6 +1595,11 @@ public class PlayerHealthData {
             LastStand = nbt.getBoolean("LastStand");
         if (nbt.contains("Stability"))
             Stability = nbt.getFloat("Stability");
+        if (nbt.contains("Sickness"))
+            sickness = nbt.getFloat("Sickness");
+        if (nbt.contains("Thirst"))
+            thirst = nbt.getFloat("Thirst");
+
 
         changeEntries.clear();
         ListTag changeList = nbt.getList("ChangeList", 10);
@@ -1662,6 +1679,8 @@ public class PlayerHealthData {
         LastStand = false;
         isRagdolled = false;
         Stability = 100;
+        sickness = 0;
+        thirst = 100;
 
         // passthrough / player-state
         hungerLevel = 20;
@@ -2402,5 +2421,20 @@ public class PlayerHealthData {
         }
         Stability = Mth.clamp(Stability,0,100);
         return Stability;
+    }
+
+
+    public void vomitVisuals(Player player, int amount){
+        Vec3 origin = player.getEyePosition();
+        Vec3 velocity = player.getViewVector(0).scale(4);
+
+        for (int i = 0; i < amount; i++) {
+
+            player.level().addParticle(
+                    ModParticles.BLOOD_PARTICLE.get(),
+                    origin.x, origin.y, origin.z,
+                    velocity.x, velocity.y, velocity.z
+            );
+        }
     }
 }

@@ -27,7 +27,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     private float immunity;
     private float temp;
     private float sickness;
-    private float thrist;
+    private float thirst = -20;
 
     private Component limbname =Component.empty();
     private float skin=100;
@@ -56,6 +56,15 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     public void setTemp(float temp) {
         this.temp = temp;
     }
+
+    public void setThirst(float thirst) {
+        this.thirst = thirst;
+    }
+
+    public void setSickness(float sickness) {
+        this.sickness = sickness;
+    }
+
 
     private final ResourceLocation main_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/health_screen/info_box.png");
     private final ResourceLocation cons_tex = new ResourceLocation(PrototypePain.MOD_ID,"textures/gui/health_screen/conc_sprites.png");
@@ -164,8 +173,16 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         float tempscale = Mth.clamp(1-(temp-28)/14,0,1);
         guiGraphics.fill(getX()+18, (int) (getY()+148+(28*tempscale)), getX()+19, getY()+176,0xFF48E38C);
 
+        float skinscale = Mth.clamp(skin/100,0,1);
+        guiGraphics.fill(getX()+65,getY()+311,(int)(getX()+65+(61*skinscale)),getY()+313,0xFF48E38C);
 
+        float musclescale = Mth.clamp(muscle/100,0,1);
+        guiGraphics.fill(getX()+65,getY()+328,(int)(getX()+65+(61*musclescale)),getY()+330,0xFF48E38C);
 
+        float thisrstscale = Mth.clamp(1- thirst /100,0,1);
+        float overtirstscale = Mth.clamp((thirst -100)/50,0,1);
+        guiGraphics.fill(getX()+120,(int)(getY()+147+(62*thisrstscale)),getX()+122,getY()+207,0xFF48E38C);
+        guiGraphics.fill(getX()+120,getY()+147,getX()+122,(int)(getY()+147+(31*overtirstscale)),0xFFfc9c35);
 
         pose.popPose();
         pose.pushPose();
@@ -273,7 +290,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
 
 
         text = Component.literal((int)muscle+"").setStyle(textStyle);
-        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,108,319);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,111,318);
         if (muscle<20){
             if (blink)
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
@@ -282,7 +299,7 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         text = Component.literal((int)skin+"").setStyle(textStyle);
-        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,63,315);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,64,314);
         if (skin<20){
                 guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
         }else {
@@ -342,14 +359,23 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         }
 
         if (bleed2>0) {
-            text = Component.literal((int) (bleed2 * 20 * 60) + "l/m").setStyle(textStyle);
-            pos = scaleCoordinates(textScale, textScale, uiScale, uiScale, 80, 372);
+            text = Component.literal(Math.floor(bleed2 * 20 * 60*100)/100 + "l/m").setStyle(textStyle);
+            pos = scaleCoordinates(textScale, textScale, uiScale, uiScale, 70, 372);
             if (bleed2 * 20 * 60 > 0.2) {
                 if (blink)
                     guiGraphics.drawString(Minecraft.getInstance().font, text, (int) pos.x, (int) pos.y, colorRed, false);
             } else {
                 guiGraphics.drawString(Minecraft.getInstance().font, text, (int) pos.x, (int) pos.y, colorWhite, false);
             }
+        }
+
+        text = Component.literal((int) thirst +"").setStyle(textStyle);
+        pos = scaleCoordinates(textScale,textScale,uiScale,uiScale,97,155);
+        if (thirst >120|| thirst <10){
+            if (blink)
+                guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorRed,false);
+        }else{
+            guiGraphics.drawString(Minecraft.getInstance().font,text,(int)pos.x,(int)pos.y,colorWhite,false);
         }
 
 
