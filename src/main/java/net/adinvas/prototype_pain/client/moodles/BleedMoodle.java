@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BleedMoodle extends AbstractMoodleVisual{
 
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         AtomicReference<MoodleStatus> status = new AtomicReference<>(this.getMoodleStatus());
         player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
             float bleed = h.getCombinedBleed();

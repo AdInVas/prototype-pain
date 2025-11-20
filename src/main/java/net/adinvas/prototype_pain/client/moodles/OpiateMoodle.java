@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class OpiateMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> opioids = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getOpioids);
         if (opioids.orElse(0f)>100){
             return MoodleStatus.CRITICAL;

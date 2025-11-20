@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class LifeSupportMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Integer> blood = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getLifeSupportTimer);
         float blood2 = blood.orElse(0);
         if (blood2>0) {

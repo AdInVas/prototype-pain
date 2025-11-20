@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class AdrenalineMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> blood = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getAdrenaline);
         float blood2 = blood.orElse(0f);
         if (blood2>65) {

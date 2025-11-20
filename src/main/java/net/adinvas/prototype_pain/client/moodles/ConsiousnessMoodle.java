@@ -18,7 +18,7 @@ public class ConsiousnessMoodle extends AbstractMoodleVisual{
     public boolean fullyUNC = false;
 
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> cons = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getContiousness);
         if (cons.orElse(100f)<10) {
             fullyUNC = true;

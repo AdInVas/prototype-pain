@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class HearingLossMoodle extends AbstractMoodleVisual{
 
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
        float status  = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getHearingLoss).orElse(0f);
        if (status>0.7){
             return MoodleStatus.HEAVY;

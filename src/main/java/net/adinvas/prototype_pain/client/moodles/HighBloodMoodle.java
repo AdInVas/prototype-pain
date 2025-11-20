@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class HighBloodMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> blood = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBloodVolume);
         float blood2 = blood.orElse(5f);
         if (blood2>5.625){

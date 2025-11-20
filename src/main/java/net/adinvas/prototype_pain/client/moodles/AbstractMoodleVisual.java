@@ -84,7 +84,7 @@ public abstract class AbstractMoodleVisual implements Cloneable{
         return 0x00991d1d;
     }
 
-    abstract MoodleStatus calculateStatus(Player player);
+    public abstract MoodleStatus calculateStatus(Player player);
 
     public MoodleStatus getMoodleStatus() {
         return moodleStatus;

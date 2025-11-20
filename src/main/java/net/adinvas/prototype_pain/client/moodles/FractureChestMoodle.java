@@ -19,7 +19,7 @@ public class FractureChestMoodle extends AbstractMoodleVisual{
         checkList.add(Limb.CHEST);
     }
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Boolean> fractured = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
             for (Limb limb: checkList){
                 if (h.getLimbFracture(limb)>0){

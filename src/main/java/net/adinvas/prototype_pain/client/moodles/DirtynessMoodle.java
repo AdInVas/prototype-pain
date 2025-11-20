@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DirtynessMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         float dirt = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getDirtyness).orElse(0f);
         if (dirt>80){
             return MoodleStatus.NORMAL;
