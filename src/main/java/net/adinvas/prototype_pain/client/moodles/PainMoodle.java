@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class PainMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Double> pain= player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getTotalPain);
         if (pain.orElse(0d)>80){
             return MoodleStatus.CRITICAL;

@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ShockMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         float Shock = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getShock).orElse(0f);
         if (Shock>0.3){
             return MoodleStatus.HEAVY;

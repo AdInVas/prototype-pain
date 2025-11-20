@@ -14,7 +14,7 @@ import java.util.List;
 
 public class BrainHealthMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         float brain = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f);
         if (brain<=30){
             return MoodleStatus.CRITICAL;

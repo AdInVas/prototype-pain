@@ -16,7 +16,7 @@ import java.util.Optional;
 public class HemothoraxMoodle extends AbstractMoodleVisual{
 
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> hemo = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getHemothorax);
         if (hemo.orElse(0f)>70){
             return MoodleStatus.CRITICAL;

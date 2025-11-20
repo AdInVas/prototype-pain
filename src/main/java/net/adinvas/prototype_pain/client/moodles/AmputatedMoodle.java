@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class AmputatedMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         boolean amputated = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
             for (Limb limb:Limb.values()){
                 if (h.isAmputated(limb))
