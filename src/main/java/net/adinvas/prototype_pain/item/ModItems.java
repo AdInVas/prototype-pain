@@ -7,6 +7,8 @@ import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
 import net.adinvas.prototype_pain.item.bandages.*;
 import net.adinvas.prototype_pain.item.fluid_vials.*;
+import net.adinvas.prototype_pain.item.fluid_vials.bottles.AlcoholItem;
+import net.adinvas.prototype_pain.item.fluid_vials.bottles.WaterBottleItem;
 import net.adinvas.prototype_pain.item.misc.BrownCapItem;
 import net.adinvas.prototype_pain.item.reusable.SplintItem;
 import net.adinvas.prototype_pain.item.reusable.TourniquetItem;
@@ -75,6 +77,8 @@ public class ModItems {
     public static final RegistryObject<Item> AutoPump = ITEMS.register("auto_pump", AutoPumpItem::new);
 
     public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
+    public static final RegistryObject<Item> LifeStraw = ITEMS.register("life_straw", LifeStrawItem::new);
+    public static final RegistryObject<Item> WaterBottle = ITEMS.register("water_bottle", WaterBottleItem::new);
 
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));

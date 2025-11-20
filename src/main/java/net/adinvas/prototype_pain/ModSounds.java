@@ -20,7 +20,7 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> BROKEN_BONE = register("bone_break");
     public static final RegistryObject<SoundEvent> AMPUTATION = register("amputation");
     public static final RegistryObject<SoundEvent> LAST_STAND = register("laststand");
-
+    public static final RegistryObject<SoundEvent> VOMIT_BUILDUP = register("vomit_buildup");
 
 
     private static RegistryObject<SoundEvent> register(String name) {

@@ -89,6 +89,13 @@
         "name": "prototype_pain:laststand"
       }
     ]
+  },
+  "vomit_buildup": {
+    "sounds": [
+      {
+        "name": "prototype_pain:vomit_buildup"
+      }
+    ]
   }
 }
 

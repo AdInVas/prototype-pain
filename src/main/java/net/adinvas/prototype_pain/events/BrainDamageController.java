@@ -4,28 +4,24 @@ import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.adinvas.prototype_pain.network.BrainEventPacket;
+import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderTooltipEvent;
-import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 
+import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class BrainDamageServerController {
-
+public class BrainDamageController {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onChat(ServerChatEvent event) {
         ServerPlayer player = event.getPlayer();
@@ -145,5 +141,7 @@ public class BrainDamageServerController {
     public static boolean isSame(char a, char b){
         return Character.toLowerCase(a)==Character.toLowerCase(b);
     }
+
+
 
 }

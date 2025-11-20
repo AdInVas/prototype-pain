@@ -189,6 +189,8 @@ public class ModCommands {
                                                     builder.suggest("lefteyeblind");
                                                     builder.suggest("righteyeblind");
                                                     builder.suggest("mouthremoved");
+                                                    builder.suggest("sickness");
+                                                    builder.suggest("vomit");
                                                     return builder.buildFuture();
                                                 })
                                                 .then(Commands.argument("value", FloatArgumentType.floatArg())
@@ -241,6 +243,12 @@ public class ModCommands {
                                                                     }
                                                                     case "temperature" -> {
                                                                         h.setTemperature(value);
+                                                                    }
+                                                                    case "sickness" -> {
+                                                                        h.setSickness(value);
+                                                                    }
+                                                                    case "vomit" -> {
+                                                                        h.setVomit(value);
                                                                     }
                                                                     case "lefteyeblind" ->{
                                                                         if (value>0){

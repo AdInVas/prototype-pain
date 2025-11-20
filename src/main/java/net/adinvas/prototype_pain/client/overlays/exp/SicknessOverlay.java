@@ -19,8 +19,8 @@ public class SicknessOverlay implements IShaderOverlay {
     @Override
     public boolean shouldRender() {
         Minecraft mc = Minecraft.getInstance();
-        float pain = 1;
-        return pain>0.1;
+        float pain = mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getSickness).orElse(0f);
+        return pain>10;
     }
 
     public void render(RenderLevelStageEvent event, RenderTarget input, RenderTarget output) {
@@ -33,7 +33,7 @@ public class SicknessOverlay implements IShaderOverlay {
         float time = (mc.level.getGameTime() + event.getPartialTick()) * 0.05f;
 
         // interpolate between last tick and current tick values
-        float pain = 0.5f;
+        float pain = 1- mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getSickness).orElse(0f)/100;;
         pain = Mth.clamp(pain, 0f, 1f);
 
 

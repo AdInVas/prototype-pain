@@ -45,12 +45,11 @@ public class FoodAndDrinkCompat {
             return null;
         }
         // --- Drinks ---
-        //TODO actuall values for thirst and shit
         if (stack.getUseAnimation()== UseAnim.DRINK) {
             boolean ishot = path.contains("tea") || path.contains("coffee")|| path.contains("hot");
             boolean iscold = path.contains("cold") || path.contains("ice");
             entry.sickness = 0.0f;
-            entry.thirst = 0.0f;
+            entry.thirst = 15.0f;
             entry.temperature = (iscold ? -0.4f : -0.2f)+(ishot? 0.3f:0.0f) ;
             return entry;
         }
@@ -67,7 +66,7 @@ public class FoodAndDrinkCompat {
 
         // --- Raw meat (bad for sickness) ---
         if (path.contains("raw") || displayName.contains("raw")) {
-            entry.sickness = 0.0f;
+            entry.sickness = 5.0f;
             entry.thirst = 0.0f;
             entry.temperature = 0.0f;
             return entry;

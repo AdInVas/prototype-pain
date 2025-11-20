@@ -25,8 +25,9 @@ public class MedicalFluids {
     public static final MedicalFluid STREPTOKINASE = register(new MedicalFluid("streptokinase",MedicalEffects.STREPTOKINASE,0x0aecfc));
     public static final MedicalFluid NALOXONE= register(new MedicalFluid("naloxone",MedicalEffects.NALOXONE,0xf2abff));
     public static final MedicalFluid REACTION_LIQUID = register(new MedicalFluid("reaction_liquid",MedicalEffects.WATER,0xbceb23));
-
-    private static MedicalFluid register(MedicalFluid fluid){
+    public static final MedicalFluid DIRTY_WATER = register(new MedicalFluid("ground_water",MedicalEffects.DIRTY_WATER,0x7494a6));
+    public static final MedicalFluid COFFEE = register(new MedicalFluid("coffee",MedicalEffects.COFFEE,0x9e8859));
+    public static MedicalFluid register(MedicalFluid fluid){
         REGISTRY.put(fluid.getId(),fluid);
         return fluid;
     }

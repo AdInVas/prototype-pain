@@ -97,6 +97,7 @@ public abstract class AbstractMoodleVisual implements Cloneable{
     }
 
     public void renderBackground(GuiGraphics guiGraphics,float partialTicks,int x,int y){
+        if (moodleStatus==null)return;
         guiGraphics.blit(moodleStatus.getTex(),x,y,0,0,16,16,16,16);
         guiGraphics.blit(getRingTex(),x,y,0,0,16,16,16,16);
     }

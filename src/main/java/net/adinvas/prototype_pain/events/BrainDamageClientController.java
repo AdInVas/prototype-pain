@@ -1,46 +1,24 @@
 package net.adinvas.prototype_pain.events;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.BrainEventPacket;
+import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.util.Mth;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Random;
+
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BrainDamageClientController {
-
-    @SubscribeEvent
-    public static void onRenderOverlay(RenderGuiOverlayEvent.Post event){
-        Minecraft mc = Minecraft.getInstance();
-        Player player = mc.player;
-        if (player!=null){
-            float brain= player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f);
-
-            if (brain < 95 && mc.level != null && mc.player != null) {
-                if (mc.level.getGameTime() % 400 == 0&&Math.random()>1-brain/120f) { // every 20s roughly
-                    float alpha = (float) (0.2f + Math.random() * 0.3f);
-                    GuiGraphics g = event.getGuiGraphics();
-                    g.fill(0, 0, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(),
-                            ((int) (alpha * 255) << 24));
-                }
-            }
-        }
-    }
-
 
     private static float time = 0f;
     private static float currentPitchOffset = 0f;
@@ -91,28 +69,41 @@ public class BrainDamageClientController {
         }
     }
 
-    private static Double baseSensitivity = -1d;
+    public static int sinceLastevent = 1000;
 
     @SubscribeEvent
     public static void onclientTick(TickEvent.ClientTickEvent event){
         if (event.phase == TickEvent.Phase.END) {
             Minecraft mc = Minecraft.getInstance();
             Player player = mc.player;
-            if (player==null)return;
-            float brain = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f);
+            setupAnims(player);
 
-            if (baseSensitivity == -1f)
-                baseSensitivity = mc.options.sensitivity().get();
-
-            if (brain < 80) {
-                double t = mc.level.getGameTime();
-                double factor = 1.0 + Math.sin(t * 0.1) * 0.05; // ±5%
-                mc.options.sensitivity().set((baseSensitivity * factor));
-            } else {
-                mc.options.sensitivity().set(baseSensitivity);
+            if (sinceLastevent<0){
+                sinceLastevent =1000;
+                if (player==null)return;
+                if (player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f)>96)return;
+                if (Math.random()>0.77){
+                    runBrainEvent(player);
+                    sinceLastevent =3000;
+                }
+                }
+            }else {
+                sinceLastevent ++;
+        }
+    }
+    public static void runBrainEvent(Player player){
+        Random random = new Random();
+        BrainDamageClientController.BrainEvents E =  BrainDamageClientController.BrainEvents.values()[random.nextInt(BrainDamageClientController.BrainEvents.values().length)];
+        switch (E){
+            case FLASH -> {
+                FlashAnimTick++;
             }
-
-
+            case LOBOTOMY -> {
+                LobotomyAnimTIck++;
+            }
+            default -> {
+                ModNetwork.CHANNEL.sendToServer(new BrainEventPacket(E));
+            }
         }
     }
 
@@ -123,6 +114,27 @@ public class BrainDamageClientController {
         if (player==null)return;
         if (player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getBrainHealth).orElse(100f)< 60) {
             event.getTooltipElements().clear();
+        }
+    }
+
+    public enum BrainEvents{LOBOTOMY,FLASH,TINNITUS,VOMIT}
+
+    public static int FlashAnimTick = 0;
+    public static int LobotomyAnimTIck = 0;
+    public static void setupAnims(Player player){
+        if (FlashAnimTick>0){
+            FlashAnimTick++;
+            PrototypePain.LOGGER.info("Flash {}",FlashAnimTick);
+            if(FlashAnimTick>80){
+                FlashAnimTick =0;
+            }
+        }
+        if (LobotomyAnimTIck>0){
+            LobotomyAnimTIck++;
+            PrototypePain.LOGGER.info("Lobotomy {}",LobotomyAnimTIck);
+            if(LobotomyAnimTIck>80){
+                LobotomyAnimTIck =0;
+            }
         }
     }
 

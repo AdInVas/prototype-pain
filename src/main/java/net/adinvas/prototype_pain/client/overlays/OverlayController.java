@@ -69,7 +69,7 @@ public class OverlayController {
         registerEXOverlay(new ConsciousnessShaderOverlayOverlay());
         registerEXOverlay(new HeatOverlay());
         registerEXOverlay(new ColdOverlay());
-        //registerEXOverlay(new SicknessOverlay());
+        registerEXOverlay(new SicknessOverlay());
         registerEXOverlay(new PainShaderOverlay());
         registerEXOverlay(new BrainShaderOverlay());
     }

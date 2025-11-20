@@ -41,5 +41,7 @@ public class ModNetwork {
         CHANNEL.registerMessage(18, TalkPacket.class,TalkPacket::toBytes,TalkPacket::new,TalkPacket::handle);
         CHANNEL.registerMessage(19, CPRPacket.class,CPRPacket::write,CPRPacket::new,CPRPacket::handle);
         CHANNEL.registerMessage(20, TriggerLastStandPacket.class,TriggerLastStandPacket::write,TriggerLastStandPacket::new,TriggerLastStandPacket::handle);
+        CHANNEL.registerMessage(21, BrainEventPacket.class,BrainEventPacket::write,BrainEventPacket::new,BrainEventPacket::handle);
+        CHANNEL.registerMessage(22,ClickedOnFluidPacket.class,ClickedOnFluidPacket::write,ClickedOnFluidPacket::new,ClickedOnFluidPacket::handle);
     }
 }

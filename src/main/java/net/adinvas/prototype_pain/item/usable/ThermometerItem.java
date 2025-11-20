@@ -35,6 +35,7 @@ public class ThermometerItem extends Item {
     public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex) {
         if (slotIndex!=selectedIndex)return;
         if (ticker++>10){
+            if (level.isClientSide())return;
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 float temperatureScale = Mth.clamp((h.getAmbientTemperature(player)-27)/15,0,1);
                 int color = Util.gradient(temperatureScale,0x242bff,0xff3624);

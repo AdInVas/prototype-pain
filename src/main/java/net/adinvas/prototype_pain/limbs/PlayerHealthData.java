@@ -15,13 +15,14 @@ import net.adinvas.prototype_pain.network.MedicalAction;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.TriggerLastStandPacket;
 import net.adinvas.prototype_pain.tags.ModItemTags;
-import net.adinvas.prototype_pain.visual.particles.ModParticles;
+import net.adinvas.prototype_pain.visual.particles.VomitParticleOptions;
 import net.adinvas.prototype_physics.RagdollPart;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -98,7 +99,8 @@ public class PlayerHealthData {
     private float painscale = 1;
 
     private float sickness= 0;
-    private float thirst= 0;
+    private float vomit = 0;
+    private float thirst= 100;
     /*
     TODO: - Make:
         -MAKE Amputations
@@ -136,6 +138,14 @@ public class PlayerHealthData {
     private boolean isUnderwater = false;
 
 
+    public void setVomit(float vomit) {
+        this.vomit = Mth.clamp(vomit,0,1);
+    }
+
+    public float getVomit() {
+        return vomit;
+    }
+
     public void setAntibiotic_timer(float antibiotic_timer) {
         this.antibiotic_timer = antibiotic_timer;
     }
@@ -146,6 +156,22 @@ public class PlayerHealthData {
 
     public float getStability() {
         return Stability;
+    }
+
+    public void setSickness(float sickness) {
+        this.sickness = sickness;
+    }
+
+    public float getSickness() {
+        return sickness;
+    }
+
+    public void setThirst(float thirst) {
+        this.thirst = thirst;
+    }
+
+    public float getThirst() {
+        return thirst;
     }
 
     public float getDrug_addition() {
@@ -999,8 +1025,8 @@ public class PlayerHealthData {
             float newBrain = (float) (75f+ (Math.random()*15));
             player.getFoodData().setFoodLevel(20);
             player.getFoodData().setSaturation(20);
-            //thirst if i add it
-            //sickness if i add it
+            thirst = 100;
+            sickness =0;
             blood = Math.max(blood,3.5f);
             if (player.isUnderWater()) Oxygen =100;
             else Oxygen = 20;
@@ -1028,14 +1054,44 @@ public class PlayerHealthData {
                 }
             }
         }
+        setupAnimations(player);
         if (getDO_TEMPERATURE_CHANGE()) {
             updateTemperature(player);
         }else {
             temperature = 36.6f;
         }
         //ThirstCalc
-        thirst -= 0.005f;
-        thirst = Mth.clamp(thirst,-20,150);
+        float thirst_dercease = 0.005f;
+        if (thirst>100){
+            thirst_dercease *=2;
+        }
+        if (temperature>42){
+            thirst_dercease *=2;
+        }else if (temperature>41){
+            thirst_dercease *=1.5f;
+        }else if (temperature>40){
+            thirst_dercease *=1.25f;
+        }
+        thirst = Mth.clamp(thirst-thirst_dercease,-20,250);
+
+
+
+        //Sicknesscalc
+        sickness -=0.004f;
+        sickness = Mth.clamp(sickness,0,100);
+        //vomit
+        float buildup = 0;
+        if (sickness>0){
+            buildup += (sickness)*0.003f/20/60;
+        }
+        if (sickness>50){
+            buildup += (sickness-50)*0.036f/20/60;
+        }
+        if (sickness<=0){
+            buildup -= 0.002f;
+        }
+        vomit = Mth.clamp(vomit+buildup,0,1);
+
 
         calculateImmunity();
         updateDirtyness(player);
@@ -1365,6 +1421,20 @@ public class PlayerHealthData {
                 }
             }
         }
+
+        if (thirst<=0){
+            bloodViscosity += 0.05f;
+        }else if (thirst<=30){
+            float a = (1-(thirst/100))*30;
+            if (getLimbPain(Limb.CHEST)<a){
+                setLimbPain(Limb.CHEST,getLimbPain(Limb.CHEST)+0.1f);
+            }
+        } else if (thirst>=150) {
+            if (getLimbPain(Limb.HEAD)<50){
+                setLimbPain(Limb.HEAD,getLimbPain(Limb.HEAD)+0.1f);
+            }
+            brainHealth -= 0.002f;
+        }
     }
 
     private static void applyAttributeModifier(LivingEntity player, Attribute attribute, String name, double amount, AttributeModifier.Operation operation) {
@@ -1414,6 +1484,7 @@ public class PlayerHealthData {
         nbt.putFloat("Stability",Stability);
         nbt.putFloat("Thirst",thirst);
         nbt.putFloat("Sickness",sickness);
+        nbt.putFloat("Vomit",vomit);
 
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
@@ -1501,6 +1572,7 @@ public class PlayerHealthData {
         this.Stability = other.Stability;
         this.sickness = other.sickness;
         this.thirst = other.thirst;
+        this.vomit = other.vomit;
 
         this.changeEntries.clear();
         for (DelayedChangeEntry entry: other.changeEntries){
@@ -1599,6 +1671,8 @@ public class PlayerHealthData {
             sickness = nbt.getFloat("Sickness");
         if (nbt.contains("Thirst"))
             thirst = nbt.getFloat("Thirst");
+        if (nbt.contains("Vomit"))
+            vomit = nbt.getFloat("Vomit");
 
 
         changeEntries.clear();
@@ -1681,6 +1755,7 @@ public class PlayerHealthData {
         Stability = 100;
         sickness = 0;
         thirst = 100;
+        vomit = 0;
 
         // passthrough / player-state
         hungerLevel = 20;
@@ -2426,15 +2501,45 @@ public class PlayerHealthData {
 
     public void vomitVisuals(Player player, int amount){
         Vec3 origin = player.getEyePosition();
-        Vec3 velocity = player.getViewVector(0).scale(4);
+        Vec3 velocity = player.getViewVector(0).scale(5);
 
         for (int i = 0; i < amount; i++) {
 
-            player.level().addParticle(
-                    ModParticles.BLOOD_PARTICLE.get(),
+            ServerLevel server = (ServerLevel) player.level();
+
+            server.sendParticles(
+                    new VomitParticleOptions(1.5f, 1f, 1f, 1f, 1f,velocity), // scale + rgba
                     origin.x, origin.y, origin.z,
-                    velocity.x, velocity.y, velocity.z
+                    5,                    // count
+                    0.1, 0, 0.1,               // position random offset
+                    0.3                    // speed random offset
             );
+        }
+    }
+
+    int VomitTick = 0;
+    boolean playedVomit = false;
+    public void setupAnimations(Player player){
+        if (VomitTick>=1||vomit>=1){
+            VomitTick++;
+            contiousness = Math.min(contiousness,100-70*(VomitTick/120f));
+            if (VomitTick>50){
+                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,10,2,false,false));
+            }
+            if (!playedVomit){
+                playedVomit = true;
+                player.level().playSound(null,player.blockPosition(),ModSounds.VOMIT_BUILDUP.get(),SoundSource.PLAYERS,1,1);
+            }
+        }
+        if (VomitTick>120){
+            VomitTick =0;
+            vomit =0;
+            playedVomit = false;
+            vomitVisuals(player, 1000);
+            player.level().playSound(null,player.blockPosition(),ModSounds.AMPUTATION.get(),SoundSource.PLAYERS,1,1);
+            sickness -=8;
+            thirst -=10;
+            player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel()-2);
         }
     }
 }

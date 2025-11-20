@@ -321,6 +321,8 @@ public class HealthScreen extends Screen {
             healthbox.setBrain(health.getBrainHealth());
             healthbox.setTemp(health.getTemperature());
             healthbox.setImmunity(health.getImmunity());
+            healthbox.setSickness(health.getSickness());
+            healthbox.setThirst(health.getThirst());
         });
         if (!BGmode) {
             Minecraft.getInstance().player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {

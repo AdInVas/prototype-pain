@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain.fluid_system;
 
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 public class MedicalFluid {
@@ -35,4 +36,5 @@ public class MedicalFluid {
     public int getColor() {
         return color;
     }
+
 }

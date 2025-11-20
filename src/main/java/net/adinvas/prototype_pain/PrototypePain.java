@@ -2,11 +2,7 @@ package net.adinvas.prototype_pain;
 
 import com.mojang.logging.LogUtils;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
-import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
-import net.adinvas.prototype_pain.client.overlays.OverlayController;
 import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsEvents;
-import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
 import net.adinvas.prototype_pain.config.ClientConfig;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.events.ModEvents;
@@ -19,18 +15,14 @@ import net.adinvas.prototype_pain.item.usable.ThermometerItem;
 import net.adinvas.prototype_pain.loot.ModLootModifier;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.recipe.ModRecipes;
-import net.adinvas.prototype_pain.visual.particles.BloodParticle;
+import net.adinvas.prototype_pain.visual.particles.VomitParticle;
 import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -109,7 +101,7 @@ public class PrototypePain {
 
         @SubscribeEvent
         public static void registerParticleProvider(RegisterParticleProvidersEvent event){
-            event.registerSpriteSet(ModParticles.BLOOD_PARTICLE.get(), BloodParticle.Provider::new);
+            event.registerSpriteSet(ModParticles.BLOOD_PARTICLE.get(), VomitParticle.Provider::new);
         }
 
         @SubscribeEvent

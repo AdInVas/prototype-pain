@@ -1,22 +1,16 @@
 package net.adinvas.prototype_pain.events;
 
-import com.mojang.blaze3d.pipeline.MainTarget;
-import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.Keybinds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.SoundMenager;
-import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
-import net.adinvas.prototype_pain.client.overlays.OverlayController;
-import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
-import net.adinvas.prototype_pain.client.ticksounds.MuffledSound;
+import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
+import net.adinvas.prototype_pain.item.fluid_vials.bottles.GenericBottle;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.ClickedOnFluidPacket;
 import net.adinvas.prototype_pain.network.GiveUpPacket;
 import net.adinvas.prototype_pain.network.LegUsePacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
@@ -24,29 +18,28 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.Sound;
-import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.MovementInputUpdateEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
-import net.minecraftforge.client.event.sound.SoundEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -271,4 +264,63 @@ public class ClientEvents {
         }
 
     }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickEmpty event) {
+        Player player = event.getEntity();
+        Level level = event.getLevel();
+
+        // Must be sneaking
+        if (!player.isShiftKeyDown()) return;
+
+        if (level.isClientSide()){
+            tryDrinkWaterInWorld(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        Player player = event.getEntity();
+        Level level = event.getLevel();
+
+        // Must be sneaking
+        if (!player.isShiftKeyDown()) return;
+        // Must use empty hand
+
+        if (level.isClientSide()) {
+            tryDrinkWaterInWorld(player);
+        }
+
+    }
+
+    private static void tryDrinkWaterInWorld(Player player) {
+        Level world = player.level();
+        BlockHitResult rayTraceResult = GenericBottle.hitResultHelper(player.level(), player);
+
+        if (rayTraceResult.getType() == HitResult.Type.BLOCK)
+        {
+            BlockPos pos = ((BlockHitResult) rayTraceResult).getBlockPos();
+
+            if (world.mayInteract(player, pos) && world.getFluidState(pos).is(FluidTags.WATER))
+            {
+                ModNetwork.CHANNEL.sendToServer(new ClickedOnFluidPacket(MedicalFluids.DIRTY_WATER));
+                player.playSound(SoundEvents.GENERIC_DRINK, 0.5f, 1.0f);
+                player.swing(InteractionHand.MAIN_HAND);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        Player player = event.getEntity();
+        Level level = event.getLevel();
+
+        // Must be sneaking
+        if (!player.isShiftKeyDown()) return;
+
+        if (level.isClientSide()){
+            tryDrinkWaterInWorld(player);
+        }
+    }
+
 }

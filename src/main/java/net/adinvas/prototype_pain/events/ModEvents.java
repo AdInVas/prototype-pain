@@ -6,22 +6,16 @@ import net.adinvas.prototype_pain.compat.FoodAndDrinkCompat;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.SyncTracker;
-import net.adinvas.prototype_pain.visual.particles.ModParticles;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -32,12 +26,10 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import org.antlr.v4.codegen.model.Sync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,9 +117,8 @@ public class ModEvents {
         if (data != null)
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 h.setTemperature(h.getTemperature()+ data.temperature);
-                //TODO thirst
-                //TODO sickness
-
+                h.setThirst(h.getThirst()+data.thirst);
+                h.setSickness(h.getSickness()+data.sickness);
             });
     }
 
@@ -179,6 +170,8 @@ public class ModEvents {
             });
         }
     }
+
+
 
     @SubscribeEvent
     public static void onJump(LivingEvent.LivingJumpEvent event){

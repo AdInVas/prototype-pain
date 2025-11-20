@@ -180,9 +180,9 @@ public class HealthInfoBoxWidget extends AbstractWidget {
         guiGraphics.fill(getX()+65,getY()+328,(int)(getX()+65+(61*musclescale)),getY()+330,0xFF48E38C);
 
         float thisrstscale = Mth.clamp(1- thirst /100,0,1);
-        float overtirstscale = Mth.clamp((thirst -100)/50,0,1);
+        float overtirstscale = Mth.clamp((thirst -100)/100,0,1);
         guiGraphics.fill(getX()+120,(int)(getY()+147+(62*thisrstscale)),getX()+122,getY()+207,0xFF48E38C);
-        guiGraphics.fill(getX()+120,getY()+147,getX()+122,(int)(getY()+147+(31*overtirstscale)),0xFFfc9c35);
+        guiGraphics.fill(getX()+120,getY()+147,getX()+122,(int)(getY()+147+(62*overtirstscale)),0xFFfc9c35);
 
         pose.popPose();
         pose.pushPose();

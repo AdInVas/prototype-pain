@@ -2,15 +2,13 @@ package net.adinvas.prototype_pain.visual.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.SimpleParticleType;
-import org.jetbrains.annotations.Nullable;
 
-public class BloodParticle extends TextureSheetParticle {
+public class VomitParticle extends TextureSheetParticle {
 
     private boolean resting = false;
     private int restTime = 0;
 
-    protected BloodParticle(
+    protected VomitParticle(
             ClientLevel level,
             double x,
             double y,
@@ -70,8 +68,7 @@ public class BloodParticle extends TextureSheetParticle {
         }
     }
 
-    // Provider class
-    public static class Provider implements ParticleProvider<SimpleParticleType> {
+    public static class Provider implements ParticleProvider<VomitParticleOptions> {
 
         private final SpriteSet spriteSet;
 
@@ -80,24 +77,25 @@ public class BloodParticle extends TextureSheetParticle {
         }
 
         @Override
-        public @Nullable Particle createParticle(
-                SimpleParticleType type,
+        public Particle createParticle(
+                VomitParticleOptions options,
                 ClientLevel level,
                 double x, double y, double z,
                 double dx, double dy, double dz
         ) {
-            // Default settings (if not using custom)
-            float scale = 1.0f;
-            float r = 1.0f, g = 1.0f, b = 1.0f; // red
-            float alpha = 1.0f;
 
-            return new BloodParticle(
-                    level, x, y, z,
-                    dx, dy, dz,
+            return new VomitParticle(
+                    level,
+                    x, y, z,
+                    options.velocity.x,
+                    options.velocity.y,
+                    options.velocity.z,
                     spriteSet,
-                    scale,
-                    r, g, b,
-                    alpha
+                    options.scale,
+                    options.r,
+                    options.g,
+                    options.b,
+                    options.alpha
             );
         }
     }

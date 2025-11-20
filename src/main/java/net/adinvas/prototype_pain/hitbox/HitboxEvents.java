@@ -72,6 +72,14 @@ public class HitboxEvents {
          */
         if (event.getSource().is(ModDamageTypeTags.IGNORE))return;
         if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
+        if (event.getSource().is(DamageTypes.FREEZE)){
+            float finalDamageamount1 = damageamount;
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setTemperature(h.getTemperature()- finalDamageamount1 *1.8f);
+            });
+            event.setAmount(0);
+            return;
+        }
         if (event.getSource().is(DamageTypes.FALL)){
             float finalDamage = damageamount;
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
