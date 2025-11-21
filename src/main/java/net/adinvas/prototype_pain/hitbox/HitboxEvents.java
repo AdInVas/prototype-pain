@@ -98,110 +98,128 @@ public class HitboxEvents {
         UUID id = player.getUUID();
         DamageContext ctx = contextMap.remove(id); // consume context
 
-        float finalDamage = event.getAmount(); // final damage after armor/enchantments
+        float damageamount = event.getAmount(); // final damage after armor/enchantments
         DamageSource src = (ctx != null && ctx.source != null) ? ctx.source : event.getSource();
 
-        // Protect against weird values
-        if (Float.isNaN(finalDamage) || Float.isInfinite(finalDamage) || finalDamage <= 0f) {
-            // If you want to still process zero damage for e.g. status effects, handle separately
-            event.setAmount(0f);
-            return;
-        }
-
-        // Example: handle freeze and fall specially (mimic your original logic)
-        if (src.is(DamageTypes.FREEZE)) {
-            float dmg = finalDamage;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.setTemperature(h.getTemperature() - dmg * 1.8f);
+        if (src.is(ModDamageTypeTags.IGNORE))return;
+        if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
+        if (src.is(DamageTypes.FREEZE)){
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setTemperature(h.getTemperature()- damageamount *1.8f);
             });
-            event.setAmount(0f);
+            event.setAmount(0);
             return;
         }
-
-        if (src.is(DamageTypes.FALL)) {
-            float dmg = finalDamage;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleFallDamage(dmg, player);
+        if (src.is(DamageTypes.FALL)){
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleFallDamage(damageamount,player);
             });
-            event.setAmount(0f);
+            event.setAmount(0);
             return;
         }
-
-        // Explosion / shrapnel handling
-        if (src.is(DamageTypeTags.IS_EXPLOSION)) {
-            float dmg = finalDamage;
-            boolean isShrapnel = src.is(ModDamageTypeTags.SHRAPNELL);
+        if (src.is(CBCmg)||src.is(CBCmgwat)) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleExplosionDamage(dmg, isShrapnel, player);
+                h.handleProjectileDamage(HitSector.getCBCChances(), damageamount,player);
             });
-            event.setAmount(0f);
+            event.setAmount(0);
+            return;
+        } else if (src.is(CBCproj)||src.is(CBCprojbig)||src.is(CBCtraff)) {
+            if (damageamount<5){
+                float finalDamage = damageamount*15;
+
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
+                });
+            }else {
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                    h.handleExplosionDamage(damageamount, true,player);
+                });
+            }
+            event.setAmount(0);
+            return;
+        } else if (src.is(DamageTypeTags.IS_EXPLOSION)){
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleExplosionDamage(damageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL),player);
+            });
+            event.setAmount(0);
             return;
         }
 
-        // Projectile detection: use stored projectileHitPos if present, otherwise try direct entity
-        if (isAnyProjectile(src)) {
-            Vec3 hitPos = null;
-            if (ctx != null && ctx.projectileHitPos != null) {
-                hitPos = ctx.projectileHitPos;
-            } else {
-                Entity direct = src.getDirectEntity();
-                if (direct instanceof Projectile proj) {
-                    hitPos = sweepProjectileStep(proj, player);
-                }
+        else if (isAnyProjectile(src)){
+            Entity directEntity = event.getSource().getDirectEntity();
+            if ((directEntity instanceof Projectile projectile)) {
+                ;
+                Vec3 hitPos = sweepProjectileStep(projectile, player);
+
+            /*
+            if (event.getSource().getEntity() instanceof Player pp){
+                pp.sendSystemMessage(Component.literal("hitpos "+hitPos));
+                pp.sendSystemMessage(Component.literal("projspeed "+projectile.getDeltaMovement().length()));
             }
 
-            if (hitPos != null) {
+             */
+
+
+                // Your custom hit sector logic
                 HitSector hit = detectHit(player, hitPos);
-                float dmg = finalDamage;
+                // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
+
+                // Call into your capability with final damage
                 player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleProjectileDamage(hit, dmg, player);
+                    h.handleProjectileDamage(hit, damageamount, player);
                 });
-                event.setAmount(0f);
+                event.setAmount(0);
                 return;
             }
         }
-
-        // Player attacker: try to detect hit pos via raytrace of attacker (keep your old logic)
-        Entity attacker = src.getEntity();
-        if (attacker instanceof Player shooter) {
+        else if (src.is(ModDamageTypeTags.MAGIC)||event.getSource().is(DamageTypes.MAGIC)) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleMagicDamage(damageamount, (ServerPlayer) player);
+            });
+            event.setAmount(0);
+            return;
+        } else if (src.is(DamageTypeTags.IS_FIRE)) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleFireDamage(damageamount,player);
+            });
+            event.setAmount(0);
+            return;
+        }
+        else if (src.getEntity() instanceof Player shooter) {
             double range = 400.0;
             EntityHitResult hitPos = rayTraceLivingEntity(shooter, range);
-            if (hitPos != null) {
-                HitSector hit = detectHit(player, hitPos.getLocation());
-                float dmg = finalDamage;
-                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleProjectileDamage(hit, dmg, player);
-                });
-                event.setAmount(0f);
-                return;
-            }
-        }
-
-        // Magic, fire, bypass armor and other categories
-        if (src.is(ModDamageTypeTags.MAGIC) || src.is(DamageTypes.MAGIC)) {
-            float dmg = finalDamage;
+            // Your custom hit sector logic
+            HitSector hit = detectHit(player, hitPos.getLocation());
+            // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
+            float finalDamage = event.getAmount();
+            // Call into your capability with final damage
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleMagicDamage(dmg, (player instanceof ServerPlayer sp) ? sp : null);
+                h.handleProjectileDamage(hit, finalDamage,player);
             });
-            event.setAmount(0f);
+            event.setAmount(0);
             return;
         }
+        else if (src.is(DamageTypeTags.BYPASSES_ARMOR)){
 
-        if (src.is(DamageTypeTags.BYPASSES_ARMOR)) {
-            float dmg = finalDamage;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleRandomDamage(dmg, player);
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.handleRandomDamage(damageamount,player);
             });
-            event.setAmount(0f);
+            event.setAmount(0);
             return;
         }
+        //fuck you warium
 
-        // Default fallback: standard damage routed into your system
-        float dmg = finalDamage;
-        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-            h.handleRandomDamage(dmg, player);
+        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            h.handleRandomDamage(damageamount,player);
         });
-        event.setAmount(0f);
+        event.setAmount(0);
     }
 
 
@@ -236,135 +254,7 @@ public class HitboxEvents {
         ));
 
          */
-        if (event.getSource().is(ModDamageTypeTags.IGNORE))return;
-        if (damageamount == Float.MAX_VALUE || Float.isNaN(damageamount) || damageamount == Float.POSITIVE_INFINITY)return;
-        if (event.getSource().is(DamageTypes.FREEZE)){
-            float finalDamageamount1 = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.setTemperature(h.getTemperature()- finalDamageamount1 *1.8f);
-            });
-            event.setAmount(0);
-            return;
-        }
-        if (event.getSource().is(DamageTypes.FALL)){
-            float finalDamage = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.handleFallDamage(finalDamage,player);
-            });
-            event.setAmount(0);
-            return;
-        }
-       if (event.getSource().is(CBCmg)||event.getSource().is(CBCmgwat)) {
-            float finalDamage = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-            });
-            event.setAmount(0);
-            return;
-        } else if (event.getSource().is(CBCproj)||event.getSource().is(CBCprojbig)||event.getSource().is(CBCtraff)) {
-            if (damageamount<5){
-                float finalDamage = damageamount*15;
 
-                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                    h.handleProjectileDamage(HitSector.getCBCChances(), finalDamage,player);
-                });
-            }else {
-                float finalDamage = damageamount;
-                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleExplosionDamage(finalDamage, true,player);
-                });
-            }
-            event.setAmount(0);
-            return;
-    } else if (event.getSource().is(DamageTypeTags.IS_EXPLOSION)){
-            float finalDamageamount = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.handleExplosionDamage(finalDamageamount,event.getSource().is(ModDamageTypeTags.SHRAPNELL),player);
-            });
-            event.setAmount(0);
-            return;
-        }
-
-        else if (isAnyProjectile(event.getSource())){
-            Entity directEntity = event.getSource().getDirectEntity();
-            if ((directEntity instanceof Projectile projectile)) {
-                ;
-                Vec3 hitPos = sweepProjectileStep(projectile, player);
-
-            /*
-            if (event.getSource().getEntity() instanceof Player pp){
-                pp.sendSystemMessage(Component.literal("hitpos "+hitPos));
-                pp.sendSystemMessage(Component.literal("projspeed "+projectile.getDeltaMovement().length()));
-            }
-
-             */
-
-
-                // Your custom hit sector logic
-                HitSector hit = detectHit(player, hitPos);
-                // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
-                float finalDamage = damageamount;
-
-                // Call into your capability with final damage
-                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                    h.handleProjectileDamage(hit, finalDamage, player);
-                });
-                event.setAmount(0);
-                return;
-            }
-        }
-        else if (event.getSource().is(ModDamageTypeTags.MAGIC)||event.getSource().is(DamageTypes.MAGIC)) {
-            float finalDamageamount = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.handleMagicDamage(finalDamageamount, (ServerPlayer) player);
-            });
-            event.setAmount(0);
-            return;
-       } else if (event.getSource().is(DamageTypeTags.IS_FIRE)) {
-            float finalDamageamount = damageamount;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                    h.handleFireDamage(finalDamageamount,player);
-            });
-            event.setAmount(0);
-            return;
-        }
-        else if (event.getSource().getEntity() instanceof Player shooter) {
-            double range = 400.0;
-            EntityHitResult hitPos = rayTraceLivingEntity(shooter, range);
-            // Your custom hit sector logic
-            HitSector hit = detectHit(player, hitPos.getLocation());
-            // This damage value is AFTER vanilla reductions (armor, resistance, etc.)
-            float finalDamage = event.getAmount();
-            // Call into your capability with final damage
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
-                h.handleProjectileDamage(hit, finalDamage,player);
-            });
-            event.setAmount(0);
-            return;
-        }
-        else if (event.getSource().is(DamageTypeTags.BYPASSES_ARMOR)){
-            float finalDamageamount = damageamount;
-
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.handleRandomDamage(finalDamageamount,player);
-            });
-            event.setAmount(0);
-            return;
-        }
-        //fuck you warium
-        float finalDamageamount = damageamount;
-
-        player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-            h.handleRandomDamage(finalDamageamount,player);
-        });
-        event.setAmount(0);
     }
 
 
