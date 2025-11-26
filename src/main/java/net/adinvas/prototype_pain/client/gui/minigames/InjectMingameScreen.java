@@ -68,6 +68,15 @@ public class InjectMingameScreen extends Screen {
         }).orElse(false);
     }
 
+    public boolean isBothAmputated(){
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player==null) return false;
+        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+            if (h.isAmputated(Limb.LEFT_HAND)&&h.isAmputated(Limb.RIGHT_HAND))return true;
+            return false;
+        }).orElse(false);
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -76,6 +85,13 @@ public class InjectMingameScreen extends Screen {
             spriteType= HandObject.SpriteType.GONE;
         }else {
             spriteType= HandObject.SpriteType.NORMAL;
+        }
+        if (target!= minecraft.player){
+            if (isBothAmputated()) {
+                spriteType= HandObject.SpriteType.GONE;
+            }else {
+                spriteType= HandObject.SpriteType.NORMAL;
+            }
         }
         handObject = new HandObject(spriteType,this.width/2,this.height/2,this.width,this.height/3*2);
         if (parent instanceof HealthScreen hp){
