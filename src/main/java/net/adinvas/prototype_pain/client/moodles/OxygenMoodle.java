@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class OxygenMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> oxygen = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getOxygen);
         float ox = oxygen.orElse(100f);
         if (ox<5){

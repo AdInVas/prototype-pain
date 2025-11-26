@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class NotBreathMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Boolean> isbreathing = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::isRespitoryArrest);
         if (isbreathing.orElse(false)){
             return MoodleStatus.CRITICAL;

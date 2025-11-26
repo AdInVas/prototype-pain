@@ -168,6 +168,9 @@
   "item.prototype_pain.auto_pump": "Auto Pump",
   "item.prototype_pain.auto_pump.discription": "A very advanced Life support device with internal batteries. Keeps oxygen at stable levels,provides adrenaline and energy. Batteries last about 5min. Usable on Chest",
 
+  "item.prototype_pain.thermometer": "Thermometer",
+  "item.prototype_pain.thermometer.discription": "A small device that reads the temperature around the user.",
+
   "block.prototype_pain.scav_plushie": "Scav Plushie",
 
   "prototype_pain.fluid.opium": "Opium",

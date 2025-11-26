@@ -1,0 +1,137 @@
+{
+  "minecraft:apple": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:enchanted_golden_apple": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.3"
+  },
+  "minecraft:melon_slice": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:sweet_berries": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:glow_berries": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:chorus_fruit": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:carrot": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:golden_apple": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.2"
+  },
+  "minecraft:golden_carrot": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.15"
+  },
+  "minecraft:cooked_porkchop": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.1"
+  },
+  "minecraft:porkchop": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:cooked_beef": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.1"
+  },
+  "minecraft:beef": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:dried_kelp": {
+    "sickness": "0.0",
+    "thirst": "-0.5",
+    "temperature": "0.0"
+  },
+  "minecraft:beetroot": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:poisonous_potato": {
+    "sickness": "1.0",
+    "thirst": "0.0",
+    "temperature": "-0.1"
+  },
+  "minecraft:baked_potato": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.15"
+  },
+  "minecraft:potato": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:mutton": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:cooked_mutton": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.1"
+  },
+  "minecraft:cooked_chicken": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.1"
+  },
+  "minecraft:cod": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:rotten_flesh": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:cookie": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:tropical_fish": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.0"
+  },
+  "minecraft:mushroom_stew": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.2"
+  },
+  "minecraft:beetroot_soup": {
+    "sickness": "0.0",
+    "thirst": "0.0",
+    "temperature": "0.2"
+  }
+}

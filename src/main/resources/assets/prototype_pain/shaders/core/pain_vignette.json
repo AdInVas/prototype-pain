@@ -11,7 +11,6 @@
   ],
   "uniforms": [
     { "name": "Intensity", "type": "float", "count": 1, "values": [0.5] },
-    { "name": "tma", "type": "float", "count": 1, "values": [0.5] },
     { "name": "Time", "type": "float", "count": 1, "values": [0] }
   ]
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public class BleedInternalMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Float> internal = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getInternalBleeding);
         float bleed = internal.orElse(0f);
         if (bleed>0.3/20/60){

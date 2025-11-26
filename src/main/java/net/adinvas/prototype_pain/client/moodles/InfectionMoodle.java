@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class InfectionMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         Optional<Double> infection = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getMaxInfection);
 
         if (infection.orElse(0d)>80){

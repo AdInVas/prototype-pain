@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DisfiguredMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         boolean r = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::isMouthRemoved).orElse(false);
         if (r){
             return MoodleStatus.HEAVY;

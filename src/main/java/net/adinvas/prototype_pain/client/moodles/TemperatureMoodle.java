@@ -15,7 +15,7 @@ import java.util.List;
 public class TemperatureMoodle extends AbstractMoodleVisual{
     boolean low= false;
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         float temp = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getTemperature).orElse(36.6f);
         if (temp<36.6){
             low = true;

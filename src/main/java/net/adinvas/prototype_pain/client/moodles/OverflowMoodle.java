@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 public class OverflowMoodle extends AbstractMoodleVisual{
     public int leftover = 0;
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         return MoodleStatus.LIGHT;
     }
 

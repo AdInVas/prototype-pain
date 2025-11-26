@@ -1,0 +1,15 @@
+{
+  "vertex": "prototype_pain:pass_trough",
+  "fragment": "prototype_pain:heat",
+  "samplers": [
+    { "name": "Sampler0" }
+  ],
+  "attributes": [
+    "Position",
+    "UV0"
+  ],
+  "uniforms": [
+    { "name": "Intensity", "type": "float", "count": 1, "values": [0.5] },
+    { "name": "Time", "type": "float", "count": 1, "values": [0] }
+  ]
+}

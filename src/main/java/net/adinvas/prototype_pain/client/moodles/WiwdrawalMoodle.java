@@ -14,7 +14,7 @@ import java.util.List;
 
 public class WiwdrawalMoodle extends AbstractMoodleVisual{
     @Override
-    MoodleStatus calculateStatus(Player player) {
+    public MoodleStatus calculateStatus(Player player) {
         float lung = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getNetOpiodids).orElse(0f);
         boolean hasOP = player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(PlayerHealthData::getPendingOpioids).orElse(0f)>0;
         if (hasOP)

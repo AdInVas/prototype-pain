@@ -4,7 +4,9 @@ import net.adinvas.prototype_pain.ModDamageTypes;
 import net.adinvas.prototype_pain.ModGamerules;
 import net.adinvas.prototype_pain.ModSounds;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.compat.TempCompat;
 import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
+import net.adinvas.prototype_pain.compat.serene_seasons.SereneSeasonsUtil;
 import net.adinvas.prototype_pain.config.ServerConfig;
 import net.adinvas.prototype_pain.hitbox.HitSector;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
@@ -38,6 +40,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -1226,7 +1230,6 @@ public class PlayerHealthData {
                     PhysicsUtil.setPhysics(false, player,0,0);
                 }
             }
-            PrototypePain.LOGGER.info("stab {}, {}, {}",Stability,isRagdolled,canBreakOutOffRagdoll);
         }else{
             Stability = 100;
         }
@@ -1306,7 +1309,7 @@ public class PlayerHealthData {
         } else if (temperature < 27) {
             moveMultiplier -= 0.2f;
             contiousness -= (float) ((getContiousnessregen() + 0.25f) / 20f);
-            if (contiousness > 1) {
+            if (contiousness < 10) {
                 isFreezing = true;
             }
             painscale = 1.5f;
@@ -1406,11 +1409,8 @@ public class PlayerHealthData {
         nbt.putFloat("HearingLoss",hearingLoss);
         nbt.putFloat("FlashHearing",flashHearingLoss);
         nbt.putBoolean("LastStand",LastStand);
-        /*
         nbt.putFloat("Stability",Stability);
 
-
-         */
         ListTag changeList = new ListTag();
         for (DelayedChangeEntry entry:changeEntries){
             changeList.add(entry.toNBT());
@@ -2156,94 +2156,126 @@ public class PlayerHealthData {
         }
     }
 
-
+    int temperatureTick = 0;
+    float envTemp = 36.6f;
     public void updateTemperature(Player player){
-        float biomeTemp = player.level().getBiome(player.blockPosition())
-                .value().getBaseTemperature();
+        if (temperatureTick++>20) {
+            temperatureTick = 0;
+            envTemp = getAmbientTemperature(player);
+        }
+        float armorInsulation = 0f;
+        armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
 
-        float envTemp = 32.5f + (biomeTemp * 7f);
+        float INSULATION_PER_POINT = 0.05f;
+        float MAX_INSULATION_SCALE = 0.85f;
+        float MIN_RATE = 1e-5f;
+
+        float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
+        float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
+
+        float baseRate = 0.005f / 20f;
+        float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
+        adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
+
+        float targetTemp = Mth.clamp(envTemp, 18f, 44f);
+        float optimalTemp = 36.6f;
+
+        float delta = targetTemp - temperature;
+
+        float distanceFromOpt = Math.abs(temperature - optimalTemp);
+
+        float curveFactor = Mth.clamp(1f - (distanceFromOpt / 10f) * 0.8f, 0.1f, 1.5f);
+
+        boolean movingTowardOpt = Math.signum(delta) != Math.signum(temperature - optimalTemp);
+
+        float directionFactor = movingTowardOpt ? 4.0f : 1.0f;
+
+        float finalRate = adjustmentRate * curveFactor * directionFactor;
+
+        temperature += delta * finalRate;
+    }
+
+    public Float getAmbientTemperature(Player player){
+        float outData = getBiomeTemperature(player);
 
         int seaLevel = player.level().getSeaLevel();
         double heightDiff = player.getY() - seaLevel;
 
         float heightModifier = (float) Mth.clamp(-heightDiff * 0.025f, -4f, 4f);
-        envTemp += heightModifier;
+        outData += heightModifier;
 
         BlockPos.MutableBlockPos checkPos = new BlockPos.MutableBlockPos();
-        float blockheatBonus = 0f;
+            float tblockheatBonus =0;
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dy = -2; dy <= 2; dy++) {
+                    for (int dz = -3; dz <= 3; dz++) {
+                        checkPos.set(player.blockPosition().offset(dx, dy, dz));
+                        BlockState state = player.level().getBlockState(checkPos);
 
-        for (int dx = -3; dx <= 3; dx++) {
-            for (int dy = -2; dy <= 2; dy++) {
-                for (int dz = -3; dz <= 3; dz++) {
-                    checkPos.set(player.blockPosition().offset(dx, dy, dz));
-                    BlockState state = player.level().getBlockState(checkPos);
+                        float base = 0f;
 
-                    float base = 0f;
+                        base = TempCompat.get(state.getBlock()) != null ? TempCompat.get(state.getBlock()) : 0;
+                        if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
+                            base += 1f;
+                        }
 
-                    if (state.is(Blocks.LAVA)) base += 3f;
-                    else if (state.is(Blocks.FIRE)) base += 2f;
-                    else if (state.is(Blocks.TORCH)) base += 0.5f;
-                    else if (state.is(Blocks.MAGMA_BLOCK)) base += 3f;
-                    else if (state.is(Blocks.CAMPFIRE)) base += 2.5f;
-                    else if (state.is(Blocks.ICE)) base -= 3f;
-                    else if (state.is(Blocks.POWDER_SNOW)) base -= 3f;
-                    if (state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
-                        base += 1f;
-                    }
-
-                    if (base != 0f) {
-                        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                        float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
-                        blockheatBonus += base * falloff;
+                        if (base != 0f) {
+                            double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                            float falloff = (float) Math.max(0.0, 1.0 - dist / 4.0); // full at 0m, none beyond 4m
+                            tblockheatBonus += base * falloff;
+                        }
                     }
                 }
             }
-        }
-        blockheatBonus = Mth.clamp(blockheatBonus,-12,15);
-        if (player.isSprinting()) envTemp += 1.5f;
-        else if (player.isSwimming()) envTemp -= 1f;
-        if (player.getFoodData().getFoodLevel() < 6) envTemp -= 0.5f;
+        tblockheatBonus = Mth.clamp(tblockheatBonus,-30,30);
+
+        if (player.isSprinting()) outData += 1.5f;
+        else if (player.isSwimming()) outData -= 1f;
+        if (player.getFoodData().getFoodLevel() < 6) outData -= 0.5f;
 
         float generalheatbonus = 0f;
 
         if (player.isInWater()) generalheatbonus -= 3f; // cold water
         if (player.isOnFire()) generalheatbonus += 10f;
 
-        float armorInsulation = 0f;
-        armorInsulation = ThermalArmorHandler.getArmorInsulation(player);
-
         boolean skyVisible = player.level().canSeeSkyFromBelowWater(player.blockPosition());
         if (!skyVisible) {
-            blockheatBonus *= 0.5f; // less effect indoors
+            tblockheatBonus *= 0.5f; // less effect indoors
         }
 
-        if (player.level().isRainingAt(player.blockPosition())) generalheatbonus -= 2f;
+        if (player.isInWaterOrRain())generalheatbonus -= 2f;
         if (player.level().isThundering()) generalheatbonus -= 3f;
         if (player.level().isDay() && player.level().canSeeSky(player.blockPosition())) generalheatbonus += 1f;
 
-        envTemp += (blockheatBonus + generalheatbonus);
+        outData += (tblockheatBonus + generalheatbonus);
+        return outData;
+    }
 
-// --- Armor insulation slows down temperature change ---
-// Each point of insulation reduces how fast body temperature changes toward environment
-        float INSULATION_PER_POINT = 0.05f;   // 5% slower per insulation point
-        float MAX_INSULATION_SCALE = 0.85f;   // max 85% slower (still allows change)
-        float MIN_RATE = 1e-5f;               // avoid stalling
+    public float getBiomeTemperature(Player player){
+        Level world = player.level();
+        BlockPos pos = player.blockPosition();
 
-// Compute insulation effect and clamp it
-        float rawInsulationEffect = armorInsulation * INSULATION_PER_POINT;
-        float clampedInsulationEffect = Mth.clamp(rawInsulationEffect, 0f, MAX_INSULATION_SCALE);
+        Biome biome = world.getBiome(pos).value();
+        float sunScale =0;
+        float sunAngle = (float) Math.toDegrees(world.getSunAngle(0));
 
-// Base adjustment rate — faster when in water
-        float baseRate = (player.isInWater() ? 0.01f : 0.005f) / 20f;
+        if (sunAngle>90&&sunAngle<270){
+            if (sunAngle>180){
+                sunAngle -= 180;
+            }
+           sunScale = Mth.clamp(Math.abs((sunAngle-90)/30),0,1);
+        }
+        TempCompat.BiomeTemperatureEntry temperatureEntry = TempCompat.getForPosition(world,pos);
+        Float outData = null;
+        if (temperatureEntry!=null){
+            outData = SereneSeasonsUtil.getSeasonScale(world,temperatureEntry);
+            outData += (temperatureEntry.nightChange*sunScale);
+        }
 
-// Reduce change rate by insulation
-        float adjustmentRate = baseRate * (1f - clampedInsulationEffect);
-        adjustmentRate = Math.max(adjustmentRate, MIN_RATE);
-
-// Smoothly adjust toward target
-        float targetTemp = Mth.clamp(envTemp,18,50);
-
-        temperature += (targetTemp - temperature) * adjustmentRate;
+        if (outData==null) {
+            outData = 25f + ((biome.getBaseTemperature() + 0.5f) / 2.5f) * 16f;
+        }
+        return outData;
     }
 
     public void calculateImmunity(){
