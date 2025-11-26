@@ -1271,18 +1271,24 @@ public class PlayerHealthData {
         }
 
         HumanoidArm handpart = Limb.getFromHand(InteractionHand.MAIN_HAND, player);
+        double attackMultiplier =0;
 
-        double attackMultiplier = ((100-getLimbMuscleHealth(Limb.RIGHT_ARM))  / 100.0) * 0.1 +
+        attackMultiplier = ((100-getLimbMuscleHealth(Limb.RIGHT_ARM))  / 100.0) * 0.1 +
                 ((100-getLimbMuscleHealth(Limb.LEFT_ARM))   / 100.0) * 0.25 +
                 ((100-getLimbMuscleHealth(Limb.RIGHT_HAND)) / 100.0) * 0.10 +
                 ((100-getLimbMuscleHealth(Limb.LEFT_HAND))  / 100.0) * 0.25;
+        if (isAmputated(Limb.RIGHT_HAND))attackMultiplier-=0.1;
+        if (isAmputated(Limb.RIGHT_ARM))attackMultiplier-=0.1;
 
         if (handpart == HumanoidArm.RIGHT) {
-            attackMultiplier = ((100-getLimbMuscleHealth(Limb.RIGHT_ARM))  / 100.0) * 0.10 +
+            attackMultiplier = ((100-getLimbMuscleHealth(Limb.RIGHT_ARM))  / 100.0) * 0.25 +
                     ((100-getLimbMuscleHealth(Limb.LEFT_ARM))   / 100.0) * 0.10 +
                     ((100-getLimbMuscleHealth(Limb.RIGHT_HAND)) / 100.0) * 0.25 +
-                    ((100-getLimbMuscleHealth(Limb.LEFT_HAND))  / 100.0) * 0.25;
+                    ((100-getLimbMuscleHealth(Limb.LEFT_HAND))  / 100.0) * 0.10;
+            if (isAmputated(Limb.LEFT_HAND))attackMultiplier-=0.1;
+            if (isAmputated(Limb.LEFT_ARM))attackMultiplier-=0.1;
         }
+
 
         double moveMultiplier = 1.0 - moveReduction;
         isFreezing = false;
