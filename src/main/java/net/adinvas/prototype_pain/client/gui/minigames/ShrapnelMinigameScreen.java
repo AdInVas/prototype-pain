@@ -48,14 +48,21 @@ public class ShrapnelMinigameScreen extends Screen {
     public boolean isAmputated(){
         Minecraft mc = Minecraft.getInstance();
         if (mc.player==null) return false;
-        return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
-            for (Limb l:limb.availableHandsForAction()){
-                if (!h.isAmputated(l)){
-                    return false;
+        if (target!=mc.player){
+            return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+                if (h.isAmputated(Limb.LEFT_HAND)&&h.isAmputated(Limb.RIGHT_HAND))return true;
+                return false;
+            }).orElse(false);
+        }else{
+            return mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->{
+                for (Limb l:limb.availableHandsForAction()){
+                    if (!h.isAmputated(l)){
+                        return false;
+                    }
                 }
-            }
-            return true;
-        }).orElse(false);
+                return true;
+            }).orElse(false);
+        }
     }
 
     @Override
