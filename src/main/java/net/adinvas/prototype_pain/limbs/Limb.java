@@ -70,7 +70,7 @@ public enum Limb { HEAD, CHEST, LEFT_ARM, RIGHT_ARM,RIGHT_HAND,LEFT_HAND, LEFT_L
     }
 
 
-    static Limb weigtedRandomLimb(){
+    public static Limb weigtedRandomLimb(){
         Limb[] limb_list = {
                 HEAD, //~4%
                 CHEST,//~8%

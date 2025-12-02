@@ -16,6 +16,7 @@ import net.adinvas.prototype_pain.client.gui.HealthScreen;
 import net.adinvas.prototype_pain.client.ticksounds.MuffledSound;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
+import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
 import net.adinvas.prototype_pain.network.GiveUpPacket;
 import net.adinvas.prototype_pain.network.LegUsePacket;
@@ -33,14 +34,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.MovementInputUpdateEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
 import net.minecraftforge.client.event.sound.SoundEvent;
@@ -253,6 +252,22 @@ public class ClientEvents {
             gui.fill(x+(90-size/2),y-20,x+90+(size/2),y-22,argb);
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onRenderHand(RenderHandEvent event) {
+        // Cancel rendering
+        Minecraft mc =  Minecraft.getInstance();
+        mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+            HumanoidArm arm = mc.player.getMainArm();
+            Limb limb = switch (arm){
+                case LEFT -> Limb.LEFT_ARM;
+                case RIGHT -> Limb.RIGHT_ARM;
+                default -> Limb.RIGHT_ARM;
+            };
+            if (h.isAmputated(limb))event.setCanceled(true);
+        });
+
     }
 
     @SubscribeEvent

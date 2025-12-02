@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.item.bags.small;
+package net.adinvas.prototype_pain.item.special.bags.small;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.adinvas.prototype_pain.PrototypePain;

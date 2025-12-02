@@ -2,9 +2,11 @@ package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.item.bags.large.LargeMedibagItem;
-import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagItem;
-import net.adinvas.prototype_pain.item.bags.small.SmallMedibagItem;
+import net.adinvas.prototype_pain.item.misc.BrownCapMushItem;
+import net.adinvas.prototype_pain.item.misc.ExperimentalTreatmentItem;
+import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagItem;
+import net.adinvas.prototype_pain.item.special.bags.medium.MediumMedibagItem;
+import net.adinvas.prototype_pain.item.special.bags.small.SmallMedibagItem;
 import net.adinvas.prototype_pain.item.bandages.*;
 import net.adinvas.prototype_pain.item.fluid_vials.*;
 import net.adinvas.prototype_pain.item.misc.BrownCapItem;
@@ -72,9 +74,12 @@ public class ModItems {
     public static final RegistryObject<Item> CEFTRIAXONE =  ITEMS.register("ceftriaxone", CeftriaxoneItem::new);
     public static final RegistryObject<Item> ReliefCream = ITEMS.register("relief_cream",ReliefCreamItem::new);
     public static final RegistryObject<Item> BrownCap = ITEMS.register("brown_cap", BrownCapItem::new);
+    public static final RegistryObject<Item> BrownCapMush = ITEMS.register("brown_cap_mush", BrownCapMushItem::new);
+    public static final RegistryObject<Item> ExperimentalTreatment = ITEMS.register("experimental_treatment", ExperimentalTreatmentItem::new);
     public static final RegistryObject<Item> AutoPump = ITEMS.register("auto_pump", AutoPumpItem::new);
 
     public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
+    public static final RegistryObject<Item> SimpleEarProtection = ITEMS.register("simple_ear_protection", net.adinvas.prototype_pain.item.special.SimpleEarProtection::new);
 
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));

@@ -153,6 +153,18 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+    maven {
+        name = "Illusive Soulworks maven"
+        url = "https://maven.theillusivec4.top/"
+    }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroupByRegex("software\\.bernie.*")
+            includeGroup("com.eliotlash.mclib")
+        }
+    }
 }
 
 dependencies {
@@ -183,9 +195,14 @@ dependencies {
     compileOnly(fg.deobf("curse.maven:prototype-physics-1380559:7206624"))
     compileOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
     compileOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
+    //implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
     //implementation(fg.deobf("maven.modrinth:uwrad:1.1.0+forge"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+
+    //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    // Use the full Curios API jar at runtime
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     //runtimeOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
     //runtimeOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
 

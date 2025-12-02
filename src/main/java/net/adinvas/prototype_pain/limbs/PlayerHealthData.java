@@ -180,6 +180,9 @@ public class PlayerHealthData {
         return flashHearingLoss;
     }
 
+    public void setLastStand(boolean lastStand) {
+        LastStand = lastStand;
+    }
 
     public float getTemperature() {
         return temperature;

@@ -1,7 +1,12 @@
 package net.adinvas.prototype_pain.blocks;
 
+import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,4 +31,17 @@ public class BrownCapBlock extends BushBlock {
         return pState.isSolidRender(pLevel, pPos);
     }
 
+    @Override
+    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        int artificialLight = pLevel.getBrightness(LightLayer.BLOCK,pPos);
+
+        if (artificialLight>10&&pRandom.nextInt(4)==0){
+            Direction dir = Direction.Plane.HORIZONTAL.getRandomDirection(pRandom);
+            BlockPos targetPos = pPos.relative(dir);
+            BlockState targetState = pLevel.getBlockState(targetPos);
+            if (targetState.isAir()&&!pLevel.getBlockState(targetPos.relative(Direction.DOWN)).isAir()) {
+                pLevel.setBlock(targetPos, ModBlocks.BROWN_CAP.get().defaultBlockState(), Block.UPDATE_ALL);
+            }
+        }
+    }
 }
