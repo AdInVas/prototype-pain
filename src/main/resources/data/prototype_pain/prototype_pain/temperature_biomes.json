@@ -4,7 +4,7 @@
     "nightChange": -8,
     "winter": 38,
     "spring": 42,
-    "summer": 46,
+    "summer": 44,
     "fall": 42
   },
   "minecraft:bamboo_jungle": {
@@ -123,7 +123,7 @@
     "nightChange": -8,
     "winter": 38,
     "spring": 41.5,
-    "summer": 47,
+    "summer": 44,
     "fall": 41
   },
   "minecraft:flower_forest": {
@@ -195,7 +195,7 @@
     "nightChange": -2,
     "winter": 38,
     "spring": 42,
-    "summer": 48,
+    "summer": 44,
     "fall": 42
   },
   "minecraft:lukewarm_ocean": {
@@ -289,7 +289,7 @@
     "nightChange": -7,
     "winter": 37,
     "spring": 41,
-    "summer": 48,
+    "summer": 43,
     "fall": 40
   },
   "minecraft:savanna_plateau": {
@@ -297,7 +297,7 @@
     "nightChange": -7,
     "winter": 37,
     "spring": 41,
-    "summer": 48,
+    "summer": 43,
     "fall": 40
   },
   "minecraft:small_end_islands": {
@@ -343,7 +343,7 @@
     "nightChange": -2,
     "winter": 38,
     "spring": 42,
-    "summer": 48,
+    "summer": 44,
     "fall": 41.5
   },
   "minecraft:stony_peaks": {
@@ -440,7 +440,7 @@
     "nightChange": -8,
     "winter": 40,
     "spring": 43,
-    "summer": 50,
+    "summer": 44,
     "fall": 42
   }
 }

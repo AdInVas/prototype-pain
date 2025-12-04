@@ -2,9 +2,11 @@ package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.item.special.SimpleEarProtection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,20 +48,17 @@ public class ExplosionEvents {
             }
             float distanceScale = (float) Math.pow(1-distance/HEARING_DISTANCE,2f);
             if (!hasLineOfSight(level, player, explosionPos)){
+
                 distanceScale/=2;
             }
             float finalDistanceScale = distanceScale+0.1f;
-            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
-                h.setContiousness(h.getContiousness()-(100* finalDistanceScale));
-                h.setHearingLoss((float) (h.getHearingLoss()+Math.max(0.05, finalDistanceScale /2f)));
-                h.setFlashHearingLoss(h.getFlashHearingLoss()+Math.min(0.25f, finalDistanceScale *4));
-            });
-            // 5. Check for a clear Line of Sight (LOS)
-                // This player is within 32 blocks AND can see the explosion!
-                //
-                // TRIGGER YOUR HEARING LOSS LOGIC HERE
-                // e.g., send a custom packet to this 'player' (who is a ServerPlayer)
-                //
+
+            if (distanceScale>0.1)
+                player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                    h.setContiousness(h.getContiousness()-(100* finalDistanceScale));
+                    h.setHearingLoss((float) (h.getHearingLoss()+Math.max(0.05, finalDistanceScale /2f)));
+                    h.setFlashHearingLoss(h.getFlashHearingLoss()+Math.min(0.25f, finalDistanceScale *4));
+                });
         }
     }
 

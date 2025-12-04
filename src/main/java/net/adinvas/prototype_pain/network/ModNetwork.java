@@ -43,5 +43,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(20, TriggerLastStandPacket.class,TriggerLastStandPacket::write,TriggerLastStandPacket::new,TriggerLastStandPacket::handle);
         CHANNEL.registerMessage(21, BrainEventPacket.class,BrainEventPacket::write,BrainEventPacket::new,BrainEventPacket::handle);
         CHANNEL.registerMessage(22,ClickedOnFluidPacket.class,ClickedOnFluidPacket::write,ClickedOnFluidPacket::new,ClickedOnFluidPacket::handle);
+        CHANNEL.registerMessage(23, BlindnessViewSyncPacket.class,BlindnessViewSyncPacket::encode,BlindnessViewSyncPacket::decode,BlindnessViewSyncPacket::handle);
     }
 }

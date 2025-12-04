@@ -1,8 +1,6 @@
-package net.adinvas.prototype_pain.item.bags.large;
+package net.adinvas.prototype_pain.item.special.bags.large;
 
 import net.adinvas.prototype_pain.item.IBag;
-import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagMenu;
-import net.adinvas.prototype_pain.item.bags.small.SmallMedibagMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -18,12 +16,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class LargeMedibagItem extends Item implements IBag {

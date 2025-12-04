@@ -1,7 +1,7 @@
-package net.adinvas.prototype_pain.item.bags.medium;
+package net.adinvas.prototype_pain.item.special.bags.large;
 
 import net.adinvas.prototype_pain.ModMenus;
-import net.adinvas.prototype_pain.item.bags.MedicalSlot;
+import net.adinvas.prototype_pain.item.special.bags.MedicalSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
@@ -12,19 +12,19 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class MediumMedibagMenu extends AbstractContainerMenu {
+public class LargeMedibagMenu extends AbstractContainerMenu {
     private final ItemStack bagStack;
-    private final Container medibagInventory = new SimpleContainer(8);
+    private final Container medibagInventory = new SimpleContainer(12);
 
-    public MediumMedibagMenu(int id, Inventory playerInv, ItemStack bagStack){
-        super(ModMenus.MEDIUM_MEDIBAG.get(),id);
+    public LargeMedibagMenu(int id, Inventory playerInv, ItemStack bagStack){
+        super(ModMenus.LARGE_MEDIBAG.get(),id);
         this.bagStack = bagStack;
 
         loadConfigFromItem(bagStack);
 
         for (int row = 0; row < 2; row++) {
-            for (int col = 0; col < 4; col++) {
-                this.addSlot(new MedicalSlot(medibagInventory, col + row * 4, 54 + col * 18, 24 + row * 18));
+            for (int col = 0; col < 6; col++) {
+                this.addSlot(new MedicalSlot(medibagInventory, col + row * 6, 36 + col * 18, 24 + row * 18));
             }
         }
 
@@ -50,14 +50,16 @@ public class MediumMedibagMenu extends AbstractContainerMenu {
             ItemStack stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
-            int containerSlots = medibagInventory.getContainerSize();
+            int containerSlots = medibagInventory.getContainerSize(); // number of chest slots
             int totalSlots = this.slots.size();
 
             if (i < containerSlots) {
+                // Moving from chest -> player inventory
                 if (!this.moveItemStackTo(stackInSlot, containerSlots, totalSlots, true)) {
                     return ItemStack.EMPTY;
                 }
             } else {
+                // Moving from player inventory -> chest
                 if (!this.moveItemStackTo(stackInSlot, 0, containerSlots, false)) {
                     return ItemStack.EMPTY;
                 }

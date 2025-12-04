@@ -1,8 +1,8 @@
 package net.adinvas.prototype_pain;
 
-import net.adinvas.prototype_pain.item.bags.large.LargeMedibagMenu;
-import net.adinvas.prototype_pain.item.bags.medium.MediumMedibagMenu;
-import net.adinvas.prototype_pain.item.bags.small.SmallMedibagMenu;
+import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagMenu;
+import net.adinvas.prototype_pain.item.special.bags.medium.MediumMedibagMenu;
+import net.adinvas.prototype_pain.item.special.bags.small.SmallMedibagMenu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;

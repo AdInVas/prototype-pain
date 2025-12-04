@@ -7,6 +7,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class ModGamerules {
     public static GameRules.Key<GameRules.BooleanValue> INVENTORY_STEAL;
     public static GameRules.Key<GameRules.IntegerValue> LAST_STAND_CHANCE;
+    public static GameRules.Key<GameRules.IntegerValue> BLIDNESS_VIEW;
 
     @SubscribeEvent
     public static void onCommonSetup(FMLCommonSetupEvent event) {
@@ -20,6 +21,11 @@ public class ModGamerules {
                     "lastStandChancePercentage",
                     GameRules.Category.PLAYER,
                     GameRules.IntegerValue.create(10)
+            );
+            BLIDNESS_VIEW = GameRules.register(
+                    "blindnessViewDistance",
+                    GameRules.Category.PLAYER,
+                    GameRules.IntegerValue.create(48)
             );
         });
     }

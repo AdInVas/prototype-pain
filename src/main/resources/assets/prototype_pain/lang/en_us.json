@@ -383,6 +383,14 @@
   "prototype_pain.gui.moodle.sound_loss.description2": "Everything sounds very muffled and echo-y. You feel irritated. This may take a bit.",
   "prototype_pain.gui.moodle.sound_loss.description3": "You can barely hear anything. You feel very irritated. Your ears will take a good while to improve.",
   "prototype_pain.gui.cpr_instruction1": "Preform chest compressions to the rythm of the timer.",
-  "prototype_pain.gui.cpr_instruction2": "Don't mess up."
+  "prototype_pain.gui.cpr_instruction2": "Don't mess up.",
+
+  "item.prototype_pain.brown_cap_mush.discription": "Probably a bad idea to eat this...",
+  "item.prototype_pain.brown_cap_mush": "Brown Cap Mush",
+  "item.prototype_pain.experimental_treatment": "Experimental Treatment",
+  "item.prototype_pain.experimental_treatment.discription1": "The label says:",
+  "item.prototype_pain.experimental_treatment.discription2": "EXPERIMENTAL TREATMENT EX-8UN, For authorized Study participants only. Effects may include:",
+  "item.prototype_pain.experimental_treatment.discription3": "Mild dizziness ;Permanent dizziness ;Energy ;Lethargy ;Metallic taste ;Sudden bleeding ;Cardiac arrest;Minor brain damage ;Major brain damage ; Respiratory arrest; Deja vu; Paranoia; Loss of limbs; Grow of limbs; Hunger; Vomiting; Deja vu; Memory loss...",
+  "item.prototype_pain.experimental_treatment.discription4": "The list goes on for another 2 lines."
 
 }

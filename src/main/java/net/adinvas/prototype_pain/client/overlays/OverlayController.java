@@ -191,7 +191,7 @@ public class OverlayController {
                 0, 0, src.width, src.height,     // source rect
                 0, 0, dst.width, dst.height,     // destination rect
                 // 👇 ✅ THE FIX 👇
-                GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT, // what to copy
+                GL30.GL_COLOR_BUFFER_BIT , // what to copy
                 GL30.GL_NEAREST                  // copy mode
         );
 

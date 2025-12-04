@@ -1,10 +1,13 @@
 package net.adinvas.prototype_pain.events;
 
+import net.adinvas.prototype_pain.ModGamerules;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.compat.FoodAndDrinkCompat;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.BlindnessViewSyncPacket;
+import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.SyncTracker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -29,6 +32,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
@@ -57,6 +61,20 @@ public class ModEvents {
                     newStore.copyFrom(oldStore);
                 });
             });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            int val = player.serverLevel()
+                    .getGameRules()
+                    .getInt(ModGamerules.BLIDNESS_VIEW);
+
+            ModNetwork.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> player),
+                    new BlindnessViewSyncPacket(val)
+            );
         }
     }
 

@@ -1,8 +1,7 @@
-package net.adinvas.prototype_pain.item.bags.medium;
+package net.adinvas.prototype_pain.item.special.bags.medium;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.item.bags.small.SmallMedibagMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;

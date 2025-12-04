@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.item.bags;
+package net.adinvas.prototype_pain.item.special.bags;
 
 import net.adinvas.prototype_pain.item.IAllowInMedicbags;
 

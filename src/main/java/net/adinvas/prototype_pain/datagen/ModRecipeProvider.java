@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
@@ -384,6 +385,25 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(ItemTags.WOOL)
                 .requires(Items.GUNPOWDER)
                 .requires(Items.IRON_NUGGET)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.BrownCapMush.get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .define('A',ModItems.BrownCap.get())
+                .define('B',Items.BOWL)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.ExperimentalTreatment.get())
+                .pattern("MMM")
+                .pattern("MMM")
+                .pattern("GDG")
+                .define('M',ModItems.BrownCapMush.get())
+                .define('G', Items.GLISTERING_MELON_SLICE)
+                .define('D',Items.DIAMOND)
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
     }
