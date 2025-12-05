@@ -1,14 +1,11 @@
 package net.adinvas.prototype_pain.client.gui;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
-import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.moodles.AbstractMoodleVisual;
 import net.adinvas.prototype_pain.client.moodles.MoodleController;
 import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
 import net.adinvas.prototype_pain.item.IBag;
 import net.adinvas.prototype_pain.item.IMedicalMinigameUsable;
-import net.adinvas.prototype_pain.item.fluid_vials.SyringeItem;
-import net.adinvas.prototype_pain.client.gui.minigames.InjectMingameScreen;
 
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.*;
@@ -44,14 +41,12 @@ public class HealthScreen extends Screen {
     private CPRButton cprButton;
     private Player target;
 
-    private List<CustomButton> buttonList = new ArrayList<>();
+    private CustomButton actionButton;
     private int listStartX = 5;
     private int listStartY = height/4 * 3;
 
     private LimbWidget lastClicked;
     private LimbWidget lastHovered;
-
-    private boolean lastHandOffHand= false;
 
     private HeartBeatSound heartBeatSound;
 
@@ -111,6 +106,8 @@ public class HealthScreen extends Screen {
                 }
             }
         }
+        this.actionButton = new CustomButton(0,0,null,target);
+
         addRenderableWidget(Head);
         addRenderableWidget(Chest);
         addRenderableWidget(L_Arm);
@@ -269,11 +266,13 @@ public class HealthScreen extends Screen {
             if (!BGmode)
                 lastHovered = h;
         }
+        actionButton.renderWidget(pGuiGraphics,pMouseX,pMouseY,pPartialTick);
     }
 
     @Override
     public void tick() {
         super.tick();
+        actionButton.tick();
         if (target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).map(h->h.getContiousness()<10).orElse(false)&&(target!=Minecraft.getInstance().player)){
             cprButton.visible= true;
         }else{
@@ -301,8 +300,7 @@ public class HealthScreen extends Screen {
         }
         updateScreen();
         UpdateSubStacks();
-        if (!BGmode)
-            UpdateButtons(lastClicked);
+
         target.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(health->{
             healthbox.setSkin(health.getLimbSkinHealth(lastHovered.getLimb()));
             healthbox.setMuscle(health.getLimbMuscleHealth(lastHovered.getLimb()));
@@ -576,50 +574,47 @@ public class HealthScreen extends Screen {
         return null;
     }
 
-    private CustomButton getHoveringWidgetCusomButton(double pMouseX,double pMouseY){
-        for (GuiEventListener child : this.children()) {
-            if (child instanceof CustomButton limbwidget) {
-                if (limbwidget.isMouseOver(pMouseX,pMouseY)) return limbwidget;
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
+        actionButton.onClick(pMouseX,pMouseY);
+        actionButton.setClickDelay(10);
+        if (widget==null){
+            actionButton.setAction(null);
+            actionButton.setLimb(null);
+        }
             if (widget != null) {
                 if (!widget.isAmputated()) {
                     UpdateButtons(widget);
                 }
             }
-
-            CustomButton button = getHoveringWidgetCusomButton(pMouseX, pMouseY);
-            if (button != null) {
-                if (!BGmode)
-                    UpdateButtons(lastClicked);
-            }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     public void UpdateButtons(LimbWidget widget){
-        List<StatusSprites> statusList = new ArrayList<>();
         if (widget!=null) {
-            for (CustomButton button : buttonList){
-                removeWidget(button);
+
+
+            Limb limb = widget.getLimb();
+            if (limb!=null){
+                int offset = switch (widget.getLimb()){
+                    case HEAD,CHEST -> 16;
+                    case LEFT_LEG,RIGHT_LEG,RIGHT_FOOT,LEFT_FOOT,RIGHT_HAND,LEFT_HAND -> 8;
+                    case RIGHT_ARM,LEFT_ARM -> 24;
+                    default -> 0;
+                };
+                actionButton.setX(widget.getX()-32+offset);
+                actionButton.setY(widget.getY()-30);
+                actionButton.setLimb(limb);
             }
-            buttonList= new ArrayList<>();
-            if (widget.isSpritePresent(StatusSprites.SHRAPNEL)) statusList.add(StatusSprites.SHRAPNEL);
-            if (widget.isSpritePresent(StatusSprites.DISLOCATION)) statusList.add(StatusSprites.DISLOCATION);
-            if (widget.isSpritePresent(StatusSprites.TOURNIQUET)) statusList.add(StatusSprites.TOURNIQUET);
-            if (widget.isSpritePresent(StatusSprites.SPLINT)) statusList.add(StatusSprites.SPLINT);
-            int i = 0;
-            for (StatusSprites sprite:statusList){
-                buttonList.add(new CustomButton(listStartX,listStartY+(16*i),sprite,widget.getLimb(),target));
-                addRenderableWidget(buttonList.get(i));
-                i++;
-            }
-            lastClicked = widget;
+
+
+          if (widget.isSpritePresent(StatusSprites.SPLINT))actionButton.setAction(MedicalAction.REMOVE_SPLINT);
+          else if (widget.isSpritePresent(StatusSprites.TOURNIQUET))actionButton.setAction(MedicalAction.REMOVE_TOURNIQUET);
+          else if (widget.isSpritePresent(StatusSprites.SHRAPNEL))actionButton.setAction(MedicalAction.TRY_SHRAPNEL);
+          else if (widget.isSpritePresent(StatusSprites.DISLOCATION))actionButton.setAction(MedicalAction.FIX_DISLOCATION);
+          else actionButton.setAction(null);
+          lastClicked = widget;
         }
     }
 

@@ -76,22 +76,5 @@ public enum StatusSprites {
     }
 
 
-    public Component getTextComponents(){
-        switch (this){
-            case TOURNIQUET -> {
-                return Component.translatable("prototype_pain.gui.tourniquet_button");
-            }
-            case DISLOCATION -> {
-                return Component.translatable("prototype_pain.gui.dislocation_button");
-            }
-            case SHRAPNEL -> {
-                return Component.translatable("prototype_pain.gui.shrapnel_button");
-            }
-            case SPLINT -> {
-                return Component.translatable("prototype_pain.gui.splint_button");
-            }
-        }
 
-        return Component.empty();
-    }
 }
