@@ -578,7 +578,7 @@ public class HealthScreen extends Screen {
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         LimbWidget widget = getHoveringWidget(pMouseX,pMouseY);
         actionButton.onClick(pMouseX,pMouseY);
-        actionButton.setClickDelay(10);
+        actionButton.setClickDelay(2);
         if (widget==null){
             actionButton.setAction(null);
             actionButton.setLimb(null);
@@ -597,14 +597,21 @@ public class HealthScreen extends Screen {
 
             Limb limb = widget.getLimb();
             if (limb!=null){
-                int offset = switch (widget.getLimb()){
+                int offsetx = switch (widget.getLimb()){
                     case HEAD,CHEST -> 16;
                     case LEFT_LEG,RIGHT_LEG,RIGHT_FOOT,LEFT_FOOT,RIGHT_HAND,LEFT_HAND -> 8;
                     case RIGHT_ARM,LEFT_ARM -> 24;
                     default -> 0;
                 };
-                actionButton.setX(widget.getX()-32+offset);
-                actionButton.setY(widget.getY()-30);
+                int offsety = switch (widget.getLimb()){
+                    case HEAD -> 8;
+                    case CHEST -> 32;
+                    case LEFT_LEG,RIGHT_LEG,RIGHT_FOOT,LEFT_FOOT,RIGHT_HAND,LEFT_HAND -> 8;
+                    case RIGHT_ARM,LEFT_ARM -> 4;
+                    default -> 0;
+                };
+                actionButton.setX(widget.getX()-32+offsetx);
+                actionButton.setY(widget.getY()-30+offsety);
                 actionButton.setLimb(limb);
             }
 

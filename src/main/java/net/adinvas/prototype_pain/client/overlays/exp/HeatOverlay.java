@@ -32,7 +32,7 @@ public class HeatOverlay implements IShaderOverlay {
 
         output.bindWrite(true);
 
-        float time = (mc.level.getGameTime() + event.getPartialTick()) * 0.05f;
+        float time = (mc.player.level().getGameTime() + event.getPartialTick()) * 0.05f;
 
         // interpolate between last tick and current tick values
         float temp = (mc.player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA)

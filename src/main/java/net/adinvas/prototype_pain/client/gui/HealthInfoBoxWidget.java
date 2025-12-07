@@ -141,10 +141,6 @@ public class HealthInfoBoxWidget extends AbstractWidget {
     protected void renderWidget(GuiGraphics guiGraphics, int i, int i1, float v) {
         int colorWhite = 0x48E38C;
         int colorRed = 0xFF0000;
-        if (BGMode){
-            colorWhite = 0x226A41;
-            colorRed = 0x770000;
-        }
         PoseStack pose = guiGraphics.pose();
 
         float time = (Minecraft.getInstance().level.getGameTime() + v) / 20f; // seconds
