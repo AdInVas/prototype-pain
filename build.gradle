@@ -205,11 +205,11 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     //runtimeOnly( fg.deobf("maven.modrinth:serene-seasons:9.1.0.2"))
     //runtimeOnly(fg.deobf("maven.modrinth:glitchcore:0.0.1.1"))
-
+    runtimeOnly(fg.deobf("curse.maven:create-328085:7178761"))
     //runtimeOnly(fg.deobf("maven.modrinth:figura:4HqSmvZ6"))
     //runtimeOnly(fg.deobf("maven.modrinth:simple-voice-chat:forge-1.20.1-2.5.35"))
 
-    //runtimeOnly(fg.deobf("curse.maven:prototype-physics-1380559:7206624"))
+    runtimeOnly(fg.deobf("curse.maven:prototype-physics-1380559:7206624"))
 
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'

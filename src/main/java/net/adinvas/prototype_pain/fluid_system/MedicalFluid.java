@@ -23,6 +23,9 @@ public class MedicalFluid {
     public String getId() {
         return PrototypePain.MOD_ID+":"+id;
     }
+    public String getRawId(){
+        return id;
+    }
 
     public Component getDisplayName(){
         return Component.translatable("prototype_pain.fluid."+id);

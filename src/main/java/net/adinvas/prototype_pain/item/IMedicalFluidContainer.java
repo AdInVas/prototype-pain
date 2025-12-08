@@ -21,5 +21,4 @@ public interface IMedicalFluidContainer {
     void removeFluid(ItemStack stack, float ml, MedicalFluid fluid);
 
     float getFluidRatio(ItemStack stack,MedicalFluid fluid,float totalfluids);
-
 }

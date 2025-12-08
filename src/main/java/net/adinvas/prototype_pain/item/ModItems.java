@@ -2,7 +2,7 @@ package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.fluid_system.n.ModFluids;
+import net.adinvas.prototype_pain.fluid_system.n.FluidVialItem;
 import net.adinvas.prototype_pain.item.misc.BrownCapMushItem;
 import net.adinvas.prototype_pain.item.misc.ExperimentalTreatmentItem;
 import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagItem;
@@ -16,7 +16,6 @@ import net.adinvas.prototype_pain.item.reusable.TourniquetItem;
 import net.adinvas.prototype_pain.item.reusable.TweezersItem;
 import net.adinvas.prototype_pain.item.usable.*;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -83,6 +82,7 @@ public class ModItems {
     public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
     public static final RegistryObject<Item> SimpleEarProtection = ITEMS.register("simple_ear_protection", net.adinvas.prototype_pain.item.special.SimpleEarProtection::new);
 
+    public static final RegistryObject<Item> TEST = ITEMS.register("testtank", FluidVialItem::new);
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));
 }

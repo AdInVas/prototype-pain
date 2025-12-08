@@ -2,6 +2,11 @@ package net.adinvas.prototype_pain.fluid_system.n;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.fluid_system.MedicalEffect;
+import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -10,32 +15,18 @@ import net.minecraftforge.fluids.FluidType;
 import java.util.function.Consumer;
 
 public class MedicalFluidType extends FluidType {
-    private final ResourceLocation stillTexture;
-    private final ResourceLocation flowTexture;
-    private final MedicalEffect effect;
-    private final int color;
-    public MedicalFluidType(Properties properties, ResourceLocation stillTexture, ResourceLocation flowTexture, MedicalEffect effect, int color) {
-        super(properties);
-        this.stillTexture = stillTexture;
-        this.flowTexture = flowTexture;
-        this.effect = effect;
-        this.color = color;
+    public MedicalFluidType(Properties props) {
+        super(props);
     }
 
-    public int getColor() {
-        return color;
-    }
-
-    public MedicalEffect getEffect() {
-        return effect;
-    }
-
-    public ResourceLocation getFlowTexture() {
-        return flowTexture;
-    }
-
-    public ResourceLocation getStillTexture() {
-        return stillTexture;
+    @Override
+    public Component getDescription(FluidStack stack) {
+        if (stack.hasTag() && stack.getTag().contains("MedicalId")) {
+            String id = stack.getTag().getString("MedicalId");
+            MedicalFluid med = MedicalFluids.get(id);
+            if (med != null) return med.getDisplayName(); // or med.getDescription() if you want tooltip
+        }
+        return super.getDescription(stack); // fallback
     }
 
     @Override
@@ -43,29 +34,27 @@ public class MedicalFluidType extends FluidType {
         consumer.accept(new IClientFluidTypeExtensions() {
 
             @Override
-            public ResourceLocation getStillTexture(FluidStack stack) {
-                return stillTexture;
-            }
-
-            @Override
-            public ResourceLocation getFlowingTexture(FluidStack stack) {
-                return flowTexture;
-            }
-
-            @Override
-            public int getTintColor() {
-                return color;
+            public int getTintColor(FluidStack stack) {
+                CompoundTag tag = stack.getTag();
+                if (tag != null && tag.contains("MedicalId", Tag.TAG_STRING)) {
+                    String medId = tag.getString("MedicalId");
+                    MedicalFluid m = MedicalFluids.get(medId);
+                    if (m != null) return m.getColor() | 0xFF000000; // ensure alpha set
+                }
+                // fallback color (transparent)
+                return 0xFFFFFFFF;
             }
 
             @Override
             public ResourceLocation getStillTexture() {
-               return stillTexture;
+               return new ResourceLocation("block/water_still");
             }
 
             @Override
             public ResourceLocation getFlowingTexture() {
-                return flowTexture;
+                return new ResourceLocation("block/water_flow");
             }
+
         });
     }
 }
