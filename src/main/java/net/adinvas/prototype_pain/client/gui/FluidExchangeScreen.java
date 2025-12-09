@@ -1,8 +1,8 @@
 package net.adinvas.prototype_pain.client.gui;
 
-import net.adinvas.prototype_pain.Util;
+import net.adinvas.prototype_pain.fluid_system.n.MultiTankFluidItem;
+import net.adinvas.prototype_pain.fluid_system.n.MultiTankHelper;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
-import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.adinvas.prototype_pain.network.FluidTransferPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
@@ -47,20 +47,17 @@ public class FluidExchangeScreen extends Screen {
         int barX = width/2 - barWidth/2;
         int barY = height/2;
 
-        if (fromItem.getItem() instanceof IMedicalFluidContainer medicalFluidContainer){
-            sourceAmount = medicalFluidContainer.getFilledTotal(fromItem);
+        if (fromItem.getItem() instanceof MultiTankFluidItem medicalFluidContainer){
+            sourceAmount = MultiTankHelper.getFilledTotal(fromItem);
         }
-        if (toItem.getItem() instanceof IMedicalFluidContainer medicalFluidContainer){
-            float cap = medicalFluidContainer.getCapacity(toItem);
-            float filled = medicalFluidContainer.getFilledTotal(toItem);
+        if (toItem.getItem() instanceof MultiTankFluidItem medicalFluidContainer){
+            float cap = MultiTankHelper.getCapacity(toItem);
+            float filled = MultiTankHelper.getFilledTotal(toItem);
             targetCapacity = cap-filled;
         }
 
         int color = 0xFFFFFFFF;
         MaxSlider = Math.min(sourceAmount,targetCapacity);
-        if (fromItem.getItem() instanceof MedicalVial vial){
-            color = Util.mixColors(vial.getFuildAndRatio(fromItem));
-        }
 
         // draw slider bar
         pGuiGraphics.fill(barX, barY, barX + barWidth, barY + 8, 0xFF444444);

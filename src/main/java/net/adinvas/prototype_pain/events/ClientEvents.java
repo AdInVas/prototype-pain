@@ -1,19 +1,12 @@
 package net.adinvas.prototype_pain.events;
 
-import com.mojang.blaze3d.pipeline.MainTarget;
-import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.Keybinds;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.SoundMenager;
-import net.adinvas.prototype_pain.client.overlays.ovr.ContiousnessOverlay;
-import net.adinvas.prototype_pain.client.overlays.OverlayController;
-import net.adinvas.prototype_pain.client.overlays.ovr.PainOverlay;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
-import net.adinvas.prototype_pain.client.ticksounds.MuffledSound;
+import net.adinvas.prototype_pain.fluid_system.n.INMedicalFluidContainer;
+import net.adinvas.prototype_pain.fluid_system.n.MultiTankFluidItem;
 import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
 import net.adinvas.prototype_pain.limbs.Limb;
@@ -25,11 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.resources.sounds.Sound;
-import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -40,9 +28,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
-import net.minecraftforge.client.event.sound.SoundEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.PlayLevelSoundEvent;
 import net.minecraftforge.event.TickEvent;
@@ -141,8 +126,8 @@ public class ClientEvents {
                 Slot hovered = screen.getSlotUnderMouse();
 
                 if (hovered != null &&
-                        carried.getItem() instanceof IMedicalFluidContainer &&
-                        hovered.getItem().getItem() instanceof IMedicalFluidContainer) {
+                        carried.getItem() instanceof MultiTankFluidItem &&
+                        hovered.getItem().getItem() instanceof MultiTankFluidItem) {
 
                     mc.setScreen(new FluidExchangeScreen(Minecraft.getInstance().screen, hovered.getItem(), carried,hovered.getSlotIndex()));
                     event.setCanceled(true); // prevent the inventory from also handling it
@@ -203,6 +188,7 @@ public class ClientEvents {
             guiGraphics.renderTooltip(Minecraft.getInstance().font, text,mouseX,mouseY);
         }
     }
+
 
 
     static int tick =0;

@@ -33,18 +33,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ItemStack waterBottle = PotionUtils.setPotion(new ItemStack(Items.POTION), Potions.WATER);
         Ingredient waterBottleIngredient = Ingredient.of(waterBottle);
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.OpiumVial.get())
-                .requiresTag("prototype_pain:vial_items",true,true,true)
-                .requires(Items.POPPY)
-                .requires(Items.SUGAR)
-                .resultFluid(MedicalFluids.OPIUM.getId(), 25f)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "opium"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.Alcohol.get())
-                .requires(waterBottleIngredient)
-                .resultFluid(MedicalFluids.WATER.getId(), 250)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "water"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.RippedDressing.get())
                 .requires(Items.STRING)
@@ -93,11 +81,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requiresFluidTag("prototype_pain:opioids",-10)
                 .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "medical_gauze"));
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.ReactionVial.get())
-                .requires(ModItems.GLOW_FRUIT.get())
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .resultFluid("prototype_pain:reaction_liquid",10)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "reaction_liquid"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.PlasticDressing.get())
                 .requires(ModItemTags.DRESSINGS)
@@ -221,164 +204,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.Saline.get())
-                .requires(waterBottleIngredient)
-                .requires(waterBottleIngredient)
-                .requires(waterBottleIngredient)
-                .requires(Items.SUGAR)
-                .requires(Items.SUGAR)
-                .resultFluid(MedicalFluids.SALINE.getId(), 750)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "saline"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.Alcohol.get())
-                .requires(waterBottleIngredient)
-                .requires(ModItemTags.ALCOHOL_CREATABLE)
-                .requires(ModItemTags.ALCOHOL_CREATABLE)
-                .requires(ModItemTags.ALCOHOL_CREATABLE)
-                .requires(ModItemTags.ALCOHOL_CREATABLE)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid("prototype_pain:reaction_liquid",-10)
-                .resultFluid(MedicalFluids.ALCOHOL.getId(), 400)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "alcohol"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.PainKillers.get())
-                .requires(Items.SUGAR)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluidTag("prototype_pain:opioids",-10)
-                .resultFluid(MedicalFluids.PAINKILLERS.getId(), 10)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "painkillers"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.Antibiotics.get())
-                .requires(Items.SUGAR)
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .resultFluid(MedicalFluids.ANTIBIOTICS.getId(), 30)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "antibiotics"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.BloodClotting.get())
-                .requires(Items.SPIDER_EYE)
-                .requires(Items.GLISTERING_MELON_SLICE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -5)
-                .resultFluid(MedicalFluids.PROCOAGULANT.getId(), 15)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "blood_clotting"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.BloodThiner.get())
-                .requires(Items.REDSTONE)
-                .requires(Items.GLISTERING_MELON_SLICE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.STREPTOKINASE.getId(), 15)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "blood_thinner"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.AidGel.get())
-                .requires(Items.MOSS_BLOCK)
-                .requires(Items.HONEY_BOTTLE)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.MedicineVial.get())
-                .requires(Items.GLASS_BOTTLE)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,Items.GLASS_BOTTLE)
-                .requires(ModItemTags.VIAL_ITEMS)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "glass_from_other"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.MorphineVial.get())
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.OPIUM.getId(), -10)
-                .resultFluid(MedicalFluids.MORPHINE.getId(), 5)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "morphine_vial"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.HeroinVial.get())
-                .requires(Items.REDSTONE)
-                .requires(Items.IRON_INGOT)
-                .requires(Items.IRON_INGOT)
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.OPIUM.getId(), -100)
-                .resultFluid(MedicalFluids.HEROIN.getId(), 150)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "heroin"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.FentanylVial.get())
-                .requires(Items.NETHER_WART)
-                .requires(Items.GLISTERING_MELON_SLICE)
-                .requires(Items.FERMENTED_SPIDER_EYE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.MORPHINE.getId(), -50)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.FENTANYL.getId(), 2)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "fentanyl"));
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.Syringe.get())
-                .pattern(" I ")
-                .pattern(" I ")
-                .pattern(" N ")
-                .define('N',Items.IRON_NUGGET)
-                .define('I',Items.IRON_INGOT)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer);
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.NaloxoneVial.get())
-                .requires(Items.GLISTERING_MELON_SLICE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluidTag("prototype_pain:opioids", -10)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.NALOXONE.getId(), 20)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "naloxone"));
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.BrainGrow.get())
-                .requires(Items.GLASS_BOTTLE)
-                .requires(ItemTags.FISHES)
-                .requires(ItemTags.FISHES)
-                .requires(ItemTags.FISHES)
-                .requires(ItemTags.FISHES)
-                .requires(ItemTags.FISHES)
-                .requires(Items.REDSTONE)
-                .requires(Items.DIAMOND)
-                .unlockedBy("has_poppy", has(Items.AIR))
-                .save(consumer);
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.Antiseptic.get())
-                .requires(Items.GUNPOWDER)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.ALCOHOL.getId(), -100)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.ANTISEPTIC.getId(), 50)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "antiseptic"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.AntiSerum.get())
-                .requires(Items.GLISTERING_MELON_SLICE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.ANTIBIOTICS.getId(), -10)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.ANTISERUM.getId(), 50)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "antiserum"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.CEFTRIAXONE.get())
-                .requires(Items.REDSTONE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluid(MedicalFluids.ANTISERUM.getId(), -10)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid(MedicalFluids.REACTION_LIQUID.getId(), -10)
-                .resultFluid(MedicalFluids.CEFTRAIAXONE.getId(), 25)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "ceftriaxone"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.ReliefCream.get())
-                .requires(Items.HONEY_BOTTLE)
-                .requires(ModItemTags.VIAL_ITEMS,true,true,true)
-                .requiresFluidTag("prototype_pain:opioids", -10)
-                .resultFluid(MedicalFluids.RELIEF_CREAM.getId(), 25)
-                .save(consumer, new ResourceLocation(PrototypePain.MOD_ID, "relief_cream"));
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.HeatPack.get())
                 .requires(Items.GUNPOWDER)

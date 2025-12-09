@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
-import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,6 +53,7 @@ public class AddRandomFillToChestsModifier extends LootModifier {
         ItemStack stack = new ItemStack(this.item);
 
         // (Optional) Random NBT data example
+        /*
         if (stack.getItem() instanceof MedicalVial vial) {
             Random random = new Random();
             float capacity = vial.getCapacity(stack);
@@ -68,6 +68,8 @@ public class AddRandomFillToChestsModifier extends LootModifier {
                 }
             }while (capacity>0);
         }
+
+         */
 
         generated.add(stack);
         return generated;

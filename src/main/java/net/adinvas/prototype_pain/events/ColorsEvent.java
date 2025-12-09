@@ -2,7 +2,6 @@ package net.adinvas.prototype_pain.events;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.Util;
-import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.adinvas.prototype_pain.item.ModItems;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -13,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ColorsEvent {
     @SubscribeEvent
     public static void onItemColors(RegisterColorHandlersEvent.Item event){
+        /*
         event.register(
                 (stack,tintIndex)->{
 
@@ -38,5 +38,7 @@ public class ColorsEvent {
                 ModItems.AntiSerum.get(),
                 ModItems.ReactionVial.get()
         );
+
+         */
     }
 }

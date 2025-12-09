@@ -26,6 +26,11 @@ public class MedicalFluids {
     public static final MedicalFluid NALOXONE= register(new MedicalFluid("naloxone",MedicalEffects.NALOXONE,0xf2abff));
     public static final MedicalFluid REACTION_LIQUID = register(new MedicalFluid("reaction_liquid",MedicalEffects.WATER,0xbceb23));
 
+    public static final MedicalFluid GENERIC_BAD = register(new MedicalFluid("generic_bad",MedicalEffects.WATER,0x000000));
+    public static final MedicalFluid GENERIC_TOXIC = register(new MedicalFluid("generic_bad",MedicalEffects.WATER,0x000000));
+    public static final MedicalFluid GENERIC_HAZARDOUS = register(new MedicalFluid("generic_bad",MedicalEffects.WATER,0x000000));
+
+
     private static MedicalFluid register(MedicalFluid fluid){
         REGISTRY.put(fluid.getId(),fluid);
         return fluid;

@@ -6,7 +6,6 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.Util;
 import net.adinvas.prototype_pain.client.ticksounds.SyringeTickSound;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.item.fluid_vials.SyringeItem;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.UseSyringePacket;
@@ -47,19 +46,26 @@ public class SyringeObject extends GrabObject{
     }
 
     public void setColor(ItemStack stack) {
+        /*
         if (stack.getItem() instanceof SyringeItem syringeItem){
            int newcol = Util.mixColors(syringeItem.getFuildAndRatio(stack));
            this.color = (200<<24)|newcol;
         }
+
+         */
     }
 
     public void setFullness(ItemStack stack) {
+        /*
         if (stack.getItem() instanceof SyringeItem syringeItem){
             fullness = syringeItem.getFilledTotal(stack)/syringeItem.getCapacity(stack);
         }
+
+         */
     }
 
     public void drainStack(ItemStack stack,float ml,Player player,Limb limb){
+        /*
         if (stack.getItem() instanceof SyringeItem syringeItem){
             Map<MedicalFluid,Float> fulidmap = syringeItem.drain(stack,ml);
             List<String> ids = new ArrayList<>();
@@ -75,6 +81,8 @@ public class SyringeObject extends GrabObject{
             }
             ModNetwork.CHANNEL.sendToServer(new UseSyringePacket(ids.toArray(String[]::new),array,player.getUUID(),limb));
         }
+
+         */
     }
 
     private SyringeTickSound tickSound;

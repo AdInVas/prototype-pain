@@ -7,7 +7,6 @@ import net.adinvas.prototype_pain.client.moodles.MoodleController;
 import net.adinvas.prototype_pain.client.ticksounds.HeartBeatSound;
 import net.adinvas.prototype_pain.item.IBag;
 import net.adinvas.prototype_pain.item.IMedicalMinigameUsable;
-import net.adinvas.prototype_pain.item.fluid_vials.SyringeItem;
 import net.adinvas.prototype_pain.client.gui.minigames.InjectMingameScreen;
 
 import net.adinvas.prototype_pain.limbs.Limb;

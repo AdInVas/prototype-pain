@@ -1,8 +1,16 @@
 package net.adinvas.prototype_pain;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Util {
     public static int mixColors(Map<MedicalFluid, Float> colorRatios) {
@@ -64,5 +72,12 @@ public class Util {
         int b = (int)(bA + (bB - bA) * t);
 
         return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    public static int darken(int color, float factor) {
+        int r = (int) (((color >> 16) & 0xFF) * factor);
+        int g = (int) (((color >> 8) & 0xFF) * factor);
+        int b = (int) ((color & 0xFF) * factor);
+        return (r << 16) | (g << 8) | b;
     }
 }

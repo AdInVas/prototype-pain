@@ -47,42 +47,6 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                 },       // no extra conditions
                 ModItems.Ice_Pack.get()
         ));
-        add("add_saline", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.15f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.Saline.get()
-        ));
-        add("add_painkiller", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.07f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.PainKillers.get()
-        ));
-        add("add_antibiotics", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.Antibiotics.get()
-        ));
-        add("add_clotting", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.075f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.BloodClotting.get()
-        ));
-        add("add_thinner", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.075f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.BloodThiner.get()
-        ));
-        add("add_aidgel", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.07f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.AidGel.get()
-        ));
         add("add_splint", new AddFilledToChestsModifier(
                 new LootItemCondition[] {
                         LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
@@ -100,66 +64,6 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                         LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
                 },       // no extra conditions
                 ModItems.Tourniquet.get()
-        ));
-        add("add_opium", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.OpiumVial.get()
-        ));
-        add("add_fentanyl", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.025f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.FentanylVial.get()
-        ));
-        add("add_heroin", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.04f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.HeroinVial.get()
-        ));
-        add("add_morphine", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.MorphineVial.get()
-        ));
-        add("add_naloxone", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.03f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.NaloxoneVial.get()
-        ));
-        add("add_braingrow", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.BrainGrow.get()
-        ));
-        add("add_antiseptic", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.1f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.Antiseptic.get()
-        ));
-        add("add_antiserum", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.05f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.Antiseptic.get()
-        ));
-        add("add_cef", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.025f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.CEFTRIAXONE.get()
-        ));
-        add("add_cream", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.08f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.ReliefCream.get()
         ));
         add("add_old_rag", new AddFilledToChestsModifier(
                 new LootItemCondition[] {
@@ -215,12 +119,6 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                 },       // no extra conditions
                 ModItems.MakeshiftLRD.get()
         ));
-        add("add_alcohol", new AddFilledToChestsModifier(
-                new LootItemCondition[] {
-                        LootItemRandomChanceCondition.randomChance(0.2f*sanityScale).build()
-                },       // no extra conditions
-                ModItems.Alcohol.get()
-        ));
         add("add_heatpack",new AddFilledToChestsModifier(
                 new LootItemCondition[] {
                         LootItemRandomChanceCondition.randomChance(0.14f*sanityScale).build()
@@ -232,21 +130,6 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                         LootItemRandomChanceCondition.randomChance(0.01f*sanityScale).build()
                 },       // no extra conditions
                 ModItems.HeatPack.get()
-        ));
-
-
-        add("random_vial",new AddRandomFillToChestsModifier(
-                new LootItemCondition[]{
-                    LootItemRandomChanceCondition.randomChance(0.1f*sanityScale).build()
-                },
-                ModItems.MedicineVial.get()
-
-        ));
-        add("random_syringe",new AddRandomFillToChestsModifier(
-                new LootItemCondition[]{
-                        LootItemRandomChanceCondition.randomChance(0.1f*sanityScale).build()
-                },
-                ModItems.Syringe.get()
         ));
 
     }

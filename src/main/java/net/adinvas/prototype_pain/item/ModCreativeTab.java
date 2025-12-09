@@ -1,7 +1,6 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,17 +21,7 @@ public class ModCreativeTab {
                     .displayItems((parameters, output) -> {
                         for (RegistryObject<Item> itemRegistryObject : ModItems.ITEMS.getEntries()){
                             if (itemRegistryObject == ModItems.ScavPlush)continue;
-                            if (itemRegistryObject.get() instanceof MedicalVial medicalVial){
-                                ItemStack stack = new ItemStack(itemRegistryObject.get());
-                                medicalVial.setupDefaults(stack);
-                                output.accept(stack);
-                            }else if (itemRegistryObject.get() instanceof INbtDrivenDurability nbtDrivenDurability){
-                                ItemStack stack = new ItemStack(itemRegistryObject.get());
-                                nbtDrivenDurability.setupDefaults(stack);
-                                output.accept(stack);
-                            }else {
-                                output.accept(itemRegistryObject.get());
-                            }
+                            output.accept(itemRegistryObject.get());
                         }
                     })
                     .build()

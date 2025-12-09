@@ -6,7 +6,6 @@ import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
 import net.adinvas.prototype_pain.item.IAllowInMedicbags;
 import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
-import net.adinvas.prototype_pain.item.fluid_vials.MedicalVial;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

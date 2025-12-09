@@ -39,7 +39,7 @@ public class ShapelessFluidCategory implements IRecipeCategory<ShapelessWithMedi
 
     public ShapelessFluidCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 29, 16, 116, 54);
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.MedicineVial.get()));
+        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModItems.MakeshiftLRD.get()));
     }
 
 
