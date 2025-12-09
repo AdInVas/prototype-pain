@@ -46,7 +46,7 @@ public class SyringeObject extends GrabObject{
     }
 
     public void setColor(ItemStack stack) {
-        /*
+        /*TODO
         if (stack.getItem() instanceof SyringeItem syringeItem){
            int newcol = Util.mixColors(syringeItem.getFuildAndRatio(stack));
            this.color = (200<<24)|newcol;
@@ -56,7 +56,7 @@ public class SyringeObject extends GrabObject{
     }
 
     public void setFullness(ItemStack stack) {
-        /*
+        /*TODO
         if (stack.getItem() instanceof SyringeItem syringeItem){
             fullness = syringeItem.getFilledTotal(stack)/syringeItem.getCapacity(stack);
         }
@@ -65,7 +65,7 @@ public class SyringeObject extends GrabObject{
     }
 
     public void drainStack(ItemStack stack,float ml,Player player,Limb limb){
-        /*
+        /*TODO
         if (stack.getItem() instanceof SyringeItem syringeItem){
             Map<MedicalFluid,Float> fulidmap = syringeItem.drain(stack,ml);
             List<String> ids = new ArrayList<>();
