@@ -1,24 +1,20 @@
 package net.adinvas.prototype_pain;
 
-import com.mojang.blaze3d.platform.NativeImage;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidStack;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class Util {
-    public static int mixColors(Map<MedicalFluid, Float> colorRatios) {
+    public static int mixColors(Map<Integer, Float> colorRatios) {
         float total = 0f;
         float r = 0f, g = 0f, b = 0f;
 
         for (var entry : colorRatios.entrySet()) {
-            int color = entry.getKey().getColor();
+            int color = entry.getKey();
             float weight = entry.getValue();
 
             r += ((color >> 16) & 0xFF) * weight;
@@ -80,4 +76,29 @@ public class Util {
         int b = (int) ((color & 0xFF) * factor);
         return (r << 16) | (g << 8) | b;
     }
+
+    public static int getColorFromFluid(FluidStack fluid, Level level){
+        int color = 0xFFFFFF;
+        IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+        if (fluid.hasTag()){
+            if (fluid.getTag().contains("MedicalId")){
+                MedicalFluid mF =  MedicalFluid.getFromId(fluid.getTag().getString("MedicalId"),level);
+                if (mF==null){
+                    return color;
+                }
+                color = mF.getColor();
+            }
+        }
+        return color;
+    }
+
+
+    public static MedicalFluid getFallback(String rs){
+        String name = rs;
+        if (name.contains("molten")||name.contains("lava")||name.contains("metal")||name.contains("iron")||name.contains("steel"))return ModMedicalFluids.GENERIC_HOT.get();
+        if (name.contains("toxic")||name.contains("poison"))return ModMedicalFluids.GENERIC_TOXIC.get();
+        return ModMedicalFluids.GENERIC_BAD.get();
+    }
+
+
 }

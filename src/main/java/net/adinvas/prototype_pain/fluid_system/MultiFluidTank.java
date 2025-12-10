@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.fluid_system;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -37,7 +37,7 @@ public class MultiFluidTank {
 
         // Try merge first
         for (FluidStack existing : fluids) {
-            if (existing.isFluidEqual(resource)) {
+            if (existing.isFluidStackIdentical(resource)) {
                 if (action.execute()) {
                     existing.grow(fill);
                 }
@@ -60,7 +60,8 @@ public class MultiFluidTank {
         for (FluidStack existing : fluids) {
             if (existing.isFluidEqual(resource)) {
                 int drained = Math.min(existing.getAmount(), resource.getAmount());
-                FluidStack out = new FluidStack(existing.getFluid(), drained);
+                FluidStack out = existing.copy();
+                out.setAmount(drained);
 
                 if (action.execute()) {
                     existing.shrink(drained);
@@ -81,7 +82,8 @@ public class MultiFluidTank {
         FluidStack existing = fluids.get(0);
 
         int drainedAmt = Math.min(existing.getAmount(), maxDrain);
-        FluidStack out = new FluidStack(existing.getFluid(), drainedAmt);
+        FluidStack out = existing.copy();
+        out.setAmount(drainedAmt);
 
         if (drainedAmt > 0 && action.execute()) {
             existing.shrink(drainedAmt);
@@ -111,7 +113,8 @@ public class MultiFluidTank {
             drain = Math.min(drain, existing.getAmount());
             if (drain <= 0) continue;
 
-            FluidStack out = new FluidStack(existing.getFluid(), drain);
+            FluidStack out = existing.copy();
+            out.setAmount(drain);
             result.add(out);
 
             if (action.execute()) {

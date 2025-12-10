@@ -5,9 +5,7 @@ import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.client.SoundMenager;
 import net.adinvas.prototype_pain.client.gui.HealthScreen;
-import net.adinvas.prototype_pain.fluid_system.n.INMedicalFluidContainer;
-import net.adinvas.prototype_pain.fluid_system.n.MultiTankFluidItem;
-import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.adinvas.prototype_pain.client.gui.FluidExchangeScreen;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
@@ -180,7 +178,7 @@ public class ClientEvents {
         Slot hovered = screen.getSlotUnderMouse();
 
         ItemStack carried = screen.getMenu().getCarried();
-        if (hovered!=null &&carried.getItem() instanceof IMedicalFluidContainer from && hovered.getItem().getItem() instanceof IMedicalFluidContainer to){
+        if (hovered!=null &&carried.getItem() instanceof MultiTankFluidItem from && hovered.getItem().getItem() instanceof MultiTankFluidItem to){
             GuiGraphics guiGraphics = event.getGuiGraphics();
             int mouseX = event.getMouseX();
             int mouseY = event.getMouseY();

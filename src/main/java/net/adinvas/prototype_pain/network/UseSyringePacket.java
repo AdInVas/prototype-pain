@@ -66,7 +66,7 @@ public class UseSyringePacket {
                 Entity entity = sender.serverLevel().getEntity(msg.target);
                 if (entity instanceof ServerPlayer player){
                     for (int i=0;i<msg.ids.length;i++){
-                        MedicalFluid fluid = MedicalFluids.get(msg.ids[i]);
+                        MedicalFluid fluid = MedicalFluid.getFromId(msg.ids[i],sender.serverLevel());
                         float amount = msg.amounts[i];
                         if (fluid!=null&& !Float.isNaN(amount)){
                             fluid.getMedicalEffect().applyInjected(player,amount,msg.limb);

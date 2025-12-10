@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.fluid_system;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

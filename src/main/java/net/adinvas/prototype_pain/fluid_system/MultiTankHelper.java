@@ -1,11 +1,11 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.fluid_system;
 
-import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.adinvas.prototype_pain.Util;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -153,5 +153,17 @@ public class MultiTankHelper {
 
         handler.saveToNBT();
         return drained;
+    }
+
+    public static Map<Integer,Float> getColorRatios(ItemStack stack, Level level){
+        MultiFluidTankHandler handler = getHandler(stack);
+        Map<Integer,Float> colors = new HashMap<>();
+        if (handler == null) return colors;
+        for (FluidStack fs : handler.getTank().getFluids()){
+            int color = Util.getColorFromFluid(fs,level);
+            if (color==0xFFFFFF)continue;
+            colors.put(color,getFluidRatio(stack,fs,getFilledTotal(stack)));
+        }
+        return colors;
     }
 }

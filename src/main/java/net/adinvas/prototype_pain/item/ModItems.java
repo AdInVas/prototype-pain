@@ -2,9 +2,11 @@ package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.fluid_system.n.MultiTankFluidItem;
 import net.adinvas.prototype_pain.item.misc.BrownCapMushItem;
 import net.adinvas.prototype_pain.item.misc.ExperimentalTreatmentItem;
+import net.adinvas.prototype_pain.item.multi_tank.BottleItem;
+import net.adinvas.prototype_pain.item.multi_tank.MedicineVialItem;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.special.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.special.bags.small.SmallMedibagItem;
@@ -58,7 +60,12 @@ public class ModItems {
     public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
     public static final RegistryObject<Item> SimpleEarProtection = ITEMS.register("simple_ear_protection", net.adinvas.prototype_pain.item.special.SimpleEarProtection::new);
 
-    static final RegistryObject<Item> TEST2 = ITEMS.register("testtank2", MultiTankFluidItem::new);
+    public static final RegistryObject<Item> MultiTank = ITEMS.register("testtank2", MultiTankFluidItem::new);
+    public static final RegistryObject<Item> MedicineVial = ITEMS.register("medicine_vial", MedicineVialItem::new);
+    public static final RegistryObject<Item> Bottle = ITEMS.register("bottle", BottleItem::new);
+
+
+
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));
 }

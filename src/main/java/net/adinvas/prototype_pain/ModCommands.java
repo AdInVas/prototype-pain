@@ -2,19 +2,28 @@ package net.adinvas.prototype_pain;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsUtil;
+import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.adinvas.prototype_pain.fluid_system.ModFluids;
+import net.adinvas.prototype_pain.fluid_system.MultiTankHelper;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
-import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -304,6 +313,45 @@ public class ModCommands {
                                                 })
                                         )
                                 )
+                        )
+
+                        .then(Commands.literal("fillfluid")
+                                .requires(source->source.hasPermission(2))
+                                .then(Commands.argument("fluid", ResourceLocationArgument.id())
+                                        .suggests((ctx,builder)->{
+                                            for (RegistryObject<MedicalFluid> medicalFluid: ModMedicalFluids.MEDICAL_FLUIDS.getEntries()){
+                                                builder.suggest(medicalFluid.getId().toString());
+                                            }
+                                            return builder.buildFuture();
+                                        })
+                                .then(Commands.argument("amount", IntegerArgumentType.integer())
+                                        .executes(ctx->{
+                                            ResourceLocation id = ResourceLocationArgument.getId(ctx,"fluid");
+                                            if (id==null)return 1;
+                                            ServerPlayer serverplayer = ctx.getSource().getPlayer();
+                                            if (serverplayer==null){
+                                                ctx.getSource().sendFailure(Component.literal("Can only Be run player"));
+                                                return 1;
+                                            }
+                                            MedicalFluid mFluid = MedicalFluid.getFromId(id.toString(),serverplayer.serverLevel());
+                                            if (mFluid==null){
+                                                ctx.getSource().sendFailure(Component.literal("invalid fluid"));
+                                                return 1;
+                                            }
+                                            ItemStack itemStack = serverplayer.getItemInHand(InteractionHand.MAIN_HAND);
+                                            if (itemStack.isEmpty()||!(itemStack.getItem() instanceof MultiTankFluidItem)){
+                                                ctx.getSource().sendFailure(Component.literal("No compatible item found in main hand"));
+                                                return 1;
+                                            }
+                                            int amount = IntegerArgumentType.getInteger(ctx,"amount");
+                                            MultiTankHelper.addMedicalFluid(itemStack,amount,id.toString(),new FluidStack(ModFluids.SRC_MEDICAL.get().getSource(),1));
+                                            ctx.getSource().sendSuccess(()->
+                                                    Component.literal("Added "+amount+"mb of"+id.toString()+" to item"),true);
+                                            return 1;
+                                        })
+                                )
+                                )
+
                         )
 
 

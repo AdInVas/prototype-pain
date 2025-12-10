@@ -15,12 +15,6 @@ public class ModRecipes {
             DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, PrototypePain.MOD_ID);
 
 
-    public static final RegistryObject<RecipeSerializer<ShapelessWithMedicalContainerRecipe>> SHAPELESS_FUN_SER =
-            SERIALIZERS.register("shapeless_with_medical_container",ShapelessWithMedicalContainerRecipe.Serializer::new);
-
-    public static final RegistryObject<RecipeType<ShapelessWithMedicalContainerRecipe>> SHAPELESS_TYPE =
-            TYPES.register("shapeless_with_medical_container",()->ShapelessWithMedicalContainerRecipe.Type.INSTANCE);
-
     public static void register(IEventBus bus){
         SERIALIZERS.register(bus);
         TYPES.register(bus);

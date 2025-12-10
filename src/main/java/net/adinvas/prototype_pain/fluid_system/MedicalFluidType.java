@@ -1,13 +1,11 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.fluid_system;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.MedicalEffect;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -20,13 +18,13 @@ public class MedicalFluidType extends FluidType {
     }
 
     @Override
-    public Component getDescription(FluidStack stack) {
-        if (stack.hasTag() && stack.getTag().contains("MedicalId")) {
-            String id = stack.getTag().getString("MedicalId");
-            MedicalFluid med = MedicalFluids.get(id);
-            if (med != null) return med.getDisplayName(); // or med.getDescription() if you want tooltip
-        }
-        return super.getDescription(stack); // fallback
+    public String getDescriptionId(FluidStack stack) {
+        Level level = Minecraft.getInstance().level;
+        MedicalFluid med = MedicalFluid.getFromId(stack.getTag().getString("MedicalId"), level);
+        if (med!=null)
+            return med.getNameId(level);
+
+        return stack.getTag().getString("MedicalId");
     }
 
     @Override
@@ -38,7 +36,7 @@ public class MedicalFluidType extends FluidType {
                 CompoundTag tag = stack.getTag();
                 if (tag != null && tag.contains("MedicalId", Tag.TAG_STRING)) {
                     String medId = tag.getString("MedicalId");
-                    MedicalFluid m = MedicalFluids.get(medId);
+                    MedicalFluid m = MedicalFluid.getFromId(medId,Minecraft.getInstance().level);
                     if (m != null) return m.getColor() | 0xFF000000; // ensure alpha set
                 }
                 // fallback color (transparent)

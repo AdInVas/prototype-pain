@@ -2,25 +2,23 @@ package net.adinvas.prototype_pain.compat.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.helpers.IPlatformFluidHelper;
 import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.registration.IExtraIngredientRegistration;
-import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import net.adinvas.prototype_pain.ModMedicalFluids;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
-import net.adinvas.prototype_pain.fluid_system.n.ModFluids;
+import net.adinvas.prototype_pain.fluid_system.ModFluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @JeiPlugin
 public class JEIFluidPlugin implements IModPlugin {
@@ -45,10 +43,12 @@ public class JEIFluidPlugin implements IModPlugin {
     @Override
     public void registerExtraIngredients(IExtraIngredientRegistration registration) {
         Collection<FluidStack> medicalFluids = new ArrayList<>();
-        for (MedicalFluid medicalFluid:MedicalFluids.REGISTRY.values()) {
+        for (RegistryObject<MedicalFluid> medicalFluidRegistryObject: ModMedicalFluids.MEDICAL_FLUIDS.getEntries()) {
+            if (!medicalFluidRegistryObject.get().showInJEI())continue;
             FluidStack fs = new FluidStack(ModFluids.SRC_MEDICAL.get(), 1000);
+            PrototypePain.LOGGER.info("fs {} id {}",fs.getFluid(),medicalFluidRegistryObject.getId().toString());
             CompoundTag tag = new CompoundTag();
-            tag.putString("MedicalId", medicalFluid.getId());
+            tag.putString("MedicalId", medicalFluidRegistryObject.getId().toString());
             fs.setTag(tag);
             medicalFluids.add(fs);
         }

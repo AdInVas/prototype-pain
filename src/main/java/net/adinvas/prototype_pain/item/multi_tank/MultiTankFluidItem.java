@@ -1,8 +1,9 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.item.multi_tank;
 
-import com.mojang.blaze3d.platform.NativeImage;
+import net.adinvas.prototype_pain.Util;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
+import net.adinvas.prototype_pain.fluid_system.MultiFluidTankHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
@@ -25,9 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MultiTankFluidItem extends Item{
-    private final int capacity= 3000;
+    private final int capacity= 1000;
     public MultiTankFluidItem() {
         super(new Properties().stacksTo(1));
+    }
+    public MultiTankFluidItem(Properties properties){
+        super(properties);
     }
 
     public int getCapacity() {
@@ -66,6 +70,10 @@ public class MultiTankFluidItem extends Item{
 
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
+       appendFluidText(stack,level,tooltip,flag);
+    }
+
+    public void appendFluidText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag){
         CompoundTag tag = stack.getTagElement("MultiFluidTank");
         boolean hasSpecial = false;
         if (tag == null) {
@@ -82,20 +90,21 @@ public class MultiTankFluidItem extends Item{
             FluidStack fs = FluidStack.loadFluidStackFromNBT((CompoundTag) t);
             int color = 0xFF0088;
             if (fs.hasTag()) {
-                MedicalFluid Mfluid = MedicalFluids.get(fs.getTag().getString("MedicalId"));
+                MedicalFluid Mfluid = MedicalFluid.getFromId(fs.getTag().getString("MedicalId"), level);
                 if (Mfluid != null) {
+                    if (!Mfluid.showInTooltip(stack))continue;
                     hasSpecial = true;
                     color = Mfluid.getColor();
                     tooltip.add(Component.literal(fs.getDisplayName().getString()).withStyle(Style.EMPTY.withColor(color)).append("(" + fs.getAmount() + "mb)"));
                     if (Screen.hasShiftDown()) {
-                        tooltip.add(Mfluid.getDescription().copy().withStyle(Style.EMPTY.withColor(color)));
+                        tooltip.add(Mfluid.getDescription(level).copy().withStyle(Style.EMPTY.withColor(color)));
                     }
                     continue;
                 }
             }
 
-                color = IClientFluidTypeExtensions.of(fs.getFluid()).getTintColor(fs);
-                tooltip.add(Component.literal(fs.getDisplayName().getString()).withStyle(Style.EMPTY.withColor(color)).append("("+fs.getAmount()+"mb)"));
+            color = Util.getColorFromFluid(fs,level);
+            tooltip.add(Component.literal(fs.getDisplayName().getString()).withStyle(Style.EMPTY.withColor(color)).append("("+fs.getAmount()+"mb)"));
         }
 
         if (hasSpecial&&!Screen.hasShiftDown()){

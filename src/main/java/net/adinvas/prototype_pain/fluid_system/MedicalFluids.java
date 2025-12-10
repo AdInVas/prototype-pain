@@ -5,6 +5,8 @@ import net.minecraft.util.RandomSource;
 import java.util.*;
 
 public class MedicalFluids {
+    /*
+
     public static final Map<String,MedicalFluid> REGISTRY = new HashMap<>();
 
     public static final MedicalFluid OPIUM = register(new MedicalFluid("opium",MedicalEffects.OPIUM,0xeb4034));
@@ -30,45 +32,9 @@ public class MedicalFluids {
     public static final MedicalFluid GENERIC_TOXIC = register(new MedicalFluid("generic_bad",MedicalEffects.WATER,0x000000));
     public static final MedicalFluid GENERIC_HAZARDOUS = register(new MedicalFluid("generic_bad",MedicalEffects.WATER,0x000000));
 
-
-    private static MedicalFluid register(MedicalFluid fluid){
-        REGISTRY.put(fluid.getId(),fluid);
-        return fluid;
-    }
-
-    public static MedicalFluid get(String id) {
-        return REGISTRY.get(id);
-    }
-
-    public static MedicalFluid getRandom(RandomSource random) {
-        if (REGISTRY.isEmpty()) return null;
-        List<MedicalFluid> fluids = List.copyOf(REGISTRY.values());
-        return fluids.get(random.nextInt(fluids.size()));
-    }
-
-
-    private static final Map<String, Set<MedicalFluid>> TAGS = new HashMap<>();
-
-    public static void registerInTag(String tag, MedicalFluid... fluids) {
-        TAGS.put(tag, new HashSet<>(List.of(fluids)));
-    }
-
-    public static boolean fluidInTag(MedicalFluid fluid, String tag) {
-        Set<MedicalFluid> set = TAGS.get(tag);
-        return set != null && set.contains(fluid);
-    }
-
-    public static Set<MedicalFluid> getTag(String tag) {
-        return TAGS.getOrDefault(tag, Collections.emptySet());
-    }
-
-    public static Set<String> getAllTags() {
-        return TAGS.keySet();
-    }
-
     static {
         MedicalFluids.registerInTag("prototype_pain:opioids", OPIUM, FENTANYL, MORPHINE, HEROIN);
         MedicalFluids.registerInTag("prototype_pain:antiseptics", ANTISEPTIC,ALCOHOL,RELIEF_CREAM);
     }
-
+    */
 }

@@ -1,4 +1,4 @@
-package net.adinvas.prototype_pain.fluid_system.n;
+package net.adinvas.prototype_pain.fluid_system;
 
 import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.world.level.material.FlowingFluid;

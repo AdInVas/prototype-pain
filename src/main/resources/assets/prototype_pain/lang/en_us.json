@@ -173,59 +173,60 @@
 
   "block.prototype_pain.scav_plushie": "Scav Plushie",
 
-  "prototype_pain.fluid.opium": "Opium",
-  "prototype_pain.fluid.opium.description": "A light opiate, lesser effect when taken orally",
+  "medical_fluid.prototype_pain.opium": "Opium",
+  "medical_fluid.prototype_pain.opium.description": "A light opiate, lesser effect when taken orally",
 
-  "prototype_pain.fluid.fentanyl": "Fentanyl",
-  "prototype_pain.fluid.fentanyl.description": "Highly dangerous opiate. 100 times stronger than morphine",
+  "medical_fluid.prototype_pain.fentanyl": "Fentanyl",
+  "medical_fluid.prototype_pain.fentanyl.description": "Highly dangerous opiate. 100 times stronger than morphine",
 
-  "prototype_pain.fluid.heroin": "Heroin",
-  "prototype_pain.fluid.heroin.description": "A very strong opiate. Very addicting",
+  "medical_fluid.prototype_pain.heroin": "Heroin",
+  "medical_fluid.prototype_pain.heroin.description": "A very strong opiate. Very addicting",
 
-  "prototype_pain.fluid.morphine": "Morphine",
-  "prototype_pain.fluid.morphine.description": "A strong opiate, lesser effect when taken orally",
+  "medical_fluid.prototype_pain.morphine": "Morphine",
+  "medical_fluid.prototype_pain.morphine.description": "A strong opiate, lesser effect when taken orally",
 
-  "prototype_pain.fluid.water": "Water",
-  "prototype_pain.fluid.water.description": "Clear water. Tasteless",
+  "medical_fluid.prototype_pain.water": "Water",
+  "medical_fluid.prototype_pain.water.description": "Clear water. Tasteless",
 
-  "prototype_pain.fluid.painkillers": "Painkillers",
-  "prototype_pain.fluid.painkillers.description": "Medication for pain relief. Overdose at 80ml",
+  "medical_fluid.prototype_pain.painkillers": "Painkillers",
+  "medical_fluid.prototype_pain.painkillers.description": "Medication for pain relief. Overdose at 80ml",
 
-  "prototype_pain.fluid.braingrow": "BrainGrow",
-  "prototype_pain.fluid.braingrow.description": "Special medicine used for heavy concussions and brain trauma. May cause discomfort. Meant to be taken orally",
+  "medical_fluid.prototype_pain.braingrow": "BrainGrow",
+  "medical_fluid.prototype_pain.braingrow.description": "Special medicine used for heavy concussions and brain trauma. May cause discomfort. Meant to be taken orally",
 
-  "prototype_pain.fluid.alcohol": "Alcohol",
-  "prototype_pain.fluid.alcohol.description": "Highly distilled spirit. Usefull for disinfecting wounds.",
+  "medical_fluid.prototype_pain.alcohol": "Alcohol",
+  "medical_fluid.prototype_pain.alcohol.description": "Highly distilled spirit. Useful for disinfecting wounds.",
 
-  "prototype_pain.fluid.antiseptic": "Antiseptic",
-  "prototype_pain.fluid.antiseptic.description": "A potent disinfecting gel. Stings a lot.",
+  "medical_fluid.prototype_pain.antiseptic": "Antiseptic",
+  "medical_fluid.prototype_pain.antiseptic.description": "A potent disinfecting gel. Stings a lot.",
 
-  "prototype_pain.fluid.saline": "Saline",
-  "prototype_pain.fluid.saline.description": "A mix of water, salt, and minerals. Usefull for thirst and regaining body liquid.",
+  "medical_fluid.prototype_pain.saline": "Saline",
+  "medical_fluid.prototype_pain.saline.description": "A mix of water, salt, and minerals. Useful for thirst and regaining body liquid.",
 
-  "prototype_pain.fluid.antibiotics": "Antibiotics",
-  "prototype_pain.fluid.antibiotics.description": "Pills that increase your immunity to infection. For some reason they taste like nickels.",
+  "medical_fluid.prototype_pain.antibiotics": "Antibiotics",
+  "medical_fluid.prototype_pain.antibiotics.description": "Pills that increase your immunity to infection. For some reason they taste like nickels.",
 
-  "prototype_pain.fluid.antiserum": "Antiserum",
-  "prototype_pain.fluid.antiserum.description": "Blood serum containing antibodies. Helps when fighting infections. Slightly increases blood volume.",
+  "medical_fluid.prototype_pain.antiserum": "Antiserum",
+  "medical_fluid.prototype_pain.antiserum.description": "Blood serum containing antibodies. Helps when fighting infections. Slightly increases blood volume.",
 
-  "prototype_pain.fluid.ceftriaxone": "Ceftriaxone",
-  "prototype_pain.fluid.ceftriaxone.description": "Very advanced form of an injected antibiotic. May cause excruciating chest pain.",
+  "medical_fluid.prototype_pain.ceftriaxone": "Ceftriaxone",
+  "medical_fluid.prototype_pain.ceftriaxone.description": "Very advanced form of injected antibiotic. May cause excruciating chest pain.",
 
-  "prototype_pain.fluid.procoagulant": "Procoagulant",
-  "prototype_pain.fluid.procoagulant.description": "A simple blood clotting agent. Decreases bleeding overall but causes clotting. Dangerous in excess.",
+  "medical_fluid.prototype_pain.procoagulant": "Procoagulant",
+  "medical_fluid.prototype_pain.procoagulant.description": "A simple blood-clotting agent. Decreases bleeding overall but causes clotting. Dangerous in excess.",
 
-  "prototype_pain.fluid.streptokinase": "Streptokinase",
-  "prototype_pain.fluid.streptokinase.description": "A blood thinner. Decreases blood clotting. May cause increased bleeding.",
+  "medical_fluid.prototype_pain.streptokinase": "Streptokinase",
+  "medical_fluid.prototype_pain.streptokinase.description": "A blood thinner. Decreases blood clotting. May cause increased bleeding.",
 
-  "prototype_pain.fluid.naloxone": "Naloxone",
-  "prototype_pain.fluid.naloxone.description": "A common opiate antagonist. Used to revert opioid overdose.",
+  "medical_fluid.prototype_pain.naloxone": "Naloxone",
+  "medical_fluid.prototype_pain.naloxone.description": "A common opiate antagonist. Used to reverse opioid overdose.",
 
-  "prototype_pain.fluid.relief_cream": "Relief Cream",
-  "prototype_pain.fluid.relief_cream.description": "A slightly antiseptic cream with soothing properties.",
+  "medical_fluid.prototype_pain.relief_cream": "Relief Cream",
+  "medical_fluid.prototype_pain.relief_cream.description": "A slightly antiseptic cream with soothing properties.",
 
-  "prototype_pain.fluid.reaction_liquid": "Reaction Liquid",
-  "prototype_pain.fluid.reaction_liquid.description": "Slightly acidic liquid made from glow fruits.Has some reactive properties.",
+  "medical_fluid.prototype_pain.reaction_liquid": "Reaction Liquid",
+  "medical_fluid.prototype_pain.reaction_liquid.description": "Slightly acidic liquid made from glow fruits. Has some reactive properties.",
+
 
   "key.protoype_pain.open_pain_gui": "Open Health Screen",
   "key.protoype_pain.give_up": "Give Up",

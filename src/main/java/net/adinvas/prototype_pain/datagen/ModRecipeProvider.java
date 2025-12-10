@@ -1,25 +1,18 @@
 package net.adinvas.prototype_pain.datagen;
 
 import net.adinvas.prototype_pain.PrototypePain;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
 import net.adinvas.prototype_pain.item.ModItems;
-import net.adinvas.prototype_pain.recipe.ShapelessWithMedicalContainerRecipe;
-import net.adinvas.prototype_pain.recipe.ShapelessWithMedicalContainerRecipeBuilder;
 import net.adinvas.prototype_pain.tags.ModItemTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-import net.minecraftforge.common.data.ForgeItemTagsProvider;
 
 import java.util.function.Consumer;
 
@@ -58,29 +51,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.BruiseKit.get())
-                .requires(ModItemTags.DRESSINGS)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:opioids",-25)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid("prototype_pain:reaction_liquid",-10)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "bruise_kit"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.AlganateDressing.get())
-                .requires(ItemTags.WOOL)
-                .requires(ItemTags.WOOL)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:antiseptics",-10)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "alganate_dressing"));
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.MedicalGauze.get())
-                .requires(ItemTags.WOOL)
-                .requires(Items.STRING)
-                .requires(Items.STRING)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:opioids",-10)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "medical_gauze"));
-
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ModItems.PlasticDressing.get())
                 .requires(ModItemTags.DRESSINGS)
@@ -88,11 +58,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.SterilizedDressing.get())
-                .requires(ModItemTags.DRESSINGS)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:antiseptics",-100)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "sterilized_dressing"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.BoneWelding.get())
                 .pattern("II")
@@ -114,28 +79,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
 
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.LRD.get())
-                .requires(Items.DIAMOND)
-                .requires(ModItems.MakeshiftLRD.get())
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:antiseptics",-50)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:opioids",-100)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid("prototype_pain:reaction_liquid",-10)
-                .requires(Items.IRON_INGOT)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "lrd"));
-
-
-        ShapelessWithMedicalContainerRecipeBuilder.shapeless(ModItems.MakeshiftLRD.get())
-                .requires(Items.COPPER_INGOT)
-                .requires(Items.COPPER_INGOT)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluidTag("prototype_pain:antiseptics",-50)
-                .requires(ModItemTags.VIAL_ITEMS,true,false,false)
-                .requiresFluid("prototype_pain:reaction_liquid",-10)
-                .requires(Items.IRON_INGOT)
-                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID, "makeshift_lrd"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.MedicalSuture.get())
                 .pattern("GSS")

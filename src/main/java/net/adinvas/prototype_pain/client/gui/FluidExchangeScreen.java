@@ -1,8 +1,8 @@
 package net.adinvas.prototype_pain.client.gui;
 
-import net.adinvas.prototype_pain.fluid_system.n.MultiTankFluidItem;
-import net.adinvas.prototype_pain.fluid_system.n.MultiTankHelper;
-import net.adinvas.prototype_pain.item.IMedicalFluidContainer;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
+import net.adinvas.prototype_pain.fluid_system.MultiTankHelper;
+
 import net.adinvas.prototype_pain.network.FluidTransferPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.minecraft.client.Minecraft;
