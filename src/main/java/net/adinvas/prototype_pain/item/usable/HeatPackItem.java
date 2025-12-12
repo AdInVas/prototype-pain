@@ -53,7 +53,7 @@ public class HeatPackItem extends Item implements ISimpleMedicalUsable, IAllowIn
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.heat_pack.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.heat_pack.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

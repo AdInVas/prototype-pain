@@ -1,8 +1,9 @@
 package net.adinvas.prototype_pain;
 
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -79,23 +80,25 @@ public class Util {
 
     public static int getColorFromFluid(FluidStack fluid, Level level){
         int color = 0xFFFFFF;
-        IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
+        MedicalFluid mF = getFallback(fluid.getFluid());
         if (fluid.hasTag()){
             if (fluid.getTag().contains("MedicalId")){
-                MedicalFluid mF =  MedicalFluid.getFromId(fluid.getTag().getString("MedicalId"),level);
+                mF =  MedicalFluid.getFromId(fluid.getTag().getString("MedicalId"));
                 if (mF==null){
                     return color;
                 }
                 color = mF.getColor();
             }
         }
-        return color;
+        return mF.getColor();
     }
 
 
-    public static MedicalFluid getFallback(String rs){
-        String name = rs;
-        if (name.contains("molten")||name.contains("lava")||name.contains("metal")||name.contains("iron")||name.contains("steel"))return ModMedicalFluids.GENERIC_HOT.get();
+    public static MedicalFluid getFallback(Fluid fs){
+        String name = fs.getFluidType().toString();
+        if (name.contains("lava"))return ModMedicalFluids.VANILLA_LAVA.get();
+        if (name.contains("water"))return ModMedicalFluids.VANILLA_WATER.get();
+        if (name.contains("molten")||name.contains("metal")||name.contains("iron")||name.contains("steel"))return ModMedicalFluids.GENERIC_HOT.get();
         if (name.contains("toxic")||name.contains("poison"))return ModMedicalFluids.GENERIC_TOXIC.get();
         return ModMedicalFluids.GENERIC_BAD.get();
     }

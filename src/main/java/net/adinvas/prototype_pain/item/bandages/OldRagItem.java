@@ -32,7 +32,7 @@ public class OldRagItem extends Item implements IMedicalMinigameUsable, IAllowIn
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.old_rag.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.old_rag.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

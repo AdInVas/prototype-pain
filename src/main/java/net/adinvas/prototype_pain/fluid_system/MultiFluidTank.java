@@ -35,17 +35,21 @@ public class MultiFluidTank {
 
         int fill = Math.min(free, resource.getAmount());
 
-        // Try merge first
         for (FluidStack existing : fluids) {
-            if (existing.isFluidStackIdentical(resource)) {
-                if (action.execute()) {
-                    existing.grow(fill);
+            // merge if type is same
+            if (existing.isFluidEqual(resource)) {
+                // if both have tags, merge only if tags are equal
+                boolean tagsMatch = (existing.getTag() == null && resource.getTag() == null)
+                        || (existing.getTag() != null && existing.getTag().equals(resource.getTag()));
+
+                if (tagsMatch) {
+                    if (action.execute()) existing.grow(fill);
+                    return fill;
                 }
-                return fill;
             }
         }
 
-        // Otherwise add new entry
+        // otherwise, add as new entry
         if (action.execute()) {
             FluidStack copy = resource.copy();
             copy.setAmount(fill);
@@ -125,6 +129,10 @@ public class MultiFluidTank {
         }
 
         return result;
+    }
+
+    public void clearFluids(){
+        fluids.clear();
     }
 
     public int getCapacity() {

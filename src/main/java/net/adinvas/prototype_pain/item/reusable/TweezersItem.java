@@ -30,7 +30,7 @@ public class TweezersItem extends Item implements IMedicalMinigameUsable, IAllow
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.tweezers.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.tweezers.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

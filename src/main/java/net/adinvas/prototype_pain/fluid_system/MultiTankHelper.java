@@ -97,6 +97,19 @@ public class MultiTankHelper {
         return null;
     }
 
+    public static Map<FluidStack, Float> getFluidsAsMap(ItemStack stack) {
+        MultiFluidTankHandler handler = getHandler(stack);
+        Map<FluidStack,Float> map = new HashMap<>();
+        if (handler == null) return map;
+        for (FluidStack fs : handler.getTank().getFluids()){
+            FluidStack fss = fs.copy();
+            float amount = fss.getAmount();
+            fss.setAmount(1);
+            map.put(fss,amount);
+        }
+        return map;
+    }
+
     public static List<FluidStack> drain(ItemStack stack, float ml) {
         MultiFluidTankHandler handler = getHandler(stack);
         List<FluidStack> drained = new ArrayList<>();
@@ -155,6 +168,29 @@ public class MultiTankHelper {
         return drained;
     }
 
+    public static void setFluidsDirect(ItemStack stack, Map<FluidStack, Float> fluids) {
+        MultiFluidTankHandler handler = getHandler(stack);
+        if (handler == null) return;
+
+        MultiFluidTank tank = handler.getTank();
+        tank.clearFluids();  // remove everything currently in the tank
+
+        for (Map.Entry<FluidStack, Float> entry : fluids.entrySet()) {
+            FluidStack key = entry.getKey();
+            float amount = entry.getValue();
+
+            if (key.isEmpty() || amount <= 0) continue;
+
+            // Create full FluidStack with correct integer amount
+            FluidStack fs = key.copy();
+            fs.setAmount((int) amount);
+
+            tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
+        }
+
+        handler.saveToNBT();
+    }
+
     public static Map<Integer,Float> getColorRatios(ItemStack stack, Level level){
         MultiFluidTankHandler handler = getHandler(stack);
         Map<Integer,Float> colors = new HashMap<>();
@@ -165,5 +201,17 @@ public class MultiTankHelper {
             colors.put(color,getFluidRatio(stack,fs,getFilledTotal(stack)));
         }
         return colors;
+    }
+
+    public static Map<FluidStack, Float> getFluidRatios(ItemStack stack){
+        MultiFluidTankHandler handler = getHandler(stack);
+        Map<FluidStack, Float> flMap = getFluidsAsMap(stack);
+        Map<FluidStack, Float> ratioMap = new HashMap<>();
+        if (handler == null) return ratioMap;
+        for (FluidStack fs: flMap.keySet()){
+            float ratio = getFluidRatio(stack,fs,getFilledTotal(stack));
+            ratioMap.put(fs,ratio);
+        }
+        return ratioMap;
     }
 }

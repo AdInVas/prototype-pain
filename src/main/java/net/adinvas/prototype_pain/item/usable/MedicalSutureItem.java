@@ -57,7 +57,7 @@ public class MedicalSutureItem extends Item implements ISimpleMedicalUsable, IAl
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.medical_suture.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.medical_suture.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

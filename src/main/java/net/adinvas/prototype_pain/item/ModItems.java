@@ -4,9 +4,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
 import net.adinvas.prototype_pain.item.misc.BrownCapMushItem;
 import net.adinvas.prototype_pain.item.misc.ExperimentalTreatmentItem;
-import net.adinvas.prototype_pain.item.multi_tank.BottleItem;
-import net.adinvas.prototype_pain.item.multi_tank.MedicineVialItem;
-import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
+import net.adinvas.prototype_pain.item.multi_tank.*;
 import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagItem;
 import net.adinvas.prototype_pain.item.special.bags.medium.MediumMedibagItem;
 import net.adinvas.prototype_pain.item.special.bags.small.SmallMedibagItem;
@@ -60,9 +58,30 @@ public class ModItems {
     public static final RegistryObject<Item> Thermometer = ITEMS.register("thermometer", ThermometerItem::new);
     public static final RegistryObject<Item> SimpleEarProtection = ITEMS.register("simple_ear_protection", net.adinvas.prototype_pain.item.special.SimpleEarProtection::new);
 
-    public static final RegistryObject<Item> MultiTank = ITEMS.register("testtank2", MultiTankFluidItem::new);
+    //public static final RegistryObject<Item> MultiTank = ITEMS.register("testtank2", MultiTankFluidItem::new);
     public static final RegistryObject<Item> MedicineVial = ITEMS.register("medicine_vial", MedicineVialItem::new);
     public static final RegistryObject<Item> Bottle = ITEMS.register("bottle", BottleItem::new);
+    public static final RegistryObject<Item> Syringe = ITEMS.register("syringe", SyringeItem::new);
+    public static final RegistryObject<Item> AutoInjector = ITEMS.register("autoinjector",AutoInjectorItem::new);
+
+
+    public static final RegistryObject<Item> AlcoholBottle = ITEMS.register("alcohol", AlcoholBottleItem::new);
+    public static final RegistryObject<Item> AntiserumInjector = ITEMS.register("antiserum",AntiserumInjectorItem::new);
+    public static final RegistryObject<Item> AntibioticsPills = ITEMS.register("antibiotics",AntibioticsItem::new);
+    public static final RegistryObject<Item> AntisepticSpray = ITEMS.register("antiseptic",AntisepticSprayItem::new);
+    public static final RegistryObject<Item> ProcoagulantInjector = ITEMS.register("blood_clotting",ProcoagulantInjectorItem::new);
+    public static final RegistryObject<Item> StreptokinaseInjector = ITEMS.register("blood_thinner",StreptokinaseInjectorItem::new);
+    public static final RegistryObject<Item> BrainGrowPills = ITEMS.register("brain_grow",BrainGrowPillItem::new);
+    public static final RegistryObject<Item> CeftriaxoneVial = ITEMS.register("ceftriaxone", CeftriaxoneVialItem::new);
+    public static final RegistryObject<Item> FentanylVial = ITEMS.register("fentanyl_vial",FentanylVialItem::new);
+    public static final RegistryObject<Item> HeroinSyringe = ITEMS.register("heroin_vial",HeroinSyringeItem::new);
+    public static final RegistryObject<Item> MorphineVial = ITEMS.register("morphine_vial",MorphineVialItem::new);
+    public static final RegistryObject<Item> NaloxoneVial = ITEMS.register("naloxone_vial",NaloxoneVialItem::new);
+    public static final RegistryObject<Item> OpiumVial = ITEMS.register("opium_vial",OpiumVialItem::new);
+    public static final RegistryObject<Item> PainkillersPills = ITEMS.register("painkillers",PainkillersPillItem::new);
+    public static final RegistryObject<Item> ReactionLiquidVial = ITEMS.register("reaction_vial",ReactionLiquidVial::new);
+    public static final RegistryObject<Item> SalineSyringeItem = ITEMS.register("saline",SalineSyringeItem::new);
+    public static final RegistryObject<Item> ReliefCreamBottle = ITEMS.register("relief_cream",ReliefCreamBottle::new);
 
 
 

@@ -112,7 +112,6 @@ public class PrototypePain {
         }
     }
     //TODO Diffrent Crafting Stations
-    //TODO ALL THE FLUID Items
     //TODO something for onyx
 
 }

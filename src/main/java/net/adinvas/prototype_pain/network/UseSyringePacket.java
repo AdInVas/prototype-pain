@@ -1,7 +1,7 @@
 package net.adinvas.prototype_pain.network;
 
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
+
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -66,7 +66,7 @@ public class UseSyringePacket {
                 Entity entity = sender.serverLevel().getEntity(msg.target);
                 if (entity instanceof ServerPlayer player){
                     for (int i=0;i<msg.ids.length;i++){
-                        MedicalFluid fluid = MedicalFluid.getFromId(msg.ids[i],sender.serverLevel());
+                        MedicalFluid fluid = MedicalFluid.getFromId(msg.ids[i]);
                         float amount = msg.amounts[i];
                         if (fluid!=null&& !Float.isNaN(amount)){
                             fluid.getMedicalEffect().applyInjected(player,amount,msg.limb);

@@ -333,7 +333,7 @@ public class ModCommands {
                                                 ctx.getSource().sendFailure(Component.literal("Can only Be run player"));
                                                 return 1;
                                             }
-                                            MedicalFluid mFluid = MedicalFluid.getFromId(id.toString(),serverplayer.serverLevel());
+                                            MedicalFluid mFluid = MedicalFluid.getFromId(id.toString());
                                             if (mFluid==null){
                                                 ctx.getSource().sendFailure(Component.literal("invalid fluid"));
                                                 return 1;

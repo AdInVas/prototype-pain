@@ -56,7 +56,7 @@ public class BandAidItem extends Item implements ISimpleMedicalUsable, IAllowInM
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.band_aid.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.band_aid.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

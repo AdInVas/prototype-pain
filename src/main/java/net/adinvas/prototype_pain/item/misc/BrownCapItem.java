@@ -2,10 +2,7 @@ package net.adinvas.prototype_pain.item.misc;
 
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
-import net.adinvas.prototype_pain.item.IAllowInMedicbags;
-import net.adinvas.prototype_pain.item.ISimpleMedicalUsable;
+
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -186,6 +183,6 @@ public class BrownCapItem extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack,pLevel,pTooltipComponents,pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.brown_cap.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.brown_cap.description").withStyle(ChatFormatting.GRAY));
     }
 }

@@ -4,6 +4,9 @@ package net.adinvas.prototype_pain.fluid_system;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
@@ -46,7 +49,6 @@ public class MedicalEffects {
     };
 
     public static final MedicalEffect HEROIN = new MedicalEffect() {
-
         @Override
         public void applyInjected(ServerPlayer player, float ml, Limb limb) {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
@@ -243,6 +245,39 @@ public class MedicalEffects {
             player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
                 h.setAntibiotic_timer(h.getAntibiotic_timer()+225*ml);
                 h.setLimbPain(Limb.CHEST, h.getLimbPain(Limb.CHEST)+1.5f*ml);
+            });
+        }
+    };
+
+    public static final MedicalEffect VANILLA_LAVA = new MedicalEffect() {
+        @Override
+        public void applyIngested(ServerPlayer player, float ml) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setLimbSkinHealth(Limb.HEAD, h.getLimbSkinHealth(Limb.HEAD)-15*ml);
+                h.applyPain(Limb.HEAD,ml*2f);
+                h.setLimbMuscleHealth(Limb.HEAD, h.getLimbMuscleHealth(Limb.HEAD)-15*ml);
+                h.setTemperature(h.getTemperature()+0.5f*ml);
+            });
+        }
+
+        @Override
+        public void applyInjected(ServerPlayer player, float ml, Limb limb) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setLimbSkinHealth(limb, h.getLimbSkinHealth(limb)-10f*ml);
+                h.applyPain(limb,ml*2f);
+                h.setLimbMuscleHealth(limb, h.getLimbMuscleHealth(limb)-20f*ml);
+                h.setTemperature(h.getTemperature()+0.5f*ml);
+            });
+        }
+
+        @Override
+        public void applyOnSkin(ServerPlayer player, float ml, Limb limb) {
+            player.setSecondsOnFire((int)(0.1*ml));
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h->{
+                h.setLimbSkinHealth(Limb.HEAD, h.getLimbSkinHealth(Limb.HEAD)-20*ml);
+                h.applyPain(Limb.HEAD,ml*2.5f);
+                h.setLimbMuscleHealth(Limb.HEAD, h.getLimbMuscleHealth(Limb.HEAD)-10*ml);
+                h.setTemperature(h.getTemperature()+0.5f*ml);
             });
         }
     };

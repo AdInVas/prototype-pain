@@ -26,6 +26,8 @@ public class ModMedicalRegistry {
         REGISTRY = event.create(
                 new RegistryBuilder<MedicalFluid>()
                         .setName(MEDICAL_FLUIDS_KEY.location())
+                        .hasTags()
+
         );
     }
 }

@@ -5,6 +5,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,5 +32,15 @@ public class DataGenretors {
                 new ModBlockTagGenerator(output, lookupProvider, existingFileHelper));
         generator.addProvider(event.includeServer(),new ModItemTagProvider(output,lookupProvider,blockTagGenerator.contentsGetter(),existingFileHelper));
 
+        if (event.includeServer()) {
+            event.getGenerator().addProvider(
+                    true,
+                    new ModMedicalFluidTagProvider(
+                            output,
+                            lookupProvider,
+                            CompletableFuture.completedFuture(TagsProvider.TagLookup.empty())
+                    )
+            );
+        }
     }
 }

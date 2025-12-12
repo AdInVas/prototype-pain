@@ -41,6 +41,6 @@ public class SplintItem extends Item implements ISimpleMedicalUsable, IAllowInMe
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.splint.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.splint.description").withStyle(ChatFormatting.GRAY));
     }
 }

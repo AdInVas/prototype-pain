@@ -22,31 +22,31 @@ public class MedicalFluid {
         return medicalEffect;
     }
 
-    public ResourceLocation getRegistryId(Level level) {
+    public ResourceLocation getRegistryId() {
         IForgeRegistry<MedicalFluid> reg = ModMedicalRegistry.REGISTRY.get();
         return reg.getKey(this);
     }
 
-    public Component getDisplayName(Level level) {
-        ResourceLocation id = getRegistryId(level);
+    public Component getDisplayName() {
+        ResourceLocation id = getRegistryId();
         return Component.translatable("medical_fluid." + id.getNamespace() + "." + id.getPath());
     }
 
-    public Component getDescription(Level level) {
-        ResourceLocation id = getRegistryId(level);
+    public Component getDescription() {
+        ResourceLocation id = getRegistryId();
         return Component.translatable("medical_fluid." + id.getNamespace()
                 + "." + id.getPath()
                 + ".description");
     }
 
-    public String getNameId(Level level){
-        ResourceLocation id = getRegistryId(level);
+    public String getNameId(){
+        ResourceLocation id = getRegistryId();
         return "medical_fluid." + id.getNamespace()
                 + "." + id.getPath();
     }
 
-    public static MedicalFluid getFromId(String fullId, Level level) {
-        if (fullId == null || level == null) return null;
+    public static MedicalFluid getFromId(String fullId) {
+        if (fullId == null) return null;
 
         ResourceLocation id = new ResourceLocation(fullId);
 

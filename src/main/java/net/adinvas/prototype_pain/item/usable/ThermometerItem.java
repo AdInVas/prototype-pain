@@ -49,7 +49,7 @@ public class ThermometerItem extends Item {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack,pLevel,pTooltipComponents,pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.thermometer.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.thermometer.description").withStyle(ChatFormatting.GRAY));
     }
 
 

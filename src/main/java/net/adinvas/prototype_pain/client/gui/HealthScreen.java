@@ -501,12 +501,6 @@ public class HealthScreen extends Screen {
                     if (itemstack.getItem() instanceof IMedicalMinigameUsable helper) {
                         helper.openMinigameBagScreen(target, itemstack, bagstack, i, limb, getHand(HumanoidArm.RIGHT, minecraft.player));
                     }
-                /*TODO
-                if (itemstack.getItem() instanceof SyringeItem){
-                    Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,bagstack,i,limb,getHand(HumanoidArm.RIGHT, minecraft.player)));
-                }
-
-                 */
                     ModNetwork.CHANNEL.sendToServer(new UseBagMedItemPacket(itemstack, bagstack, limb, target.getUUID(), getHand(HumanoidArm.RIGHT, minecraft.player) == InteractionHand.OFF_HAND, i));
                 }
         }
@@ -520,12 +514,6 @@ public class HealthScreen extends Screen {
                     if (itemstack.getItem() instanceof IMedicalMinigameUsable helper) {
                         helper.openMinigameBagScreen(target, itemstack, bagstack, i, limb, getHand(HumanoidArm.LEFT, minecraft.player));
                     }
-                /*TODO
-                if (itemstack.getItem() instanceof SyringeItem){
-                    Minecraft.getInstance().setScreen(new InjectMingameScreen(this,target,itemstack,bagstack,i,limb,getHand(HumanoidArm.LEFT, minecraft.player)));
-                }
-
-                 */
                     ModNetwork.CHANNEL.sendToServer(new UseBagMedItemPacket(itemstack, bagstack, limb, target.getUUID(), getHand(HumanoidArm.LEFT, minecraft.player) == InteractionHand.OFF_HAND, i));
                 }
         }

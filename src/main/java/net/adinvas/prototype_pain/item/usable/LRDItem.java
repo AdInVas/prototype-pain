@@ -65,7 +65,7 @@ public class LRDItem extends Item implements ISimpleMedicalUsable, IAllowInMedic
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.lrd.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.lrd.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

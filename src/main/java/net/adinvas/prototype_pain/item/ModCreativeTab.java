@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.item;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -21,7 +22,20 @@ public class ModCreativeTab {
                     .displayItems((parameters, output) -> {
                         for (RegistryObject<Item> itemRegistryObject : ModItems.ITEMS.getEntries()){
                             if (itemRegistryObject == ModItems.ScavPlush)continue;
+                            if (itemRegistryObject.get() instanceof INbtDrivenDurability nbt){
+                                ItemStack stack = new ItemStack(itemRegistryObject.get());
+                                nbt.setupDefaults(stack);
+                                output.accept(stack);
+                                continue;
+                            }
+                            if (itemRegistryObject.get() instanceof MultiTankFluidItem multiTankFluidItem){
+                                ItemStack stack = new ItemStack(itemRegistryObject.get());
+                                multiTankFluidItem.setupDefault(stack);
+                                output.accept(stack);
+                                continue;
+                            }
                             output.accept(itemRegistryObject.get());
+
                         }
                     })
                     .build()

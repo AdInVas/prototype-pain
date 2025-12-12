@@ -395,10 +395,10 @@ public class ExperimentalTreatmentItem extends Item implements IAllowInMedicbags
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack,pLevel,pTooltipComponents,pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.discription1").withStyle(ChatFormatting.GRAY));
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.discription2").withStyle(ChatFormatting.AQUA));
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.discription3").withStyle(ChatFormatting.DARK_GRAY));
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.discription4").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.description1").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.description2").withStyle(ChatFormatting.AQUA));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.description3").withStyle(ChatFormatting.DARK_GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.experimental_treatment.description4").withStyle(ChatFormatting.GRAY));
         if (Screen.hasShiftDown()&&pIsAdvanced.isAdvanced()){
             pTooltipComponents.add(Component.literal("A small Line on the bottom says: \"If found return to Doctor Ry** \" the rest is not readable.").withStyle(ChatFormatting.GRAY));
         }

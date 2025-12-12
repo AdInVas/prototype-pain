@@ -28,8 +28,18 @@ public class ColorsEvent {
                     }
                     return 0xFFFFFFFF; // white = no tint
                 },
-                ModItems.MedicineVial.get()
-
+                ModItems.MedicineVial.get(),
+                ModItems.Bottle.get(),
+                ModItems.AutoInjector.get(),
+                ModItems.ProcoagulantInjector.get(),
+                ModItems.StreptokinaseInjector.get(),
+                ModItems.CeftriaxoneVial.get(),
+                ModItems.FentanylVial.get(),
+                ModItems.MorphineVial.get(),
+                ModItems.NaloxoneVial.get(),
+                ModItems.OpiumVial.get(),
+                ModItems.AntiserumInjector.get(),
+                ModItems.ReactionLiquidVial.get()
         );
 
     }

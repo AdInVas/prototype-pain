@@ -2,15 +2,17 @@ package net.adinvas.prototype_pain.item.multi_tank;
 
 import net.adinvas.prototype_pain.Util;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
-import net.adinvas.prototype_pain.fluid_system.MedicalFluids;
 import net.adinvas.prototype_pain.fluid_system.MultiFluidTankHandler;
+import net.adinvas.prototype_pain.fluid_system.MultiTankHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -70,7 +72,25 @@ public class MultiTankFluidItem extends Item{
 
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
-       appendFluidText(stack,level,tooltip,flag);
+       appendDescription(stack,level,tooltip,flag);
+        appendFluidText(stack,level,tooltip,flag);
+    }
+
+    public void appendDescription(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        String key = getDescriptionId(pStack) + ".description";
+        if (I18n.exists(key)) {
+            pTooltipComponents.add(Component.translatable(key).withStyle(ChatFormatting.GRAY));
+        }
+        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
+    }
+
+    public void setupDefault(ItemStack pStack){
+
+    }
+
+    @Override
+    public void onCraftedBy(ItemStack pStack, Level pLevel, Player pPlayer) {
+        setupDefault(pStack);
     }
 
     public void appendFluidText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag){
@@ -90,14 +110,14 @@ public class MultiTankFluidItem extends Item{
             FluidStack fs = FluidStack.loadFluidStackFromNBT((CompoundTag) t);
             int color = 0xFF0088;
             if (fs.hasTag()) {
-                MedicalFluid Mfluid = MedicalFluid.getFromId(fs.getTag().getString("MedicalId"), level);
+                MedicalFluid Mfluid = MedicalFluid.getFromId(fs.getTag().getString("MedicalId"));
                 if (Mfluid != null) {
                     if (!Mfluid.showInTooltip(stack))continue;
                     hasSpecial = true;
                     color = Mfluid.getColor();
                     tooltip.add(Component.literal(fs.getDisplayName().getString()).withStyle(Style.EMPTY.withColor(color)).append("(" + fs.getAmount() + "mb)"));
                     if (Screen.hasShiftDown()) {
-                        tooltip.add(Mfluid.getDescription(level).copy().withStyle(Style.EMPTY.withColor(color)));
+                        tooltip.add(Mfluid.getDescription().copy().withStyle(Style.EMPTY.withColor(color)));
                     }
                     continue;
                 }
@@ -111,4 +131,6 @@ public class MultiTankFluidItem extends Item{
             tooltip.add(Component.translatable("prototype_pain.multi_tank.hint").withStyle(ChatFormatting.GRAY));
         }
     }
+
+
 }

@@ -27,12 +27,13 @@ public class ModMedicalFluids {
     public static final RegistryObject<MedicalFluid> STREPTOKINASE = MEDICAL_FLUIDS.register("streptokinase", () -> new MedicalFluid(MedicalEffects.STREPTOKINASE, 0x0aecfc));
     public static final RegistryObject<MedicalFluid> NALOXONE = MEDICAL_FLUIDS.register("naloxone", () -> new MedicalFluid(MedicalEffects.NALOXONE, 0xf2abff));
     public static final RegistryObject<MedicalFluid> REACTION_LIQUID = MEDICAL_FLUIDS.register("reaction_liquid", () -> new MedicalFluid(MedicalEffects.WATER, 0xbceb23));
-
+    public static final RegistryObject<MedicalFluid> CLEAN_WATER = MEDICAL_FLUIDS.register("clean_water",()->new MedicalFluid(MedicalEffects.WATER,0x5276d1));
     // Generic variant
-    public static final RegistryObject<MedicalFluid> DIRTY_WATER = MEDICAL_FLUIDS.register("dirty_water", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x000000));
-    public static final RegistryObject<MedicalFluid> GENERIC_HOT = MEDICAL_FLUIDS.register("generic_bad", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x000000));
-    public static final RegistryObject<MedicalFluid> GENERIC_TOXIC = MEDICAL_FLUIDS.register("generic_toxic", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x000000));
-    public static final RegistryObject<MedicalFluid> GENERIC_BAD = MEDICAL_FLUIDS.register("generic_hazardous", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x000000));
+    public static final RegistryObject<MedicalFluid> VANILLA_WATER = MEDICAL_FLUIDS.register("v_water", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x0349fc));
+    public static final RegistryObject<MedicalFluid> VANILLA_LAVA = MEDICAL_FLUIDS.register("v_lava", () -> new FallbackMedicalFluid(MedicalEffects.VANILLA_LAVA, 0xfc4103));
+    public static final RegistryObject<MedicalFluid> GENERIC_HOT = MEDICAL_FLUIDS.register("generic_hot", () -> new FallbackMedicalFluid(MedicalEffects.VANILLA_LAVA, 0xa31a1a));
+    public static final RegistryObject<MedicalFluid> GENERIC_TOXIC = MEDICAL_FLUIDS.register("generic_toxic", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x658c03));
+    public static final RegistryObject<MedicalFluid> GENERIC_BAD = MEDICAL_FLUIDS.register("generic_bad", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x292e13));
 
 
 

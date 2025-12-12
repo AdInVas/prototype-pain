@@ -80,6 +80,6 @@ public class GlowFruitItem extends Item implements ISimpleMedicalUsable {
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.glow_fruit.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.glow_fruit.description").withStyle(ChatFormatting.GRAY));
     }
 }

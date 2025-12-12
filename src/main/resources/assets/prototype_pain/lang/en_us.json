@@ -37,139 +37,139 @@
   "death.attack.oxygen.player": "%1$s forgot to breathe while fighting %2$s",
 
   "item.prototype_pain.dressing": "Bandage",
-  "item.prototype_pain.dressing.discription": "Basic bandage for covering and protecting wounds.",
+  "item.prototype_pain.dressing.description": "Basic bandage for covering and protecting wounds.",
 
   "item.prototype_pain.plastic_dressing": "Occlusive Dressing",
-  "item.prototype_pain.plastic_dressing.discription": "Stronger bandage that protects wounds more effectively.",
+  "item.prototype_pain.plastic_dressing.description": "Stronger bandage that protects wounds more effectively.",
 
   "item.prototype_pain.sterilized_dressing": "Sterilized Dressing",
-  "item.prototype_pain.sterilized_dressing.discription": "Cleans and covers wounds, preventing infection.",
+  "item.prototype_pain.sterilized_dressing.description": "Cleans and covers wounds, preventing infection.",
 
-  "item.prototype_pain.alcohol": "Bottle of Alcohol",
-  "item.prototype_pain.alcohol.discription": "A glass bottle that can hold 0.4L of liquid.",
+  "item.prototype_pain.bottle": "Bottle",
+  "item.prototype_pain.bottle.description": "A plastic bottle that can hold 0.5L of liquid.",
 
   "item.prototype_pain.ice_pack": "Ice Pack",
-  "item.prototype_pain.ice_pack.discription": "Reduces swelling and eases sore muscles.",
+  "item.prototype_pain.ice_pack.description": "Reduces swelling and eases sore muscles.",
 
   "item.prototype_pain.aid_gel": "Relief Gel",
-  "item.prototype_pain.aid_gel.discription": "A crudely made gel for aiding sore limbs.",
+  "item.prototype_pain.aid_gel.description": "A crudely made gel for aiding sore limbs.",
 
   "item.prototype_pain.saline": "Saline",
-  "item.prototype_pain.saline.discription": "A 750ml fluid bag with a needle at the end.",
+  "item.prototype_pain.saline.description": "A 750ml fluid bag with a needle at the end.",
 
   "item.prototype_pain.opium_vial": "Poppy Extract",
-  "item.prototype_pain.opium_vial.discription": "A 100ml bottle. The overdose label says 200ml.",
+  "item.prototype_pain.opium_vial.description": "A 100ml bottle. The overdose label says 200ml.",
 
   "item.prototype_pain.morphine_vial": "Morphine",
-  "item.prototype_pain.morphine_vial.discription": "A 100ml bottle. The overdose label says 90ml.",
+  "item.prototype_pain.morphine_vial.description": "A 100ml bottle. The overdose label says 90ml.",
 
   "item.prototype_pain.heroin_vial": "Heroin",
-  "item.prototype_pain.heroin_vial.discription": "A 150ml syringe for intravenous injection. The dosage marks are scratched off.",
+  "item.prototype_pain.heroin_vial.description": "A 150ml syringe for intravenous injection. The dosage marks are scratched off.",
 
   "item.prototype_pain.fentanyl_vial": "Fentanyl",
-  "item.prototype_pain.fentanyl_vial.discription": "A 100ml bottle containing diluted fentanyl for pain relief. The overdose label says 20ml.",
+  "item.prototype_pain.fentanyl_vial.description": "A 100ml bottle containing diluted fentanyl for pain relief. The overdose label says 20ml.",
 
   "item.prototype_pain.naloxone_vial": "Naloxone",
-  "item.prototype_pain.naloxone_vial.discription": "A 100ml bottle. The label reads \"Nal...\" — the rest is unreadable.",
+  "item.prototype_pain.naloxone_vial.description": "A 100ml bottle. The label reads \"Nal...\" — the rest is unreadable.",
 
   "item.prototype_pain.painkillers": "Painkillers",
-  "item.prototype_pain.painkillers.discription": "A 100ml pill bottle. The dosage is 10ml.",
+  "item.prototype_pain.painkillers.description": "A 100ml pill bottle. The dosage is 10ml.",
 
   "item.prototype_pain.antibiotics": "Antibiotics",
-  "item.prototype_pain.antibiotics.discription": "A 100ml bottle of antibiotic pills. The dose is 10ml.",
+  "item.prototype_pain.antibiotics.description": "A 100ml bottle of antibiotic pills. The dose is 10ml.",
 
   "item.prototype_pain.blood_clotting": "Hemostatic Agent",
-  "item.prototype_pain.blood_clotting.discription": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
+  "item.prototype_pain.blood_clotting.description": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
 
   "item.prototype_pain.blood_thinner": "Anticoagulant",
-  "item.prototype_pain.blood_thinner.discription": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
+  "item.prototype_pain.blood_thinner.description": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
 
   "item.prototype_pain.splint": "Splint",
-  "item.prototype_pain.splint.discription": "Stabilizes broken bones and aids healing.",
+  "item.prototype_pain.splint.description": "Stabilizes broken bones and aids healing.",
 
   "item.prototype_pain.tweezers": "Tweezers",
-  "item.prototype_pain.tweezers.discription": "Removes shrapnel, glass, or debris from wounds.",
+  "item.prototype_pain.tweezers.description": "Removes shrapnel, glass, or debris from wounds.",
 
   "item.prototype_pain.tourniquet": "Tourniquet",
-  "item.prototype_pain.tourniquet.discription": "Stops heavy bleeding but limits blood flow.",
+  "item.prototype_pain.tourniquet.description": "Stops heavy bleeding but limits blood flow.",
 
   "item.prototype_pain.small_medibag": "Small Medical Bag",
-  "item.prototype_pain.small_medibag.discription": "A compact pouch for four medical items.",
+  "item.prototype_pain.small_medibag.description": "A compact pouch for four medical items.",
 
   "item.prototype_pain.medium_medibag": "Medium Medical Bag",
-  "item.prototype_pain.medium_medibag.discription": "A balanced pack with room for eight items.",
+  "item.prototype_pain.medium_medibag.description": "A balanced pack with room for eight items.",
 
   "item.prototype_pain.large_medibag": "Large Medical Bag",
-  "item.prototype_pain.large_medibag.discription": "A spacious medical kit that can hold up to twelve items.",
+  "item.prototype_pain.large_medibag.description": "A spacious medical kit that can hold up to twelve items.",
 
   "item.prototype_pain.band_aids": "Band Aids",
-  "item.prototype_pain.band_aid.discription": "Simple adhesive bandages usually used on small cuts and bruises.",
+  "item.prototype_pain.band_aid.description": "Simple adhesive bandages usually used on small cuts and bruises.",
 
   "item.prototype_pain.glow_fruit": "Glow Fruit",
-  "item.prototype_pain.glow_fruit.discription": "A bioluminescent plant often found in caves. Counteracts infections but is highly toxic when ingested.",
+  "item.prototype_pain.glow_fruit.description": "A bioluminescent plant often found in caves. Counteracts infections but is highly toxic when ingested.",
 
   "item.prototype_pain.ceftriaxone": "Ceftriaxone Vial",
-  "item.prototype_pain.ceftriaxone.discription": "A 100ml bottle. The safe dose label says \"may vary.\"",
+  "item.prototype_pain.ceftriaxone.description": "A 100ml bottle. The safe dose label says \"may vary.\"",
 
   "item.prototype_pain.medicine_vial": "Medicine Vial",
-  "item.prototype_pain.medicine_vial.discription": "A 100ml bottle meant for medicine.",
+  "item.prototype_pain.medicine_vial.description": "A 100ml bottle meant for medicine.",
 
   "item.prototype_pain.antiseptic": "Antiseptic",
-  "item.prototype_pain.antiseptic.discription": "A 200ml spray bottle. Sprays 10ml of liquid at a time.",
+  "item.prototype_pain.antiseptic.description": "A 200ml spray bottle. Sprays 10ml of liquid at a time.",
 
   "item.prototype_pain.relief_cream": "Relief Cream",
-  "item.prototype_pain.relief_cream.discription": "A 100ml bottle. The label warns, \"Do not use more than 10 bottles in one day.\"",
+  "item.prototype_pain.relief_cream.description": "A 100ml bottle. The label warns, \"Do not use more than 10 bottles in one day.\"",
 
   "item.prototype_pain.antiserum": "Antiserum",
-  "item.prototype_pain.antiserum.discription": "A 100ml bottle with an autoinjector attached. The dosage is 50ml.",
+  "item.prototype_pain.antiserum.description": "A 100ml bottle with an autoinjector attached. The dosage is 50ml.",
 
   "item.prototype_pain.brain_grow": "Brain Grow",
-  "item.prototype_pain.brain_grow.discription": "A 50ml bottle. The label says, \"Take up to one dose per day.\"",
+  "item.prototype_pain.brain_grow.description": "A 50ml bottle. The label says, \"Take up to one dose per day.\"",
 
   "item.prototype_pain.syringe": "Syringe",
-  "item.prototype_pain.syringe.discription": "A 100ml syringe for intravenous injection.",
+  "item.prototype_pain.syringe.description": "A 100ml syringe for intravenous injection.",
 
   "item.prototype_pain.old_rag": "Old Rag",
-  "item.prototype_pain.old_rag.discription": "A worn piece of cloth. Can be used as a makeshift dressing.",
+  "item.prototype_pain.old_rag.description": "A worn piece of cloth. Can be used as a makeshift dressing.",
 
   "item.prototype_pain.ripped_dressing": "Ripped Dressing",
-  "item.prototype_pain.ripped_dressing.discription": "A worn piece of what used to be a bandage. Can be used as a makeshift dressing.",
+  "item.prototype_pain.ripped_dressing.description": "A worn piece of what used to be a bandage. Can be used as a makeshift dressing.",
 
   "item.prototype_pain.bruise_kit": "Bruise Kit",
-  "item.prototype_pain.bruise_kit.discription": "A combination of various medicines, made to aid sore muscles. Cannot stop the bleeding.",
+  "item.prototype_pain.bruise_kit.description": "A combination of various medicines, made to aid sore muscles. Cannot stop the bleeding.",
 
   "item.prototype_pain.alganate_dressing": "Alginate dressing ",
-  "item.prototype_pain.alganate_dressing.discription": "A specially treated piece of a dressing. Slows down bleeding and highly improves skin healing.",
+  "item.prototype_pain.alganate_dressing.description": "A specially treated piece of a dressing. Slows down bleeding and highly improves skin healing.",
 
   "item.prototype_pain.medical_gauze": "Medical Gauze",
-  "item.prototype_pain.medical_gauze.discription": "Woven gauze containing painkilling drugs. Decent at slowing bleeding and reducing pain from injuries.",
+  "item.prototype_pain.medical_gauze.description": "Woven gauze containing painkilling drugs. Decent at slowing bleeding and reducing pain from injuries.",
 
   "item.prototype_pain.bone_welding": "Bone Welding Tool",
-  "item.prototype_pain.bone_welding.discription": "An experimental piece of technology. Welds the bone structure back together. Causes some damage on the way in.",
+  "item.prototype_pain.bone_welding.description": "An experimental piece of technology. Welds the bone structure back together. Causes some damage on the way in.",
 
   "item.prototype_pain.lrd": "L.R.D",
-  "item.prototype_pain.lrd.discription": "A Localized Resuscitation Device, made to easily provide effective general trauma care. Many thank their lives to this piece of machinery.",
+  "item.prototype_pain.lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. Many thank their lives to this piece of machinery.",
 
   "item.prototype_pain.makeshift_lrd": "Makeshift L.R.D",
-  "item.prototype_pain.makeshift_lrd.discription": "A Localized Resuscitation Device, made to easily provide effective general trauma care. This one seems to be crudely made.",
+  "item.prototype_pain.makeshift_lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. This one seems to be crudely made.",
 
   "item.prototype_pain.medical_suture": "Medical Suture",
-  "item.prototype_pain.medical_suture.discription": "Used to stitch wounds back together. Instantly stops most of the bleeding.",
+  "item.prototype_pain.medical_suture.description": "Used to stitch wounds back together. Instantly stops most of the bleeding.",
 
   "item.prototype_pain.reaction_vial": "Medicine Vial",
-  "item.prototype_pain.reaction_vial.discription": "A 100ml bottle meant for medicine.",
+  "item.prototype_pain.reaction_vial.description": "A 100ml bottle meant for medicine.",
 
   "item.prototype_pain.brown_cap": "Brown Cap",
-  "item.prototype_pain.brown_cap.discription": "You have no idea what is this fungus. For all you know it can cure cancer or kill you on the spot",
+  "item.prototype_pain.brown_cap.description": "You have no idea what is this fungus. For all you know it can cure cancer or kill you on the spot",
 
   "item.prototype_pain.heat_pack": "Heat Pack",
-  "item.prototype_pain.heat_pack.discription": "A slightly larger chemical hand warmer. Aids in healing of muscles slightly.",
+  "item.prototype_pain.heat_pack.description": "A slightly larger chemical hand warmer. Aids in healing of muscles slightly.",
 
   "item.prototype_pain.auto_pump": "Auto Pump",
-  "item.prototype_pain.auto_pump.discription": "A very advanced Life support device with internal batteries. Keeps oxygen at stable levels,provides adrenaline and energy. Batteries last about 5min. Usable on Chest",
+  "item.prototype_pain.auto_pump.description": "A very advanced Life support device with internal batteries. Keeps oxygen at stable levels,provides adrenaline and energy. Batteries last about 5min. Usable on Chest",
 
   "item.prototype_pain.thermometer": "Thermometer",
-  "item.prototype_pain.thermometer.discription": "A small device that reads the temperature around the user.",
+  "item.prototype_pain.thermometer.description": "A small device that reads the temperature around the user.",
 
   "block.prototype_pain.scav_plushie": "Scav Plushie",
 
@@ -185,8 +185,8 @@
   "medical_fluid.prototype_pain.morphine": "Morphine",
   "medical_fluid.prototype_pain.morphine.description": "A strong opiate, lesser effect when taken orally",
 
-  "medical_fluid.prototype_pain.water": "Water",
-  "medical_fluid.prototype_pain.water.description": "Clear water. Tasteless",
+  "medical_fluid.prototype_pain.clean_water": "Clean Water",
+  "medical_fluid.prototype_pain.clean_water.description": "Tasteless",
 
   "medical_fluid.prototype_pain.painkillers": "Painkillers",
   "medical_fluid.prototype_pain.painkillers.description": "Medication for pain relief. Overdose at 80ml",
@@ -386,13 +386,13 @@
   "prototype_pain.gui.cpr_instruction1": "Preform chest compressions to the rythm of the timer.",
   "prototype_pain.gui.cpr_instruction2": "Don't mess up.",
 
-  "item.prototype_pain.brown_cap_mush.discription": "Probably a bad idea to eat this...",
+  "item.prototype_pain.brown_cap_mush.description": "Probably a bad idea to eat this...",
   "item.prototype_pain.brown_cap_mush": "Brown Cap Mush",
   "item.prototype_pain.experimental_treatment": "Experimental Treatment",
-  "item.prototype_pain.experimental_treatment.discription1": "The label says:",
-  "item.prototype_pain.experimental_treatment.discription2": "EXPERIMENTAL TREATMENT EX-8UN, For authorized Study participants only. Effects may include:",
-  "item.prototype_pain.experimental_treatment.discription3": "Mild dizziness ;Permanent dizziness ;Energy ;Lethargy ;Metallic taste ;Sudden bleeding ;Cardiac arrest;Minor brain damage ;Major brain damage ; Respiratory arrest; Deja vu; Paranoia; Loss of limbs; Grow of limbs; Hunger; Vomiting; Deja vu; Memory loss...",
-  "item.prototype_pain.experimental_treatment.discription4": "The list goes on for another 2 lines.",
+  "item.prototype_pain.experimental_treatment.description1": "The label says:",
+  "item.prototype_pain.experimental_treatment.description2": "EXPERIMENTAL TREATMENT EX-8UN, For authorized Study participants only. Effects may include:",
+  "item.prototype_pain.experimental_treatment.description3": "Mild dizziness ;Permanent dizziness ;Energy ;Lethargy ;Metallic taste ;Sudden bleeding ;Cardiac arrest;Minor brain damage ;Major brain damage ; Respiratory arrest; Deja vu; Paranoia; Loss of limbs; Grow of limbs; Hunger; Vomiting; Deja vu; Memory loss...",
+  "item.prototype_pain.experimental_treatment.description4": "The list goes on for another 2 lines.",
   "prototype_pain.multi_tank.hint": "Press SHIFT for fluid description"
 
 }

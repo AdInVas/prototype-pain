@@ -9,6 +9,7 @@
     "PlayerMixin"
   ],
   "client": [
+    "MixinSplashManager",
     "MouseHandlerMixin"
   ],
   "injectors": {

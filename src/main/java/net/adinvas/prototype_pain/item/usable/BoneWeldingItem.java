@@ -57,7 +57,7 @@ public class BoneWeldingItem extends Item implements ISimpleMedicalUsable, IAllo
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.bone_welding.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.bone_welding.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

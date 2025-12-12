@@ -33,7 +33,7 @@ public class MedicalGauzeItem extends Item implements IMedicalMinigameUsable, IA
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.medical_gauze.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.medical_gauze.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

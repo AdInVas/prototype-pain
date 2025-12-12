@@ -6,6 +6,9 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.Util;
 import net.adinvas.prototype_pain.client.ticksounds.SyringeTickSound;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.adinvas.prototype_pain.fluid_system.MultiFluidTankHandler;
+import net.adinvas.prototype_pain.fluid_system.MultiTankHelper;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.UseSyringePacket;
@@ -14,8 +17,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +41,8 @@ public class SyringeObject extends GrabObject{
     private final int originalHitX,originalHW;
 
     private boolean isSnapped = false;
+    private Map<FluidStack, Float> precisefluidMap = null;
+    private Map<FluidStack,Float> ratiomap = null;
 
     public SyringeObject(int x, int y, float scale, int minstickY) {
         super(x,y,4,21,24,79,
@@ -46,33 +53,51 @@ public class SyringeObject extends GrabObject{
     }
 
     public void setColor(ItemStack stack) {
-        /*TODO
-        if (stack.getItem() instanceof SyringeItem syringeItem){
-           int newcol = Util.mixColors(syringeItem.getFuildAndRatio(stack));
+        if (stack.getItem() instanceof MultiTankFluidItem syringeItem){
+           int newcol = Util.mixColors(MultiTankHelper.getColorRatios(stack,Minecraft.getInstance().level));
            this.color = (200<<24)|newcol;
         }
-
-         */
     }
 
     public void setFullness(ItemStack stack) {
-        /*TODO
-        if (stack.getItem() instanceof SyringeItem syringeItem){
-            fullness = syringeItem.getFilledTotal(stack)/syringeItem.getCapacity(stack);
+        if (stack.getItem() instanceof MultiTankFluidItem syringeItem){
+            fullness = MultiTankHelper.getFilledTotal(stack)/MultiTankHelper.getCapacity(stack);
         }
-
-         */
     }
 
     public void drainStack(ItemStack stack,float ml,Player player,Limb limb){
-        /*TODO
-        if (stack.getItem() instanceof SyringeItem syringeItem){
-            Map<MedicalFluid,Float> fulidmap = syringeItem.drain(stack,ml);
+        if (stack.getItem() instanceof MultiTankFluidItem syringeItem){
+            if (precisefluidMap==null){
+                precisefluidMap = MultiTankHelper.getFluidsAsMap(stack);
+                ratiomap = MultiTankHelper.getFluidRatios(stack);
+                return;
+            }
+            Map<FluidStack,Float> drainmap = new HashMap<>();
+            Map<FluidStack,Float> tempMap = new HashMap<>();
+            for (Map.Entry<FluidStack, Float> entry: precisefluidMap.entrySet()){
+
+                FluidStack fs = entry.getKey();
+                float amount = entry.getValue();
+                float ratio = ratiomap.get(fs);
+                float amountAfterDrain = Math.max(amount-(ml*ratio),0);
+                tempMap.putIfAbsent(fs,amountAfterDrain);
+                if (amountAfterDrain<=0)continue;
+                drainmap.put(fs,ml*ratio);
+            }
+            precisefluidMap = tempMap;
+
             List<String> ids = new ArrayList<>();
             List<Float> amounts = new ArrayList<>();
-            for (MedicalFluid fluid:fulidmap.keySet()){
-                ids.add(fluid.getId());
-                amounts.add(fulidmap.get(fluid));
+
+            for (Map.Entry<FluidStack, Float> entry: drainmap.entrySet()){
+                FluidStack fs = entry.getKey();
+                float amount = entry.getValue();
+                MedicalFluid MF = Util.getFallback(fs.getFluid());
+                if (fs.hasTag()&&fs.getTag().contains("MedicalId")){
+                    MF = MedicalFluid.getFromId(fs.getTag().getString("MedicalId"));
+                }
+                ids.add(MF.getRegistryId().toString());
+                amounts.add(amount);
             }
 
             float[] array = new float[amounts.size()];
@@ -80,9 +105,9 @@ public class SyringeObject extends GrabObject{
                 array[i] = amounts.get(i);
             }
             ModNetwork.CHANNEL.sendToServer(new UseSyringePacket(ids.toArray(String[]::new),array,player.getUUID(),limb));
+            MultiTankHelper.setFluidsDirect(stack,precisefluidMap);
         }
 
-         */
     }
 
     private SyringeTickSound tickSound;

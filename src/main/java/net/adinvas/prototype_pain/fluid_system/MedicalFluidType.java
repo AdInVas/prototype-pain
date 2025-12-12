@@ -1,7 +1,5 @@
 package net.adinvas.prototype_pain.fluid_system;
 
-import net.adinvas.prototype_pain.PrototypePain;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -19,10 +17,9 @@ public class MedicalFluidType extends FluidType {
 
     @Override
     public String getDescriptionId(FluidStack stack) {
-        Level level = Minecraft.getInstance().level;
-        MedicalFluid med = MedicalFluid.getFromId(stack.getTag().getString("MedicalId"), level);
+        MedicalFluid med = MedicalFluid.getFromId(stack.getTag().getString("MedicalId"));
         if (med!=null)
-            return med.getNameId(level);
+            return med.getNameId();
 
         return stack.getTag().getString("MedicalId");
     }
@@ -36,7 +33,7 @@ public class MedicalFluidType extends FluidType {
                 CompoundTag tag = stack.getTag();
                 if (tag != null && tag.contains("MedicalId", Tag.TAG_STRING)) {
                     String medId = tag.getString("MedicalId");
-                    MedicalFluid m = MedicalFluid.getFromId(medId,Minecraft.getInstance().level);
+                    MedicalFluid m = MedicalFluid.getFromId(medId);
                     if (m != null) return m.getColor() | 0xFF000000; // ensure alpha set
                 }
                 // fallback color (transparent)

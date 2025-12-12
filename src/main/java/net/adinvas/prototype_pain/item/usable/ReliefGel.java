@@ -56,7 +56,7 @@ public class ReliefGel extends Item implements ISimpleMedicalUsable, IAllowInMed
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.aid_gel.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.aid_gel.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override

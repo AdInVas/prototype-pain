@@ -33,7 +33,7 @@ public class BruiseKitItem extends Item implements IMedicalMinigameUsable, IAllo
     @Override
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-        pTooltipComponents.add(Component.translatable("item.prototype_pain.bruise_kit.discription").withStyle(ChatFormatting.GRAY));
+        pTooltipComponents.add(Component.translatable("item.prototype_pain.bruise_kit.description").withStyle(ChatFormatting.GRAY));
     }
 
     @Override
