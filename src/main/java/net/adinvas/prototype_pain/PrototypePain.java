@@ -1,7 +1,9 @@
 package net.adinvas.prototype_pain;
 
 import com.mojang.logging.LogUtils;
+import net.adinvas.prototype_pain.blocks.ModBlockEntities;
 import net.adinvas.prototype_pain.blocks.ModBlocks;
+import net.adinvas.prototype_pain.blocks.medical_mixer.MedicalMixerScreen;
 import net.adinvas.prototype_pain.compat.prototype_physics.PhysicsEvents;
 import net.adinvas.prototype_pain.config.ClientConfig;
 import net.adinvas.prototype_pain.config.ServerConfig;
@@ -60,6 +62,7 @@ public class PrototypePain {
         ModItems.ITEMS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModRecipes.register(modEventBus);
         ModLootModifier.register(modEventBus);
         ModCreativeTab.CREATIVE_TABS.register(modEventBus);
@@ -94,6 +97,7 @@ public class PrototypePain {
             MenuScreens.register(ModMenus.MEDIUM_MEDIBAG.get(), MediumMedibagScreen::new);
             MenuScreens.register(ModMenus.LARGE_MEDIBAG.get(), LargeMedibagScreen::new);
             MenuScreens.register(ModMenus.LOOT_PLAYER.get(),LootPlayerScreen::new);
+            MenuScreens.register(ModMenus.MEDICAL_MIXER.get(), MedicalMixerScreen::new);
         }
 
         @SubscribeEvent

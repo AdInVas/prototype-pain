@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.blocks;
 
 import net.adinvas.prototype_pain.PrototypePain;
+import net.adinvas.prototype_pain.blocks.medical_mixer.MedicalMixerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -22,6 +23,8 @@ public class ModBlocks {
     public static final RegistryObject<Block> SCAV_BLOCK = BLOCKS.register("scav_plushie",()-> new ScavBlock(
             BlockBehaviour.Properties.of().instabreak().noOcclusion().noCollission()
     ));
+
+    public static final RegistryObject<Block> MEDICAL_MIXER = BLOCKS.register("medical_mixer",()->new MedicalMixerBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noCollission()));
 
 
 

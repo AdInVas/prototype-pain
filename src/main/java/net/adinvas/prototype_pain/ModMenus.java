@@ -1,12 +1,15 @@
 package net.adinvas.prototype_pain;
 
+import net.adinvas.prototype_pain.blocks.medical_mixer.MedicalMixerMenu;
 import net.adinvas.prototype_pain.item.special.bags.large.LargeMedibagMenu;
 import net.adinvas.prototype_pain.item.special.bags.medium.MediumMedibagMenu;
 import net.adinvas.prototype_pain.item.special.bags.small.SmallMedibagMenu;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -45,4 +48,13 @@ public class ModMenus {
                 Player target = (Player) inv.player.level().getEntity(targetId);
                 return new LootPlayerMenu(id, inv, target);
             }));
+
+
+    public static final RegistryObject<MenuType<MedicalMixerMenu>> MEDICAL_MIXER =
+            registerMenuType("medical_mixer_menu",MedicalMixerMenu::new);
+
+
+    public static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory){
+        return MENUS.register(name, ()->IForgeMenuType.create(factory));
+    }
 }

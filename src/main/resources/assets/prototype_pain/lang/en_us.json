@@ -393,6 +393,8 @@
   "item.prototype_pain.experimental_treatment.description2": "EXPERIMENTAL TREATMENT EX-8UN, For authorized Study participants only. Effects may include:",
   "item.prototype_pain.experimental_treatment.description3": "Mild dizziness ;Permanent dizziness ;Energy ;Lethargy ;Metallic taste ;Sudden bleeding ;Cardiac arrest;Minor brain damage ;Major brain damage ; Respiratory arrest; Deja vu; Paranoia; Loss of limbs; Grow of limbs; Hunger; Vomiting; Deja vu; Memory loss...",
   "item.prototype_pain.experimental_treatment.description4": "The list goes on for another 2 lines.",
-  "prototype_pain.multi_tank.hint": "Press SHIFT for fluid description"
+  "prototype_pain.multi_tank.hint": "Press SHIFT for fluid description",
+  "prototype_pain.tooltip.liquid.amount.with.capacity": "%s / %s mb",
+  "prototype_pain.tooltip.liquid.amount": "%s mb"
 
 }
