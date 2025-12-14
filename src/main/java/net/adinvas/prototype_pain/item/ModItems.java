@@ -87,4 +87,7 @@ public class ModItems {
 
     public static final RegistryObject<Item> ScavPlush = ITEMS.register("plush",()->
             new BlockItem(ModBlocks.SCAV_BLOCK.get(),new Item.Properties()));
+
+    public static final RegistryObject<Item> MedicalMixer = ITEMS.register("medical_mixer",()->
+            new BlockItem(ModBlocks.MEDICAL_MIXER.get(),new Item.Properties()));
 }

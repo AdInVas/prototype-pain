@@ -24,7 +24,7 @@ public class ModBlocks {
             BlockBehaviour.Properties.of().instabreak().noOcclusion().noCollission()
     ));
 
-    public static final RegistryObject<Block> MEDICAL_MIXER = BLOCKS.register("medical_mixer",()->new MedicalMixerBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).noCollission()));
+    public static final RegistryObject<Block> MEDICAL_MIXER = BLOCKS.register("medical_mixer",()->new MedicalMixerBlock(BlockBehaviour.Properties.copy(Blocks.OAK_PLANKS)));
 
 
 

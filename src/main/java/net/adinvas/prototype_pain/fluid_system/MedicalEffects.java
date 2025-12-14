@@ -4,9 +4,6 @@ package net.adinvas.prototype_pain.fluid_system;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
@@ -278,6 +275,15 @@ public class MedicalEffects {
                 h.applyPain(Limb.HEAD,ml*2.5f);
                 h.setLimbMuscleHealth(Limb.HEAD, h.getLimbMuscleHealth(Limb.HEAD)-10*ml);
                 h.setTemperature(h.getTemperature()+0.5f*ml);
+            });
+        }
+    };
+
+    public static final MedicalEffect CHOCOLATE_MILK = new MedicalEffect() {
+        @Override
+        public void applyIngested(ServerPlayer player, float ml) {
+            player.getCapability(PlayerHealthProvider.PLAYER_HEALTH_DATA).ifPresent(h -> {
+                h.setTemperature(h.getTemperature()-0.01f*ml);
             });
         }
     };

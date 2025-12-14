@@ -1,6 +1,10 @@
 package net.adinvas.prototype_pain;
 
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -101,6 +105,20 @@ public class Util {
         if (name.contains("molten")||name.contains("metal")||name.contains("iron")||name.contains("steel"))return ModMedicalFluids.GENERIC_HOT.get();
         if (name.contains("toxic")||name.contains("poison"))return ModMedicalFluids.GENERIC_TOXIC.get();
         return ModMedicalFluids.GENERIC_BAD.get();
+    }
+
+    public static String formatDuration(int totalSeconds) {
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        if (totalSeconds < 60) {
+            return seconds + "s";
+        } else if (totalSeconds < 3600) {
+            return minutes + "m " + seconds + "s";
+        } else {
+            return hours + "h " + minutes + "m " + seconds + "s";
+        }
     }
 
 

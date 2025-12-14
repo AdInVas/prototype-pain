@@ -28,6 +28,7 @@ public class ModMedicalFluids {
     public static final RegistryObject<MedicalFluid> NALOXONE = MEDICAL_FLUIDS.register("naloxone", () -> new MedicalFluid(MedicalEffects.NALOXONE, 0xf2abff));
     public static final RegistryObject<MedicalFluid> REACTION_LIQUID = MEDICAL_FLUIDS.register("reaction_liquid", () -> new MedicalFluid(MedicalEffects.WATER, 0xbceb23));
     public static final RegistryObject<MedicalFluid> CLEAN_WATER = MEDICAL_FLUIDS.register("clean_water",()->new MedicalFluid(MedicalEffects.WATER,0x5276d1));
+    public static final RegistryObject<MedicalFluid> CHOCO_MILK = MEDICAL_FLUIDS.register("chocolate_milk",()->new MedicalFluid(MedicalEffects.CHOCOLATE_MILK,0x2e251c));
     // Generic variant
     public static final RegistryObject<MedicalFluid> VANILLA_WATER = MEDICAL_FLUIDS.register("v_water", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x0349fc));
     public static final RegistryObject<MedicalFluid> VANILLA_LAVA = MEDICAL_FLUIDS.register("v_lava", () -> new FallbackMedicalFluid(MedicalEffects.VANILLA_LAVA, 0xfc4103));

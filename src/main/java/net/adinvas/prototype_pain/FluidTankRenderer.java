@@ -41,7 +41,7 @@ public class FluidTankRenderer {
     private final int width;
     private final int height;
 
-    enum TooltipMode {
+    public enum TooltipMode {
         SHOW_AMOUNT,
         SHOW_AMOUNT_AND_CAPACITY,
         ITEM_LIST
@@ -187,7 +187,7 @@ public class FluidTankRenderer {
                 MutableComponent amountString = Component.translatable("prototype_pain.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                MutableComponent amountString = Component.translatable("prototype_pain.tooltip.liquid.amount", nf.format(milliBuckets));
+                MutableComponent amountString = Component.translatable("prototype_pain.tooltip.liquid.amount", milliBuckets);
                 tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
             }
         } catch (RuntimeException e) {

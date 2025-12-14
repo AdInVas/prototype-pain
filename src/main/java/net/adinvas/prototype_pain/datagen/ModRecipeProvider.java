@@ -1,8 +1,12 @@
 package net.adinvas.prototype_pain.datagen;
 
+import net.adinvas.prototype_pain.ModMedicalFluids;
 import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.item.ModItems;
+import net.adinvas.prototype_pain.recipe.MedicalMixerRecipe;
+import net.adinvas.prototype_pain.recipe.MedicalMixerRecipeBuilder;
 import net.adinvas.prototype_pain.tags.ModItemTags;
+import net.adinvas.prototype_pain.tags.ModMedicalFluidTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +16,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.minecraftforge.fluids.FluidStack;
+import sereneseasons.init.ModTags;
 
 import java.util.function.Consumer;
 
@@ -174,5 +182,155 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('D',Items.DIAMOND)
                 .unlockedBy("has_poppy", has(Items.AIR))
                 .save(consumer);
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Fluids.WATER,10)
+                .input(new ItemStack(ModItems.GLOW_FRUIT.get(),1))
+                .output(ModMedicalFluids.REACTION_LIQUID.get(),10)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"reaction_liquid"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Fluids.WATER,25)
+                .input(new ItemStack(Items.POPPY,1))
+                .input(new ItemStack(Items.SUGAR,2))
+                .output(ModMedicalFluids.OPIUM.get(),25)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"opium"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.MILK_BUCKET,1)
+                .input(Items.COCOA_BEANS,8)
+                .output(ModMedicalFluids.CHOCO_MILK.get(),1000)
+                .output(Items.BUCKET,1)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"chocolate_milk"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModItemTags.ALCOHOL_CREATABLE,4)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),10)
+                .input(Fluids.WATER,100)
+                .output(ModMedicalFluids.ALCOHOL.get(),100)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"alcohol"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModItemTags.ALCOHOL_CREATABLE,4)
+                .input(Fluids.WATER,100)
+                .processingTime(6000)
+                .output(ModMedicalFluids.ALCOHOL.get(),100)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"alcohol_slow"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.DISINFECTING,100)
+                .input(ModItemTags.DRESSINGS,1)
+                .processingTime(200)
+                .output(ModItems.SterilizedDressing.get(),1)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"sterilized_dressing"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModMedicalFluids.OPIUM.get(),100)
+                .input(Items.FERMENTED_SPIDER_EYE,1)
+                .output(ModMedicalFluids.MORPHINE.get(),50)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"morphine"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.FERMENTED_SPIDER_EYE,1)
+                .input(Items.SUGAR,2)
+                .input(Fluids.WATER,100)
+                .output(ModMedicalFluids.HEROIN.get(),100)
+                .processingTime(1200)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"heroin"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.GLISTERING_MELON_SLICE,4)
+                .input(Items.FERMENTED_SPIDER_EYE,1)
+                .input(ModMedicalFluids.MORPHINE.get(),40)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),10)
+                .output(ModMedicalFluids.FENTANYL.get(),5)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"fentanyl"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.SUGAR,2)
+                .inputM(ModMedicalFluidTags.OPIOIDS,25)
+                .output(ModMedicalFluids.PAINKILLERS.get(), 50)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"painkillers"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ItemTags.FISHES,8)
+                .input(Items.EGG,2)
+                .input(Fluids.WATER,20)
+                .input(Items.GOLD_INGOT,1)
+                .output(ModMedicalFluids.BRAINGROW.get(),20)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"brain_grow"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModMedicalFluids.ALCOHOL.get(),100)
+                .input(Items.GUNPOWDER,1)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),10)
+                .output(ModMedicalFluids.ANTISEPTIC.get(),50)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"antiseptic"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.OPIOIDS,10)
+                .input(Items.SLIME_BALL,1)
+                .input(Fluids.WATER,100)
+                .output(ModMedicalFluids.RELIEF_CREAM.get(), 100)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"relief_cream"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Fluids.WATER,250)
+                .input(Items.SUGAR,1)
+                .output(ModMedicalFluids.SALINE.get(), 250)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"saline"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.BROWN_MUSHROOM,1)
+                .input(Items.SUGAR,1)
+                .input(Items.FERMENTED_SPIDER_EYE,1)
+                .output(ModMedicalFluids.ANTIBIOTICS.get(), 10)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"antibiotics"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModMedicalFluids.ANTIBIOTICS.get(),50)
+                .input(Fluids.WATER,50)
+                .input(Items.FERMENTED_SPIDER_EYE,1)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),10)
+                .output(ModMedicalFluids.ANTISERUM.get(), 25)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"antiserum"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ModMedicalFluids.ANTISERUM.get(),10)
+                .input(Fluids.WATER,10)
+                .output(ModMedicalFluids.ANTISERUM.get(), 20)
+                .processingTime(3000)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"antiserum_grow"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .processingTime(200)
+                .input(Fluids.WATER,10)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),50)
+                .input(Items.GUNPOWDER,1)
+                .output(ModMedicalFluids.CEFTRIAXONE.get(), 20)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"ceftriaxone"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.SPIDER_EYE,2)
+                .input(Items.SUGAR,1)
+                .input(Fluids.WATER,20)
+                .output(ModMedicalFluids.PROCOAGULANT.get(),20)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"procoagulant"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(Items.SUGAR,1)
+                .input(Items.GUNPOWDER,2)
+                .input(Items.GLOWSTONE_DUST,1)
+                .input(Fluids.WATER,20)
+                .output(ModMedicalFluids.STREPTOKINASE.get(), 20)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"streptokinase"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.OPIOIDS,50)
+                .input(Items.GLISTERING_MELON_SLICE,2)
+                .output(ModMedicalFluids.NALOXONE.get(),25)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"naloxone"));
+
+
     }
 }

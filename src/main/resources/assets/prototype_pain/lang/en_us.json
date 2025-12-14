@@ -227,6 +227,9 @@
   "medical_fluid.prototype_pain.reaction_liquid": "Reaction Liquid",
   "medical_fluid.prototype_pain.reaction_liquid.description": "Slightly acidic liquid made from glow fruits. Has some reactive properties.",
 
+  "medical_fluid.prototype_pain.chocolate_milk": "Chocolate Milk",
+  "medical_fluid.prototype_pain.chocolate_milk.description": "Who doesn't like chocolate milk?",
+
 
   "key.protoype_pain.open_pain_gui": "Open Health Screen",
   "key.protoype_pain.give_up": "Give Up",
@@ -395,6 +398,7 @@
   "item.prototype_pain.experimental_treatment.description4": "The list goes on for another 2 lines.",
   "prototype_pain.multi_tank.hint": "Press SHIFT for fluid description",
   "prototype_pain.tooltip.liquid.amount.with.capacity": "%s / %s mb",
-  "prototype_pain.tooltip.liquid.amount": "%s mb"
+  "prototype_pain.tooltip.liquid.amount": "%s mb",
+  "block.prototype_pain.medical_mixer": "Medical Mixer"
 
 }

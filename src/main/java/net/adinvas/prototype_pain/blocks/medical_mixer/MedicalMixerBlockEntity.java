@@ -6,8 +6,13 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.blocks.ModBlockEntities;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.adinvas.prototype_pain.fluid_system.ModFluids;
+import net.adinvas.prototype_pain.item.INbtDrivenDurability;
 import net.adinvas.prototype_pain.network.FluidSyncS2CPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
+import net.adinvas.prototype_pain.recipe.MedicalMixerRecipe;
+import net.adinvas.prototype_pain.recipe.ModRecipes;
+import net.adinvas.prototype_pain.recipe.ingridients.FluidIngredient;
+import net.adinvas.prototype_pain.recipe.ingridients.ItemIngredient;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -43,10 +48,13 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider {
     private final ItemStackHandler itemHandler = new ItemStackHandler(19);
-    private IFluidHandler fluidHandler = new IFluidHandler() {
+    private final IFluidHandler fluidHandler = new IFluidHandler() {
         @Override
         public int getTanks() {
             return Tanks.length;
@@ -64,69 +72,77 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
 
         @Override
         public boolean isFluidValid(int i, @NotNull FluidStack fluidStack) {
-            if (i>2)return false;
+            if (i > 2) return false; // only input tanks accept external fill
             FluidStack innerStack = getFluidInTank(i);
-            return isSameFluidAndOrSameTag(innerStack,fluidStack);
+            return isSameFluidAndOrSameTag(innerStack, fluidStack) || innerStack.isEmpty();
         }
 
-        public boolean isSameFluidAndOrSameTag(FluidStack innerStack,FluidStack fluidStack){
-            if (innerStack.isFluidEqual(fluidStack))return true;
+        private boolean isSameFluidAndOrSameTag(FluidStack innerStack, FluidStack fluidStack) {
+            if (innerStack.isFluidEqual(fluidStack)) return true;
             return (innerStack.getTag() == null && fluidStack.getTag() == null)
                     || (innerStack.getTag() != null && innerStack.getTag().equals(fluidStack.getTag()));
         }
 
         @Override
-        public int fill(FluidStack fluidStack, FluidAction fluidAction) {
-            for (int i = 0; i < Tanks.length; i++) {
+        public int fill(FluidStack resource, FluidAction action) {
+            int remaining = resource.getAmount();
+
+            // Fill input tanks 0–2
+            for (int i = 0; i <= 2; i++) {
                 FluidTank tank = Tanks[i];
-                if (i>2)return 0;
+                if (!isFluidValid(i, resource)) continue;
+                FluidStack stack = resource.copy();
+                stack.setAmount(remaining);
 
-                // Only fill tanks that are valid for this fluid
-                if (!isFluidValid(i, fluidStack)) continue;
-
-                // Use the tank's internal fill
-                int filled = tank.fill(fluidStack, fluidAction);
-                if (filled > 0 && fluidAction.execute()) {
-                    setChanged();
-                }
-                return filled;
+                int filled = tank.fill(stack, action);
+                if (filled > 0 && action.execute()) setChanged();
+                remaining -= filled;
+                if (remaining <= 0) break;
             }
-            return 0;
+
+            return resource.getAmount() - remaining;
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack fluidStack, FluidAction fluidAction) {
-            if (fluidStack.isEmpty()) return FluidStack.EMPTY;
+        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            int remaining = resource.getAmount();
+            FluidStack drainedTotal = new FluidStack(resource.getFluid(), 0);
 
-            for (FluidTank tank : Tanks) {
-                if (isSameFluidAndOrSameTag(tank.getFluid(),fluidStack)){
-                    FluidStack drained = tank.drain(fluidStack.getAmount(),fluidAction);
-                    if (!drained.isEmpty()){
-                        if (fluidAction.execute()){
-                            setChanged();
-                        }
-                        return drained;
-                    }
-                }
+            // Drain only from output tanks 3–5
+            for (int i = 3; i <= 5; i++) {
+                FluidTank tank = Tanks[i];
+                if (!isSameFluidAndOrSameTag(tank.getFluid(), resource)) continue;
+
+                int toDrain = Math.min(tank.getFluid().getAmount(), remaining);
+                FluidStack drained = tank.drain(toDrain, action);
+                if (drained.isEmpty())return FluidStack.EMPTY;
+                drainedTotal.grow(drained.getAmount());
+                remaining -= drained.getAmount();
+                if (remaining <= 0) break;
             }
-            return FluidStack.EMPTY;
+
+            return drainedTotal;
         }
 
         @Override
-        public @NotNull FluidStack drain(int i, FluidAction fluidAction) {
-            if (i <= 0) return FluidStack.EMPTY;
-            for (FluidTank tank : Tanks) {
-                if (!tank.isEmpty()) {
-                    FluidStack drained = tank.drain(i, fluidAction);
-                    if (!drained.isEmpty()) {
-                        if (fluidAction.execute()){
-                            setChanged();
-                        }
-                        return drained;
-                    }
-                }
+        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+            FluidStack drainedTotal = FluidStack.EMPTY;
+
+            // Drain only from output tanks 3–5
+            for (int i = 3; i <= 5; i++) {
+                FluidStack inTank = Tanks[i].getFluid();
+                if (inTank.isEmpty()) continue;
+
+                int toDrain = Math.min(inTank.getAmount(), maxDrain - drainedTotal.getAmount());
+                FluidStack drained = Tanks[i].drain(toDrain, action);
+
+                if (drainedTotal.isEmpty()) drainedTotal = drained.copy();
+                else drainedTotal.grow(drained.getAmount());
+
+                if (drainedTotal.getAmount() >= maxDrain) break;
             }
-            return FluidStack.EMPTY;
+
+            return drainedTotal;
         }
     };
     private final int TANK_CAPACITY = 1000;
@@ -200,6 +216,14 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
         if (id>=0&&id<Tanks.length)
             return Tanks[id].getFluid();
         return FluidStack.EMPTY;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public int getMaxProgress() {
+        return maxProgress;
     }
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
@@ -330,14 +354,22 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
             int internalTankIndex = slot - 10;
             FluidTank internalTank = Tanks[internalTankIndex];
 
+            int finalSlot = slot;
             itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(itemTank -> {
-                FluidStack simulatedDrain = itemTank.drain(100, IFluidHandler.FluidAction.SIMULATE);
+                FluidStack simulatedDrain = itemTank.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+                if (simulatedDrain.isEmpty()) return;
+
                 int filled = internalTank.fill(simulatedDrain, IFluidHandler.FluidAction.SIMULATE);
-                if (filled > 0) {
-                    FluidStack drained = itemTank.drain(filled, IFluidHandler.FluidAction.EXECUTE);
-                    internalTank.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-                    setChanged();
-                }
+                if (filled <= 0) return;
+
+                FluidStack drained = itemTank.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                internalTank.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+
+                // 🔴 THIS IS THE MISSING PART
+                ItemStack newContainer = itemTank.getContainer();
+                itemHandler.setStackInSlot(finalSlot, newContainer);
+
+                setChanged();
             });
         }
 
@@ -349,16 +381,25 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
             int internalTankIndex = slot - 13;
             FluidTank internalTank = Tanks[internalTankIndex];
 
+            int finalSlot = slot;
             stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(itemTank -> {
-                FluidStack fluidToFill = internalTank.getFluid().copy();
-                if (fluidToFill.isEmpty()) return;
-                fluidToFill.setAmount(Math.min(100, fluidToFill.getAmount()));
-                int filled = itemTank.fill(fluidToFill, IFluidHandler.FluidAction.SIMULATE);
-                if (filled > 0) {
-                    FluidStack toDrain = internalTank.drain(filled, IFluidHandler.FluidAction.EXECUTE);
-                    itemTank.fill(toDrain, IFluidHandler.FluidAction.EXECUTE);
-                    setChanged();
-                }
+                FluidStack available = internalTank.getFluid();
+                if (available.isEmpty()) return;
+
+                FluidStack toFill = available.copy();
+                toFill.setAmount(Math.min(1000, toFill.getAmount()));
+
+                int filled = itemTank.fill(toFill, IFluidHandler.FluidAction.SIMULATE);
+                if (filled <= 0) return;
+
+                FluidStack drained = internalTank.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                itemTank.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+
+                // 🔴 REQUIRED
+                ItemStack newContainer = itemTank.getContainer();
+                itemHandler.setStackInSlot(finalSlot, newContainer);
+
+                setChanged();
             });
         }
 
@@ -394,51 +435,65 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
     private void increseCraftingProgress() {
         progress++;
     }
-
+    private MedicalMixerRecipe cashedRecipe;
     private boolean hasRecipe() {
-        boolean hasCraftingRecipe = hasItemInInputSlot(Items.CHARCOAL,4)&&
-                hasFluidInInputTanks(new FluidStack(Fluids.WATER,1000));
+        List<MedicalMixerRecipe> recipes = this.level.getRecipeManager().getAllRecipesFor(ModRecipes.MEDICAL_MIXER_RECIPE.get());
 
-        FluidStack[] fluidResult = {
-                makeMedicalFluid(ModMedicalFluids.CLEAN_WATER.get(), 500)
-        };
-        ItemStack[] itemResults = {
+        for (MedicalMixerRecipe recipe:recipes){
 
-        };
-        return hasCraftingRecipe &&
-                canInsertInOutputSlot(itemResults) &&
-                canInsertInOutputTank(fluidResult);
+            if(recipe.matches(itemHandler,getFluidsinTanks())){
+
+                if (canInsertInOutputSlot(recipe.getItemOutputs().toArray(new ItemStack[0])) &&
+                        canInsertInOutputTank(recipe.getFluidOutputs().toArray(new FluidStack[0]))){
+                    cashedRecipe = recipe;
+                    maxProgress = cashedRecipe.getProcessingTime();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<FluidStack> getFluidsinTanks() {
+        List<FluidStack> stacks = new ArrayList<>();
+        for (FluidTank tank: Tanks){
+            stacks.add(tank.getFluid());
+        }
+        return stacks;
     }
 
     private void craftItem() {
-        FluidStack[] fluidResult = {
-                makeMedicalFluid(ModMedicalFluids.CLEAN_WATER.get(), 500)
-        };
-        ItemStack[] itemResults = {
+        if (cashedRecipe!=null){
+            List<ItemIngredient> inputitems = cashedRecipe.getItemInputs();
+            for (ItemIngredient ingredient:inputitems){
+                ingredient.consume(itemHandler,0,4);
+            }
+            List<FluidIngredient> inputfluids = cashedRecipe.getFluidInputs();
+            for (FluidIngredient ingredient: inputfluids){
+                extractFluidFromInputTanks(ingredient.getAsFluidStack());
+            }
+            List<ItemStack> stacks = cashedRecipe.getItemOutputs();
+            addItemsToOutputSlot(stacks.toArray(new ItemStack[0]));
+            List<FluidStack> fluidOutputs = cashedRecipe.getFluidOutputs();
+            addFluidsToOutputTanks(fluidOutputs.toArray(new FluidStack[0]));
+            setChanged();
 
-        };
-        extractItemFromInputSlots(Items.CHARCOAL,4);
-        extractFluidFromInputTanks(new FluidStack(Fluids.WATER,1000));
-
-        addItemsToOutputSlot(itemResults);
-        addFluidsToOutputTanks(fluidResult);
-        setChanged();
+        }
     }
 
     private void addFluidsToOutputTanks(FluidStack[] fluidResult) {
         for (FluidStack fs : fluidResult){
+            PrototypePain.LOGGER.info(" t {}",fs.getOrCreateTag().getString("MedicalId"));
             for (int i=0;i<Tanks.length;i++){
                 if (i<=2)continue;
                 FluidTank tank = Tanks[i];
                 if (tank.isEmpty()){
                     tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
-                    PrototypePain.LOGGER.info("filled");
                     break;
                 }
                 FluidStack fluidStack = tank.getFluid();
                 if (isSameFluidAndOrSameTag(fs,fluidStack)){
                     tank.fill(fs, IFluidHandler.FluidAction.EXECUTE);
-                    PrototypePain.LOGGER.info("filled");
                     break;
                 }
             }
@@ -446,42 +501,47 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
     }
 
     private void addItemsToOutputSlot(ItemStack[] itemResults) {
-        for (ItemStack itemStack : itemResults){
-            for (int i = 5; i < itemHandler.getSlots(); i++) {
-                if (i > 9) break;
-                ItemStack toCheck = itemHandler.getStackInSlot(i);
-                if (toCheck.isEmpty()) {
-                    itemHandler.insertItem(i,itemStack,false);
-                    break;
-                }
-                if (itemStack.is(toCheck.getItem())) {
-                    if (toCheck.getCount() + itemStack.getCount() <= toCheck.getMaxStackSize()) {
-                        itemHandler.insertItem(i,new ItemStack(toCheck.getItem(),toCheck.getCount()+itemStack.getCount()),false);
-                        break;
+        for (ItemStack itemStack : itemResults) {
+            int amountLeft = itemStack.getCount();
+            Item item = itemStack.getItem();
+
+            for (int i = 5; i <= 9 && amountLeft > 0; i++) {
+                ItemStack slotStack = itemHandler.getStackInSlot(i);
+
+                if (slotStack.isEmpty()) {
+                    ItemStack toInsert = new ItemStack(item, amountLeft);
+                    if (toInsert.getItem() instanceof INbtDrivenDurability nbtDrivenDurability){
+                        nbtDrivenDurability.setupDefaults(toInsert);
                     }
+                    ItemStack leftover = itemHandler.insertItem(i, toInsert, false);
+                    amountLeft = leftover.getCount();
+                } else if (slotStack.is(item)) {
+                    ItemStack toInsert = new ItemStack(item, amountLeft);
+                    if (toInsert.getItem() instanceof INbtDrivenDurability nbtDrivenDurability){
+                        nbtDrivenDurability.setupDefaults(toInsert);
+                    }
+                    ItemStack leftover = itemHandler.insertItem(i, toInsert, false);
+                    amountLeft = leftover.getCount();
                 }
+            }
+
+            if (amountLeft > 0) {
+                PrototypePain.LOGGER.warn("Could not insert full output stack of " + itemStack.getItem() + ", leftover: " + amountLeft);
             }
         }
     }
 
-    private void extractFluidFromInputTanks(FluidStack fluidStack) {
+    private void extractFluidFromInputTanks(FluidStack toDrain) {
+        int remaining = toDrain.getAmount();
+
         for (FluidTank tank : Tanks) {
             FluidStack inTank = tank.getFluid();
-            if (isSameFluidAndOrSameTag(inTank, fluidStack)) {
-                tank.drain(fluidStack.getAmount(), IFluidHandler.FluidAction.EXECUTE);
-                return;
-            }
-        }
-    }
+            if (isSameFluidAndOrSameTagExtended(inTank, toDrain) && !inTank.isEmpty()) {
+                int drainedAmount = Math.min(inTank.getAmount(), remaining);
+                tank.drain(drainedAmount, IFluidHandler.FluidAction.EXECUTE);
+                remaining -= drainedAmount;
 
-    private void extractItemFromInputSlots(Item item, int count) {
-        for (int i=0;i<itemHandler.getSlots();i++){
-            ItemStack stack = itemHandler.getStackInSlot(i);
-            if (stack.getItem()==item){
-                if (stack.getCount()>=count){
-                    itemHandler.extractItem(i,count,false);
-                    return;
-                }
+                if (remaining <= 0) return; // fully drained
             }
         }
     }
@@ -505,8 +565,7 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
     private boolean canInsertInOutputSlot(ItemStack[] itemResults) {
         for (ItemStack itemResult : itemResults) {
             boolean filled = false;
-            for (int i = 0; i < itemHandler.getSlots(); i++) {
-                if (i <= 4) continue;
+            for (int i = 5; i < itemHandler.getSlots(); i++) {
                 if (i > 9) break;
                 ItemStack toCheck = itemHandler.getStackInSlot(i);
                 if (toCheck.isEmpty()) {
@@ -526,19 +585,7 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
     }
 
 
-    private boolean hasFluidInInputTanks(FluidStack fluidStack) {
-        for (int i=0;i<Tanks.length;i++){
-            if (i>2)break;
-            FluidTank tank = Tanks[i];
-            FluidStack fs = tank.getFluid();
-            if (isSameFluidAndOrSameTag(fs,fluidStack)){
-                if (fs.getAmount()>=fluidStack.getAmount()){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+
 
     public boolean isSameFluidAndOrSameTag(FluidStack innerStack,FluidStack fluidStack){
         if (innerStack.isFluidEqual(fluidStack))return true;
@@ -546,24 +593,38 @@ public class MedicalMixerBlockEntity extends BlockEntity implements MenuProvider
                 || (innerStack.getTag() != null && innerStack.getTag().equals(fluidStack.getTag()));
     }
 
-    private boolean hasItemInInputSlot(Item item,int count) {
-        for (int i =0;i<itemHandler.getSlots();i++){
-            if (i>4)break;
-            ItemStack stack = itemHandler.getStackInSlot(i);
-            if (stack.getItem() == item){
-                if (stack.getCount()>=count){
-                    return true;
+    public boolean isSameFluidAndOrSameTagExtended(FluidStack stack, FluidStack other) {
+        if (stack.isEmpty() || other.isEmpty()) return false;
+
+        // Exact fluid equality
+        if (stack.getFluid().isSame(other.getFluid())) {
+            // Check NBT if present
+            if (stack.hasTag() && other.hasTag()) {
+                return stack.getTag().equals(other.getTag());
+            }
+            return true;
+        }
+
+        // Forge fluid tags
+        for (FluidIngredient ingredient : cashedRecipe.getFluidInputs()) {
+            if (ingredient.getFluidTag() != null && other.getFluid().is(ingredient.getFluidTag())) return true;
+
+            // MedicalFluid tag
+            if (ingredient.getMedicalTag() != null
+                    && other.getFluid().isSame(ModFluids.SRC_MEDICAL.get())
+                    && other.hasTag()
+            ) {
+                String id = other.getTag().getString("MedicalId");
+                if (!id.isEmpty()) {
+                    MedicalFluid medical = MedicalFluid.getFromId(id);
+                    if (medical != null && medical.is(ingredient.getMedicalTag())) return true;
                 }
             }
         }
+
         return false;
     }
 
-    public FluidStack makeMedicalFluid(MedicalFluid medicalFluid,int amount){
-        FluidStack stack = new FluidStack(ModFluids.SRC_MEDICAL.get().getSource(),amount);
-        stack.getOrCreateTag().putString("MedicalId",medicalFluid.getRegistryId().toString());
-        return stack;
-    }
 
     public void sendUpdates(Level pLevel, Player pPlayer) {
         if (pLevel.isClientSide())return;

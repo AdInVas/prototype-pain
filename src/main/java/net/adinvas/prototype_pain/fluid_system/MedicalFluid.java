@@ -4,8 +4,13 @@ package net.adinvas.prototype_pain.fluid_system;
 import net.adinvas.prototype_pain.ModMedicalRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.tags.TagLoader;
+import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class MedicalFluid {
@@ -63,5 +68,9 @@ public class MedicalFluid {
     }
     public boolean showInTooltip(ItemStack stack){
         return true;
+    }
+
+    public boolean is(TagKey<MedicalFluid> tagKey){
+        return ModMedicalRegistry.REGISTRY.get().tags().getTag(tagKey).contains(this);
     }
 }

@@ -17,11 +17,12 @@ public class MedicalFluidType extends FluidType {
 
     @Override
     public String getDescriptionId(FluidStack stack) {
-        MedicalFluid med = MedicalFluid.getFromId(stack.getTag().getString("MedicalId"));
-        if (med!=null)
-            return med.getNameId();
-
-        return stack.getTag().getString("MedicalId");
+        if (stack.hasTag()){
+            MedicalFluid med = MedicalFluid.getFromId(stack.getTag().getString("MedicalId"));
+            if (med!=null)
+                return med.getNameId();
+        }
+        return "";
     }
 
     @Override
