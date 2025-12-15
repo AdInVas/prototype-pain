@@ -26,7 +26,7 @@ public class DataGenretors {
 
         generator.addProvider(event.includeServer(),new ModWorldGenProvider(output,lookupProvider));
         generator.addProvider(event.includeServer(),new ModGlobaLootModifiersProvider(output));
-        generator.addProvider(event.includeServer(),new ModRecipeProvider(output));
+
         generator.addProvider(event.includeServer(), ModLootTableProvider.create(output));
         ModBlockTagGenerator blockTagGenerator = generator.addProvider(event.includeServer(),
                 new ModBlockTagGenerator(output, lookupProvider, existingFileHelper));
@@ -42,5 +42,9 @@ public class DataGenretors {
                     )
             );
         }
+
+
+
+        generator.addProvider(event.includeServer(),new ModRecipeProvider(output));
     }
 }

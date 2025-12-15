@@ -25,7 +25,7 @@ public class BottleItem extends MultiTankFluidItem implements ISimpleMedicalUsab
 
     @Override
     public int getCapacity() {
-        return 400;
+        return 250;
     }
 
     @Override

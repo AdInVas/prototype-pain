@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain.fluid_system;
 
 
+import net.adinvas.prototype_pain.ModMedicalFluids;
 import net.adinvas.prototype_pain.ModMedicalRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.tags.TagNetworkSerialization;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -72,5 +74,11 @@ public class MedicalFluid {
 
     public boolean is(TagKey<MedicalFluid> tagKey){
         return ModMedicalRegistry.REGISTRY.get().tags().getTag(tagKey).contains(this);
+    }
+
+    public FluidStack getAsStack(int amount){
+        FluidStack stack = new FluidStack(ModFluids.SRC_MEDICAL.get().getSource(),amount);
+        stack.getOrCreateTag().putString("MedicalId",this.getRegistryId().toString());
+        return stack;
     }
 }

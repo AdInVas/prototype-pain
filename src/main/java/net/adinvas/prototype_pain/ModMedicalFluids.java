@@ -1,6 +1,7 @@
 package net.adinvas.prototype_pain;
 
 import net.adinvas.prototype_pain.fluid_system.FallbackMedicalFluid;
+import net.adinvas.prototype_pain.fluid_system.MedicalEffect;
 import net.adinvas.prototype_pain.fluid_system.MedicalEffects;
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -29,6 +30,7 @@ public class ModMedicalFluids {
     public static final RegistryObject<MedicalFluid> REACTION_LIQUID = MEDICAL_FLUIDS.register("reaction_liquid", () -> new MedicalFluid(MedicalEffects.WATER, 0xbceb23));
     public static final RegistryObject<MedicalFluid> CLEAN_WATER = MEDICAL_FLUIDS.register("clean_water",()->new MedicalFluid(MedicalEffects.WATER,0x5276d1));
     public static final RegistryObject<MedicalFluid> CHOCO_MILK = MEDICAL_FLUIDS.register("chocolate_milk",()->new MedicalFluid(MedicalEffects.CHOCOLATE_MILK,0x2e251c));
+    public static final RegistryObject<MedicalFluid> LRD_SERUM = MEDICAL_FLUIDS.register("lrd_serum",()->new MedicalFluid(MedicalEffect.EMPTY,0xebb734));
     // Generic variant
     public static final RegistryObject<MedicalFluid> VANILLA_WATER = MEDICAL_FLUIDS.register("v_water", () -> new FallbackMedicalFluid(MedicalEffects.WATER, 0x0349fc));
     public static final RegistryObject<MedicalFluid> VANILLA_LAVA = MEDICAL_FLUIDS.register("v_lava", () -> new FallbackMedicalFluid(MedicalEffects.VANILLA_LAVA, 0xfc4103));

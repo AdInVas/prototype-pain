@@ -1,5 +1,6 @@
 package net.adinvas.prototype_pain.client.ticksounds;
 
+import net.adinvas.prototype_pain.client.gui.minigames.InjectMingameScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -30,6 +31,10 @@ public class SyringeTickSound extends AbstractTickableSoundInstance {
         this.x = (float) Minecraft.getInstance().player.getX();
         this.y = (float) Minecraft.getInstance().player.getY();
         this.z = (float) Minecraft.getInstance().player.getZ();
+        if (!(Minecraft.getInstance().screen instanceof InjectMingameScreen)){
+            done = true;
+            stop();
+        }
     }
 
     public void setDone(boolean done) {

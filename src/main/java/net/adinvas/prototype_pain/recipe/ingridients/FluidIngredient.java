@@ -77,6 +77,10 @@ public class FluidIngredient {
         return fluidTag != null || medicalTag != null;
     }
 
+    public boolean isNormal(){
+        return fluidTag != null;
+    }
+
     public boolean isMedical() {
         return medicalTag != null;
     }

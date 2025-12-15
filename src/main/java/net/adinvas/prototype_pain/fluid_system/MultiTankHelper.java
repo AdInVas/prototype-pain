@@ -168,12 +168,47 @@ public class MultiTankHelper {
         return drained;
     }
 
+    public static FluidStack drainSpecificFluid(ItemStack stack, float ml, FluidStack target) {
+        MultiFluidTankHandler handler = getHandler(stack);
+        if (handler == null || target.isEmpty() || ml <= 0) {
+            return FluidStack.EMPTY;
+        }
+
+        MultiFluidTank tank = handler.getTank();
+        int toDrain = (int) ml;
+
+        for (FluidStack fs : tank.getFluids()) {
+            if (fs.isEmpty()) continue;
+
+            // Check fluid type
+            if (!fs.isFluidEqual(target)) continue;
+
+            // Check tag equality (both null or equal)
+            if (!Util.tagsEqual(fs.getTag(), target.getTag())) continue;
+
+            int drainedAmount = Math.min(fs.getAmount(), toDrain);
+
+            FluidStack drainRequest = new FluidStack(
+                    fs.getFluid(),
+                    drainedAmount,
+                    fs.hasTag() ? fs.getTag().copy() : null
+            );
+
+            FluidStack drained = tank.drain(drainRequest, IFluidHandler.FluidAction.EXECUTE);
+
+            handler.saveToNBT();
+            return drained;
+        }
+
+        return FluidStack.EMPTY;
+    }
+
     public static void setFluidsDirect(ItemStack stack, Map<FluidStack, Float> fluids) {
         MultiFluidTankHandler handler = getHandler(stack);
         if (handler == null) return;
 
         MultiFluidTank tank = handler.getTank();
-        tank.clearFluids();  // remove everything currently in the tank
+        tank.clearFluids();
 
         for (Map.Entry<FluidStack, Float> entry : fluids.entrySet()) {
             FluidStack key = entry.getKey();
@@ -181,7 +216,6 @@ public class MultiTankHelper {
 
             if (key.isEmpty() || amount <= 0) continue;
 
-            // Create full FluidStack with correct integer amount
             FluidStack fs = key.copy();
             fs.setAmount((int) amount);
 

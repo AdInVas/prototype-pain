@@ -2,6 +2,7 @@ package net.adinvas.prototype_pain;
 
 import net.adinvas.prototype_pain.fluid_system.MedicalFluid;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -119,6 +120,12 @@ public class Util {
         } else {
             return hours + "h " + minutes + "m " + seconds + "s";
         }
+    }
+
+    public static boolean tagsEqual(CompoundTag a, CompoundTag b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
     }
 
 

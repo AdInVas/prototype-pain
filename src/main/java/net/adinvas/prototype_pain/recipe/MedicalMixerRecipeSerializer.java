@@ -187,7 +187,7 @@ public class MedicalMixerRecipeSerializer implements RecipeSerializer<MedicalMix
 
         for (FluidIngredient ing : fluidInputs) {
             if (ing.isTagged()) {
-                if (ing.getFluidTag().registry() == Registries.FLUID) {
+                if (ing.isNormal()) {
                     buf.writeInt(1); // vanilla fluid tag
                     buf.writeResourceLocation(ing.getFluidTag().location());
                 } else {

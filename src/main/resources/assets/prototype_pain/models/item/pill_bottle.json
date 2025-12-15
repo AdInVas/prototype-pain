@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "prototype_pain:item/generic_pill0",
+    "layer1": "prototype_pain:item/generic_pill1"
+  }
+}

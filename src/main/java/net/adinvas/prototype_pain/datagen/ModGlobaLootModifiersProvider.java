@@ -132,5 +132,176 @@ public class ModGlobaLootModifiersProvider extends GlobalLootModifierProvider {
                 ModItems.HeatPack.get()
         ));
 
+        // UUUUUUUUUUUUUU RNADOM
+
+        add("add_alcohol", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.09f * sanityScale).build()
+                },
+                ModItems.AlcoholBottle.get()
+        ));
+
+        add("add_antiseptic", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.075f * sanityScale).build()
+                },
+                ModItems.AntisepticSpray.get()
+        ));
+
+        add("add_relief_cream", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.06f * sanityScale).build()
+                },
+                ModItems.ReliefCreamBottle.get()
+        ));
+
+        add("add_saline", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.07f * sanityScale).build()
+                },
+                ModItems.SalineSyringeItem.get()
+        ));
+
+        add("add_painkillers", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.07f * sanityScale).build()
+                },
+                ModItems.PainkillersPills.get()
+        ));
+
+        add("add_antibiotics", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.06f * sanityScale).build()
+                },
+                ModItems.AntibioticsPills.get()
+        ));
+
+        add("add_ceftriaxone", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.05f * sanityScale).build()
+                },
+                ModItems.CeftriaxoneVial.get()
+        ));
+
+        add("add_naloxone", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.04f * sanityScale).build()
+                },
+                ModItems.NaloxoneVial.get()
+        ));
+
+        add("add_procoagulant", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.04f * sanityScale).build()
+                },
+                ModItems.ProcoagulantInjector.get()
+        ));
+
+        add("add_streptokinase", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.03f * sanityScale).build()
+                },
+                ModItems.StreptokinaseInjector.get()
+        ));
+
+        add("add_antiserum", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.03f * sanityScale).build()
+                },
+                ModItems.AntiserumInjector.get()
+        ));
+
+        add("add_morphine", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.03f * sanityScale).build()
+                },
+                ModItems.MorphineVial.get()
+        ));
+
+        add("add_opium", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.02f * sanityScale).build()
+                },
+                ModItems.OpiumVial.get()
+        ));
+
+        add("add_fentanyl", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.01f * sanityScale).build()
+                },
+                ModItems.FentanylVial.get()
+        ));
+
+        add("add_heroin", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.005f * sanityScale).build()
+                },
+                ModItems.HeroinSyringe.get()
+        ));
+
+        add("add_brain_grow", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.0075f * sanityScale).build()
+                },
+                ModItems.BrainGrowPills.get()
+        ));
+
+        add("add_experimental_treatment", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.0075f * sanityScale).build()
+                },
+                ModItems.ExperimentalTreatment.get()
+        ));
+
+        add("ohhhh_expie_hiiiiiiiii", new AddFilledToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.01f * sanityScale).build()
+                },
+                ModItems.ScavPlush.get()
+        ));
+
+
+
+
+
+
+
+
+
+
+
+        add("add_random_vial",new AddRandomFillToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(0.1f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.MedicineVial.get()
+        ));
+        add("add_random_syringe",new AddRandomFillToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(.1f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.MedicineVial.get()
+        ));
+        add("add_random_bottle",new AddRandomFillToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(.1f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.Bottle.get()
+        ));
+        add("add_random_pill",new AddRandomFillToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(.1f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.PillBottle.get()
+        ));
+        add("add_random_injector",new AddRandomFillToChestsModifier(
+                new LootItemCondition[] {
+                        LootItemRandomChanceCondition.randomChance(.1f*sanityScale).build()
+                },       // no extra conditions
+                ModItems.AutoInjector.get()
+        ));
+
+
+
     }
 }

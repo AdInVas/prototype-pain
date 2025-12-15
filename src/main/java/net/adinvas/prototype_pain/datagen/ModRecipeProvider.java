@@ -11,18 +11,24 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import sereneseasons.init.ModTags;
 
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder {
     public ModRecipeProvider(PackOutput pOutput) {
@@ -331,6 +337,98 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .output(ModMedicalFluids.NALOXONE.get(),25)
                 .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"naloxone"));
 
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.OPIOIDS,25)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),25)
+                .input(ModItemTags.DRESSINGS,1)
+                .input(Items.STRING,1)
+                .output(ModItems.BruiseKit.get(), 1)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"bruise_kit"));
 
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.OPIOIDS,50)
+                .input(ItemTags.WOOL,1)
+                .input(Items.STRING,2)
+                .output(ModItems.MedicalGauze.get(), 1)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"medical_gauze"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .input(ItemTags.WOOL,2)
+                .inputM(ModMedicalFluidTags.DISINFECTING,20)
+                .output(ModItems.AlganateDressing.get(), 1)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"alganate_dressing"));
+
+        MedicalMixerRecipeBuilder.mixer()
+                .inputM(ModMedicalFluidTags.DISINFECTING,25)
+                .inputM(ModMedicalFluidTags.OPIOIDS,25)
+                .input(ModMedicalFluids.REACTION_LIQUID.get(),25)
+                .output(ModMedicalFluids.LRD_SERUM.get(), 25)
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"lrd_serum"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.MakeshiftLRD.get())
+                .pattern(" I ")
+                .pattern("IRI")
+                .pattern("IGI")
+                .define('I',Items.IRON_INGOT)
+                .define('R',Items.REDSTONE)
+                .define('G',Items.GOLD_INGOT)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"m_lrd"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.LRD.get())
+                .pattern(" I ")
+                .pattern("CMC")
+                .pattern("CDC")
+                .define('I',Items.IRON_INGOT)
+                .define('M',ModItems.MakeshiftLRD.get())
+                .define('C',Items.COPPER_INGOT)
+                .define('D',Items.DIAMOND)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"lrd"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ModItems.MedicalMixer.get())
+                .pattern("MMM")
+                .pattern("IPI")
+                .pattern("PGP")
+                .define('M',ModItems.MedicineVial.get())
+                .define('I',Items.IRON_INGOT)
+                .define('P',ItemTags.PLANKS)
+                .define('G',Items.GOLD_INGOT)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"med_mixer"));
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,Items.GLASS_BOTTLE)
+                .requires(ModItemTags.VIAL_ITEMS)
+                .unlockedBy("has_poppy", has(Items.AIR))
+                .save(consumer,new ResourceLocation(PrototypePain.MOD_ID,"all_to_bottle"));
+
+
+
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.MedicineVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.Bottle.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC, ModItems.PillBottle.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.AutoInjector.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.AntiserumInjector.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.StreptokinaseInjector.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.ProcoagulantInjector.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC, ModItems.ReactionLiquidVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC, ModItems.OpiumVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.NaloxoneVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.MorphineVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC,ModItems.FentanylVial.get(),Items.GLASS_BOTTLE);
+        stonecutterResultFromBase(consumer,RecipeCategory.MISC, ModItems.CeftriaxoneVial.get(),Items.GLASS_BOTTLE);
+
+
+
+    }
+
+    protected static void stonecutterResultFromBase(Consumer<FinishedRecipe> pFinishedRecipeConsumer, RecipeCategory pCategory, ItemLike pResult, ItemLike pMaterial) {
+        stonecutterResultFromBase(pFinishedRecipeConsumer, pCategory, pResult, pMaterial, 1);
+    }
+
+    protected static void stonecutterResultFromBase(Consumer<FinishedRecipe> pFinishedRecipeConsumer, RecipeCategory pCategory, ItemLike pResult, ItemLike pMaterial, int pResultCount) {
+        SingleItemRecipeBuilder var10000 = SingleItemRecipeBuilder.stonecutting(Ingredient.of(new ItemLike[]{pMaterial}), pCategory, pResult, pResultCount).unlockedBy(getHasName(pMaterial), has(pMaterial));
+        String var10002 = getConversionRecipeName(pResult, pMaterial);
+        var10000.save(pFinishedRecipeConsumer, var10002 + "_stonecutting");
     }
 }

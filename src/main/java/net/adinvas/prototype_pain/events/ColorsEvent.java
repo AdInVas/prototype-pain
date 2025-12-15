@@ -39,7 +39,8 @@ public class ColorsEvent {
                 ModItems.NaloxoneVial.get(),
                 ModItems.OpiumVial.get(),
                 ModItems.AntiserumInjector.get(),
-                ModItems.ReactionLiquidVial.get()
+                ModItems.ReactionLiquidVial.get(),
+                ModItems.PillBottle.get()
         );
 
     }

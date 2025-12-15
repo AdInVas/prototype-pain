@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.adinvas.prototype_pain.item.INbtDrivenDurability;
+import net.adinvas.prototype_pain.item.multi_tank.MultiTankFluidItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,12 +52,11 @@ public class AddFilledToChestsModifier extends LootModifier {
         ItemStack stack = new ItemStack(this.item);
 
         // (Optional) Random NBT data example
-        /*
-        if (stack.getItem() instanceof MedicalVial vial) {
-            vial.setupDefaults(stack);
+
+        if (stack.getItem() instanceof MultiTankFluidItem vial) {
+            vial.setupDefault(stack);
         }
 
-         */
         if (stack.getItem() instanceof INbtDrivenDurability nbtDrivenDurability){
             nbtDrivenDurability.setupDefaults(stack);
         }

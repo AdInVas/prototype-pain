@@ -63,7 +63,7 @@ public class ModItems {
     public static final RegistryObject<Item> Bottle = ITEMS.register("bottle", BottleItem::new);
     public static final RegistryObject<Item> Syringe = ITEMS.register("syringe", SyringeItem::new);
     public static final RegistryObject<Item> AutoInjector = ITEMS.register("autoinjector",AutoInjectorItem::new);
-
+    public static final RegistryObject<Item> PillBottle = ITEMS.register("pill_bottle",PillContainerItem::new);
 
     public static final RegistryObject<Item> AlcoholBottle = ITEMS.register("alcohol", AlcoholBottleItem::new);
     public static final RegistryObject<Item> AntiserumInjector = ITEMS.register("antiserum",AntiserumInjectorItem::new);

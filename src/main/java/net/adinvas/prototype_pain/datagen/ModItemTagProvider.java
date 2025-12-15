@@ -29,7 +29,21 @@ public class ModItemTagProvider extends ItemTagsProvider {
                     ModItems.MedicalGauze.get(),
                     ModItems.AlganateDressing.get());
 
-        this.tag(ModItemTags.VIAL_ITEMS);
+        this.tag(ModItemTags.VIAL_ITEMS)
+                .add(ModItems.MedicineVial.get(),
+                        ModItems.Bottle.get(),
+                        ModItems.PillBottle.get(),
+                        ModItems.AutoInjector.get(),
+                        ModItems.AntiserumInjector.get(),
+                        ModItems.StreptokinaseInjector.get(),
+                        ModItems.ProcoagulantInjector.get(),
+                        ModItems.ReactionLiquidVial.get(),
+                        ModItems.OpiumVial.get(),
+                        ModItems.NaloxoneVial.get(),
+                        ModItems.MorphineVial.get(),
+                        ModItems.FentanylVial.get(),
+                        ModItems.CeftriaxoneVial.get()
+                );
 
         this.tag(ModItemTags.ALCOHOL_CREATABLE)
                 .add(

@@ -73,7 +73,18 @@ public class MultiTankFluidItem extends Item{
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltip, TooltipFlag flag) {
        appendDescription(stack,level,tooltip,flag);
-        appendFluidText(stack,level,tooltip,flag);
+       appendFluidText(stack,level,tooltip,flag);
+    }
+
+    @Override
+    public Component getName(ItemStack pStack) {
+        float scale = MultiTankHelper.getFilledTotal(pStack)/MultiTankHelper.getCapacity(pStack);
+        Component finalcomp = super.getName(pStack);
+        finalcomp = Component.empty().append(finalcomp)
+                .append(Component.literal(" (").withStyle(ChatFormatting.GRAY))
+                .append(Component.literal((int)((scale)*100)+"%").withStyle(Style.EMPTY.withColor(Util.getRedToGreenColor(scale))))
+                .append(Component.literal(")").withStyle(ChatFormatting.GRAY));
+        return finalcomp;
     }
 
     public void appendDescription(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {

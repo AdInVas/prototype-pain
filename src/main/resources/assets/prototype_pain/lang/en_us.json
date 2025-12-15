@@ -148,10 +148,10 @@
   "item.prototype_pain.bone_welding.description": "An experimental piece of technology. Welds the bone structure back together. Causes some damage on the way in.",
 
   "item.prototype_pain.lrd": "L.R.D",
-  "item.prototype_pain.lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. Many thank their lives to this piece of machinery.",
+  "item.prototype_pain.lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. Many thank their lives to this piece of machinery. Holds 75mb of fluid. Needs at least 25mb of LRD serum to function",
 
   "item.prototype_pain.makeshift_lrd": "Makeshift L.R.D",
-  "item.prototype_pain.makeshift_lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. This one seems to be crudely made.",
+  "item.prototype_pain.makeshift_lrd.description": "A Localized Resuscitation Device, made to easily provide effective general trauma care. This one seems to be crudely made. Holds 50mb of fluid. Needs at least 25mb of LRD serum to function",
 
   "item.prototype_pain.medical_suture": "Medical Suture",
   "item.prototype_pain.medical_suture.description": "Used to stitch wounds back together. Instantly stops most of the bleeding.",
@@ -170,6 +170,9 @@
 
   "item.prototype_pain.thermometer": "Thermometer",
   "item.prototype_pain.thermometer.description": "A small device that reads the temperature around the user.",
+
+  "item.prototype_pain.pill_bottle": "Pill bottle",
+  "item.prototype_pain.pill_bottle.description": "A small pill container, the dosage is 10mb.",
 
   "block.prototype_pain.scav_plushie": "Scav Plushie",
 
@@ -229,6 +232,9 @@
 
   "medical_fluid.prototype_pain.chocolate_milk": "Chocolate Milk",
   "medical_fluid.prototype_pain.chocolate_milk.description": "Who doesn't like chocolate milk?",
+
+  "medical_fluid.prototype_pain.lrd_serum": "LRD Serum",
+  "medical_fluid.prototype_pain.lrd_serum.description": "Special mixture used by a Localized Resuscitation Device. Does nothing when injected with other means. Unpleasant taste.",
 
 
   "key.protoype_pain.open_pain_gui": "Open Health Screen",
