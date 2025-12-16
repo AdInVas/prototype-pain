@@ -126,7 +126,7 @@ public class OverlayController {
         ensureFbos(w, h,ShaderList.size()+1);
 
         // 1️⃣ Copy main framebuffer → input
-        renderTargets.set(0, mc.getMainRenderTarget());
+        //renderTargets.set(0, mc.getMainRenderTarget());
         blit(mc.getMainRenderTarget(), renderTargets.get(0));
 
         int i =0;
@@ -170,9 +170,10 @@ public class OverlayController {
                     target.destroyBuffers();
                 }
 
-                TextureTarget newTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
+                TextureTarget newTarget = new TextureTarget(width, height, false, Minecraft.ON_OSX);
                 newTarget.setClearColor(1, 1, 1, 1);
                 newTarget.createBuffers(width, height, true);
+                //PrototypePain.LOGGER.info("TARGET MISMATCH: {}, {}",newTarget,i);
 
                 // ✅ store it back into the list
                 renderTargets.set(i, newTarget);

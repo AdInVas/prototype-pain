@@ -209,6 +209,9 @@ dependencies {
     //runtimeOnly(fg.deobf("maven.modrinth:figura:4HqSmvZ6"))
     //runtimeOnly(fg.deobf("maven.modrinth:simple-voice-chat:forge-1.20.1-2.5.35"))
 
+    runtimeOnly( fg.deobf("maven.modrinth:embeddium:UTbfe5d1"))
+    runtimeOnly(fg.deobf("maven.modrinth:oculus:iQ1SwGc3"))
+
     runtimeOnly(fg.deobf("curse.maven:prototype-physics-1380559:7206624"))
 
 
