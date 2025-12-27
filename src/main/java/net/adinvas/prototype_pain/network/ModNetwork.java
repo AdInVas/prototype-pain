@@ -44,5 +44,6 @@ public class ModNetwork {
         CHANNEL.registerMessage(id++, TriggerLastStandPacket.class,TriggerLastStandPacket::write,TriggerLastStandPacket::new,TriggerLastStandPacket::handle);
         CHANNEL.registerMessage(id++, BlindnessViewSyncPacket.class,BlindnessViewSyncPacket::encode,BlindnessViewSyncPacket::decode,BlindnessViewSyncPacket::handle);
         CHANNEL.registerMessage(id++,FluidSyncS2CPacket.class,FluidSyncS2CPacket::write,FluidSyncS2CPacket::new,FluidSyncS2CPacket::handle,Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(id++, AmputateRescrictionSyncPacket.class,AmputateRescrictionSyncPacket::encode,AmputateRescrictionSyncPacket::decode,AmputateRescrictionSyncPacket::handle,Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 }

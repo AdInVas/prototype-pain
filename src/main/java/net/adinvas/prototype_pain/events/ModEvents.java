@@ -6,6 +6,7 @@ import net.adinvas.prototype_pain.PrototypePain;
 import net.adinvas.prototype_pain.compat.FoodAndDrinkCompat;
 import net.adinvas.prototype_pain.limbs.Limb;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.network.AmputateRescrictionSyncPacket;
 import net.adinvas.prototype_pain.network.BlindnessViewSyncPacket;
 import net.adinvas.prototype_pain.network.ModNetwork;
 import net.adinvas.prototype_pain.network.SyncTracker;
@@ -78,9 +79,18 @@ public class ModEvents {
                     .getGameRules()
                     .getInt(ModGamerules.BLIDNESS_VIEW);
 
+            boolean valb = player.serverLevel()
+                    .getGameRules()
+                    .getBoolean(ModGamerules.AMPUTATION_RESTRICTION);
+
+
             ModNetwork.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> player),
                     new BlindnessViewSyncPacket(val)
+            );
+            ModNetwork.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> player),
+                    new AmputateRescrictionSyncPacket(valb)
             );
         }
     }
@@ -160,6 +170,25 @@ public class ModEvents {
             SyncTracker.tickEveryoneReducedBroadcast(server);
         }
         profiler.pop();
+    }
+
+    public int blindnessRangePrev = 48;
+    public boolean amputationRestrictionPrev = true;
+    @SubscribeEvent
+    public void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.level instanceof ServerLevel serverLevel) {
+            int blindnessRange = serverLevel.getGameRules().getInt(ModGamerules.BLIDNESS_VIEW);
+            boolean amputationRestriction = serverLevel.getGameRules().getBoolean(ModGamerules.AMPUTATION_RESTRICTION);
+
+            if (blindnessRange!=blindnessRangePrev){
+                ModNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(),new BlindnessViewSyncPacket(blindnessRange));
+                blindnessRangePrev = blindnessRange;
+            }
+            if (amputationRestriction!=amputationRestrictionPrev){
+                ModNetwork.CHANNEL.send(PacketDistributor.ALL.noArg(),new AmputateRescrictionSyncPacket(amputationRestriction));
+                amputationRestrictionPrev = amputationRestriction;
+            }
+        }
     }
 
     @SubscribeEvent

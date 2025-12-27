@@ -1236,6 +1236,7 @@ public class PlayerHealthData {
         }else{
             Stability = 100;
         }
+        blood = Math.max(0,blood);
     }
 
     public void calculateBrain(){

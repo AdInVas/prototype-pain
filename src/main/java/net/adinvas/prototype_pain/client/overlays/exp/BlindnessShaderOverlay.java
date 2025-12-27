@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.*;
 import net.adinvas.prototype_pain.PlayerHealthProvider;
 import net.adinvas.prototype_pain.events.ClientShaderEvents;
 import net.adinvas.prototype_pain.limbs.PlayerHealthData;
+import net.adinvas.prototype_pain.visual.ClientGamerules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -45,8 +46,12 @@ public class BlindnessShaderOverlay implements IShaderOverlay {
 
 
             // Tell Minecraft to use our shader
-            RenderSystem.setShaderTexture(0, input.getColorTextureId());
+            RenderSystem.setShaderTexture(0,input.getColorTextureId());
+            RenderSystem.setShaderTexture(1,mc.getMainRenderTarget().getDepthTextureId());
             RenderSystem.setShader(() -> shader);
+
+            shader.safeGetUniform("DistanceMin").set(0.0f);
+            shader.safeGetUniform("DistanceMax").set((float) ClientGamerules.blindnessViewDistance);
 
             Tesselator tesselator = Tesselator.getInstance();
             BufferBuilder buf = tesselator.getBuilder();
@@ -61,8 +66,7 @@ public class BlindnessShaderOverlay implements IShaderOverlay {
             BufferUploader.drawWithShader(buf.end());
 
             RenderSystem.setShaderTexture(0, 0);
-
-
+            RenderSystem.setShaderTexture(1, 0);
         }
     }
 }

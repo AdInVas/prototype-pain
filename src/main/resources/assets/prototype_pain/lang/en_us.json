@@ -46,7 +46,10 @@
   "item.prototype_pain.sterilized_dressing.description": "Cleans and covers wounds, preventing infection.",
 
   "item.prototype_pain.bottle": "Bottle",
-  "item.prototype_pain.bottle.description": "A plastic bottle that can hold 0.5L of liquid.",
+  "item.prototype_pain.bottle.description": "A plastic bottle that can hold 0.25L of liquid.",
+
+  "item.prototype_pain.alcohol": "Alcohol Bottle",
+  "item.prototype_pain.alcohol.description": "A glass bottle that can hold 0.5L of liquid.",
 
   "item.prototype_pain.ice_pack": "Ice Pack",
   "item.prototype_pain.ice_pack.description": "Reduces swelling and eases sore muscles.",
@@ -173,6 +176,9 @@
 
   "item.prototype_pain.pill_bottle": "Pill bottle",
   "item.prototype_pain.pill_bottle.description": "A small pill container, the dosage is 10mb.",
+
+  "item.prototype_pain.autoinjector": "Auto Injector",
+  "item.prototype_pain.autoinjector.description": "A 100ml bottle with an autoinjector attached. The dosage is 34ml.",
 
   "block.prototype_pain.scav_plushie": "Scav Plushie",
 

@@ -2,12 +2,15 @@
   "vertex": "prototype_pain:pass_trough",
   "fragment": "prototype_pain:fullblind",
   "samplers": [
-    { "name": "Sampler0" }
+    { "name": "Sampler0" },
+    { "name": "Sampler1" }
   ],
   "attributes": [
     "Position",
     "UV0"
   ],
   "uniforms": [
+    { "name": "DistanceMin", "type": "float", "count": 1, "values": [0.0] },
+    { "name": "DistanceMax", "type": "float", "count": 1, "values": [16.0] }
   ]
 }

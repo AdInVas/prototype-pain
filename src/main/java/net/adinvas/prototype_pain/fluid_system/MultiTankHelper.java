@@ -156,7 +156,8 @@ public class MultiTankHelper {
 
             // copy drained fluid
             FluidStack out = new FluidStack(fs.getFluid(), amountToDrain);
-            if (fs.hasTag()) out.setTag(fs.getTag().copy());
+            if (!out.isEmpty())
+                if (fs.hasTag()) out.setTag(fs.getTag().copy());
 
             drained.add(out);
 

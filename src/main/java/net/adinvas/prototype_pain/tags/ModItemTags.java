@@ -16,6 +16,7 @@ public class ModItemTags {
     public static TagKey<Item> DRESSINGS = tag("dressings");
     public static TagKey<Item> ALCOHOL_CREATABLE = tag("alcohol_create");
     public static TagKey<Item> CAUTERIZE = tag("medical_cauterize");
+    public static TagKey<Item> AMPUTATE_MINIGAME = tag("amputate_minigame");
 
 
     private static TagKey<Item> tag(String name) {

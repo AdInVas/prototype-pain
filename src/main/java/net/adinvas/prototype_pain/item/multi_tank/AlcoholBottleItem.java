@@ -8,6 +8,11 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class AlcoholBottleItem extends BottleItem{
     @Override
+    public int getCapacity() {
+        return 500;
+    }
+
+    @Override
     public void setupDefault(ItemStack pStack) {
         MultiTankHelper.addMedicalFluid(pStack,500, ModMedicalFluids.ALCOHOL.getId().toString(),new FluidStack(ModFluids.SRC_MEDICAL.get().getSource(),1));
     }
