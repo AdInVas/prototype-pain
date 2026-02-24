@@ -1,0 +1,396 @@
+{
+
+  "prototype_pain.gui.tourniquet_button": "Снять жгут",
+  "prototype_pain.gui.dislocation_button": "Вправить вывих",
+  "prototype_pain.gui.shrapnel_button": "Удалить осколки",
+  "prototype_pain.gui.splint_button": "Снять шину",
+
+  "prototype_pain.limb.chest": "Торс",
+  "prototype_pain.limb.lfoot": "Левая стопа",
+  "prototype_pain.limb.head": "Голова",
+  "prototype_pain.limb.rleg": "Правая нога",
+  "prototype_pain.limb.rfoot": "Правая стопа",
+  "prototype_pain.limb.lleg": "Левая нога",
+  "prototype_pain.limb.larm": "Левая рука",
+  "prototype_pain.limb.lhand": "Левая кисть",
+  "prototype_pain.limb.rarm": "Правая рука",
+  "prototype_pain.limb.rhand": "Правая кисть",
+
+  "prototype_pain.gui.inject": "Ввести",
+  "prototype_pain.gui.give_up": "Нажмите %1$s, чтобы сдаться.",
+  "prototype_pain.gui.fluid_screen": "Нажмите %1$s, чтобы открыть меню жидкостей",
+  "prototype_pain.gui.syringe_instruction": "Нажмите на шприц, чтобы ввести препарат. Убедитесь, что проверили дозировку.",
+  "prototype_pain.gui.minigame_exit": "Нажмите ESC чтобы выйти",
+
+  "death.attack.give_up": "%1$s сдался",
+  "death.attack.bleed": "%1$s потерял слишком много крови",
+  "death.attack.heavy_bleed": "%1$s полностью вытек кровью",
+  "death.attack.internal_bleed": "%1$s понял, что кровь должна быть в венах.",
+  "death.attack.opioids": "%1$s принял слишком много обезболивающих",
+  "death.attack.oxygen": "%1$s забыл подышать",
+
+  "death.attack.give_up.player": "%1$s сдался при взаимодействии с %2$s",
+  "death.attack.bleed.player": "%1$s потерял слишком много крови благодаря %2$s",
+  "death.attack.heavy_bleed.player": "%1$s полностью вытек кровью после встречи с %2$s",
+  "death.attack.internal_bleed.player": "%1$s обнаружил кровь не на своём месте благодаря %2$s",
+  "death.attack.opioids.player": "%1$s получил передозировку из-за %2$s",
+  "death.attack.oxygen.player": "%1$s забыл подышать, сражаясь с %2$s",
+
+  "item.prototype_pain.dressing": "Бинт",
+  "item.prototype_pain.dressing.discription": "Обычный бинт для закрытия и защиты ран.",
+
+  "item.prototype_pain.plastic_dressing": "Окклюзионная повязка",
+  "item.prototype_pain.plastic_dressing.discription": "Усиленная повязка, более эффективно защищающая раны.",
+
+  "item.prototype_pain.sterilized_dressing": "Стерильная повязка",
+  "item.prototype_pain.sterilized_dressing.discription": "Очищает и закрывает раны, предотвращая заражение.",
+
+  "item.prototype_pain.alcohol": "Бутылка спирта",
+  "item.prototype_pain.alcohol.discription": "Стеклянная бутылка, вмещающая 0.4 л жидкости.",
+
+  "item.prototype_pain.ice_pack": "Пакет со льдом",
+  "item.prototype_pain.ice_pack.discription": "Уменьшает отёки и облегчает боль в мышцах.",
+
+  "item.prototype_pain.aid_gel": "Обезболивающий гель",
+  "item.prototype_pain.aid_gel.discription": "Грубо изготовленный гель для лечения больных конечностей.",
+
+  "item.prototype_pain.saline": "Физраствор",
+  "item.prototype_pain.saline.discription": "Пакет с жидкостью объёмом 750мл и иглой.",
+
+  "item.prototype_pain.opium_vial": "Экстракт мака",
+  "item.prototype_pain.opium_vial.discription": "Флакон 100мл. Надпись о передозировке: 200мл.",
+
+  "item.prototype_pain.morphine_vial": "Морфин",
+  "item.prototype_pain.morphine_vial.discription": "Флакон 100мл. Надпись о передозировке: 90мл.",
+
+  "item.prototype_pain.heroin_vial": "Героин",
+  "item.prototype_pain.heroin_vial.discription": "Шприц на 150мл для внутривенных инъекций. Метки дозировки стерты.",
+
+  "item.prototype_pain.fentanyl_vial": "Фентанил",
+  "item.prototype_pain.fentanyl_vial.discription": "Флакон 100мл с разбавленным фентанилом. Надпись о передозировке: 20мл.",
+
+  "item.prototype_pain.naloxone_vial": "Налоксон",
+  "item.prototype_pain.naloxone_vial.discription": "Флакон 100мл. Надпись гласит \"Нал...\" — остальное неразборчиво.",
+
+  "item.prototype_pain.painkillers": "Обезболивающее",
+  "item.prototype_pain.painkillers.discription": "Таблетница 100мл. Доза — 10мл.",
+
+  "item.prototype_pain.antibiotics": "Антибиотики",
+  "item.prototype_pain.antibiotics.discription": "Таблетница с антибиотиками 100мл. Доза — 10мл.",
+
+  "item.prototype_pain.blood_clotting": "Гемостатик",
+  "item.prototype_pain.blood_clotting.discription": "Флакон 100мл с автоинъектором. Доза — 34мл.",
+
+  "item.prototype_pain.blood_thinner": "Антикоагулянт",
+  "item.prototype_pain.blood_thinner.discription": "Флакон 100мл с автоинъектором. Доза — 34мл.",
+
+  "item.prototype_pain.splint": "Шина",
+  "item.prototype_pain.splint.discription": "Стабилизирует сломанные кости и помогает заживлению.",
+
+  "item.prototype_pain.tweezers": "Пинцет",
+  "item.prototype_pain.tweezers.discription": "Удаляет осколки, стекло и мусор из ран.",
+
+  "item.prototype_pain.tourniquet": "Жгут",
+  "item.prototype_pain.tourniquet.discription": "Останавливает сильное кровотечение, но ограничивает кровоток.",
+
+  "item.prototype_pain.small_medibag": "Маленькая аптечка",
+  "item.prototype_pain.small_medibag.discription": "Компактная сумка для четырёх медицинских предметов.",
+
+  "item.prototype_pain.medium_medibag": "Средняя аптечка",
+  "item.prototype_pain.medium_medibag.discription": "Сбалансированный набор на восемь предметов.",
+
+  "item.prototype_pain.large_medibag": "Большая аптечка",
+  "item.prototype_pain.large_medibag.discription": "Вместительная аптечка на двенадцать предметов.",
+
+  "item.prototype_pain.band_aids": "Пластыри",
+  "item.prototype_pain.band_aid.discription": "Простые пластыри для небольших порезов и ушибов.",
+
+  "item.prototype_pain.glow_fruit": "Светящийся плод",
+  "item.prototype_pain.glow_fruit.discription": "Биолюминесцентное растение из пещер. Подавляет инфекции, но ядовито при употреблении.",
+
+  "item.prototype_pain.ceftriaxone": "Флакон цефтриаксона",
+  "item.prototype_pain.ceftriaxone.discription": "Флакон объёмом 100мл. Надпись о безопасной дозе: \"может варьироваться\".",
+
+  "item.prototype_pain.medicine_vial": "Флакон для лекарств",
+  "item.prototype_pain.medicine_vial.discription": "Флакон объёмом 100мл, предназначенный для лекарств.",
+
+  "item.prototype_pain.antiseptic": "Антисептик",
+  "item.prototype_pain.antiseptic.discription": "Флакон-спрей объёмом 200мл. Распыляет по 10мл за раз.",
+
+  "item.prototype_pain.relief_cream": "Обезболивающий крем",
+  "item.prototype_pain.relief_cream.discription": "Флакон объёмом 100мл. На этикетке предупреждение: \"Не использовать более 10 флаконов в день\".",
+
+  "item.prototype_pain.antiserum": "Антисыворотка",
+  "item.prototype_pain.antiserum.discription": "Флакон объёмом 100мл с автоинъектором. Дозировка — 50 мл.",
+
+  "item.prototype_pain.brain_grow": "Мозгорост",
+  "item.prototype_pain.brain_grow.discription": "Флакон объёмом 50мл. На этикетке написано: \"Принимать не более одной дозы в день\".",
+
+  "item.prototype_pain.syringe": "Шприц",
+  "item.prototype_pain.syringe.discription": "Шприц объёмом 100мл для внутривенных инъекций.",
+
+  "item.prototype_pain.old_rag": "Старая тряпка",
+  "item.prototype_pain.old_rag.discription": "Изношенный кусок ткани. Может использоваться как самодельная повязка.",
+
+  "item.prototype_pain.ripped_dressing": "Рваная повязка",
+  "item.prototype_pain.ripped_dressing.discription": "Изношенный кусок того, что раньше было бинтом. Может использоваться как самодельная повязка.",
+
+  "item.prototype_pain.bruise_kit": "Набор от ушибов",
+  "item.prototype_pain.bruise_kit.discription": "Комбинация различных лекарств для облегчения боли в мышцах. Не останавливает кровотечение.",
+
+  "item.prototype_pain.alganate_dressing": "Альгинатная повязка",
+  "item.prototype_pain.alganate_dressing.discription": "Специально обработанная повязка. Замедляет кровотечение и значительно ускоряет заживление кожи.",
+
+  "item.prototype_pain.medical_gauze": "Медицинская марля",
+  "item.prototype_pain.medical_gauze.discription": "Плетёная марля с обезболивающими веществами. Неплохо замедляет кровотечение и снижает боль от травм.",
+
+  "item.prototype_pain.bone_welding": "Инструмент для сращивания костей",
+  "item.prototype_pain.bone_welding.discription": "Экспериментальное устройство. Сваривает костную структуру обратно вместе. Наносит некоторый урон при применении.",
+
+  "item.prototype_pain.lrd": "У.Л.Р.",
+  "item.prototype_pain.lrd.discription": "Устройство Локальной Реанимации, созданное для эффективного оказания общей травматологической помощи. Многие обязаны этой машине своей жизнью.",
+
+  "item.prototype_pain.makeshift_lrd": "Самодельное У.Л.Р.",
+  "item.prototype_pain.makeshift_lrd.discription": "Устройство Локальной Реанимации для оказания общей травматологической помощи. Выглядит колхозно и кустарно сделанным.",
+
+  "item.prototype_pain.medical_suture": "Медицинский шовный набор",
+  "item.prototype_pain.medical_suture.discription": "Используется для зашивания ран. Мгновенно останавливает большую часть кровотечения.",
+
+  "item.prototype_pain.reaction_vial": "Флакон для лекарств",
+  "item.prototype_pain.reaction_vial.discription": "Флакон объёмом 100мл, предназначенный для лекарств.",
+
+  "item.prototype_pain.brown_cap": "Бурая шляпка",
+  "item.prototype_pain.brown_cap.discription": "Без понятия, что это за гриб. Он может как вылечить рак, так и убить на месте.",
+
+  "item.prototype_pain.heat_pack": "Грелка",
+  "item.prototype_pain.heat_pack.discription": "Чуть более крупная химическая грелка для рук. Немного помогает в восстановлении мышц.",
+
+  "item.prototype_pain.auto_pump": "Авто-насос",
+  "item.prototype_pain.auto_pump.discription": "Продвинутое устройство жизнеобеспечения со встроенными батареями. Поддерживает стабильный уровень кислорода, подаёт адреналин и энергию. Батареи работают около 5 минут. Используется на грудной клетке.",
+
+  "item.prototype_pain.thermometer": "Термометр",
+  "item.prototype_pain.thermometer.discription": "Небольшое устройство, измеряющее температуру вокруг пользователя.",
+
+  "block.prototype_pain.scav_plushie": "Плюшевая игрушка Скава",
+
+  "prototype_pain.fluid.opium": "Опиум",
+  "prototype_pain.fluid.opium.description": "Лёгкий опиат. Срабатывает слабее при приёме внутрь",
+
+  "prototype_pain.fluid.fentanyl": "Фентанил",
+  "prototype_pain.fluid.fentanyl.description": "Чрезвычайно опасный опиат. В сто раз сильнее морфина",
+
+  "prototype_pain.fluid.heroin": "Героин",
+  "prototype_pain.fluid.heroin.description": "Очень сильный опиат. Вызывает сильную зависимость",
+
+  "prototype_pain.fluid.morphine": "Морфин",
+  "prototype_pain.fluid.morphine.description": "Сильный опиат. Срабатывает слабее при приёме внутрь",
+
+  "prototype_pain.fluid.water": "Вода",
+  "prototype_pain.fluid.water.description": "Чистая вода. Без вкуса",
+
+  "prototype_pain.fluid.painkillers": "Обезболивающее",
+  "prototype_pain.fluid.painkillers.description": "Лекарство для снятия боли. Передозировка при 80мл",
+
+  "prototype_pain.fluid.braingrow": "Мозгорост",
+  "prototype_pain.fluid.braingrow.description": "Специальное лекарство для тяжёлых сотрясений и травм мозга. Может вызвать неприятные ощущения. Предназначено для приёма внутрь",
+
+  "prototype_pain.fluid.alcohol": "Спирт",
+  "prototype_pain.fluid.alcohol.description": "Высококонцентрированный спирт. Полезен для дезинфекции ран.",
+
+  "prototype_pain.fluid.antiseptic": "Антисептик",
+  "prototype_pain.fluid.antiseptic.description": "Мощный дезинфицирующий гель. Сильно жжёт.",
+
+  "prototype_pain.fluid.saline": "Физраствор",
+  "prototype_pain.fluid.saline.description": "Смесь воды, соли и минералов. Полезен для утоления жажды и восполнения жидкости в организме.",
+
+  "prototype_pain.fluid.antibiotics": "Антибиотики",
+  "prototype_pain.fluid.antibiotics.description": "Таблетки, повышающие сопротивляемость инфекциям. По какой-то причине на вкус как монеты.",
+
+  "prototype_pain.fluid.antiserum": "Антисыворотка",
+  "prototype_pain.fluid.antiserum.description": "Сыворотка крови с антителами. Помогает бороться с инфекциями. Немного увеличивает объём крови.",
+
+  "prototype_pain.fluid.ceftriaxone": "Цефтриаксон",
+  "prototype_pain.fluid.ceftriaxone.description": "Очень продвинутая форма инъекционного антибиотика. Может вызывать мучительную боль в груди.",
+
+  "prototype_pain.fluid.procoagulant": "Прокоагулянт",
+  "prototype_pain.fluid.procoagulant.description": "Простое средство свёртывания крови. В целом уменьшает кровотечение, но вызывает тромбообразование. Опасен при избытке.",
+
+  "prototype_pain.fluid.streptokinase": "Стрептокиназа",
+  "prototype_pain.fluid.streptokinase.description": "Разжижает кровь. Уменьшает свёртываемость. Может усилить кровотечение.",
+
+  "prototype_pain.fluid.naloxone": "Налоксон",
+  "prototype_pain.fluid.naloxone.description": "Распространённый антагонист опиатов. Используется для устранения передозировки.",
+
+  "prototype_pain.fluid.relief_cream": "Обезболивающий крем",
+  "prototype_pain.fluid.relief_cream.description": "Слабо антисептический крем с успокаивающим эффектом.",
+
+  "prototype_pain.fluid.reaction_liquid": "Реакционная жидкость",
+  "prototype_pain.fluid.reaction_liquid.description": "Слабокислая жидкость из светящихся плодов. Обладает реактивными свойствами.",
+
+  "key.protoype_pain.open_pain_gui": "Открыть экран здоровья",
+  "key.protoype_pain.give_up": "Сдаться",
+  "key.categories.prototype_pain": "Prototype: Pain",
+
+  "itemGroup.prototype_pain_tab": "Prototype: Pain",
+  "prototype_pain.gui.bandage_instruction1": "Обмотайте конечность бинтом, чтобы остановить кровотечение.",
+  "prototype_pain.gui.bandage_instruction2": " Необязательно использовать бинт полностью.",
+  "prototype_pain.gui.fluid_crafting": "Создание жидкостей",
+
+
+
+  "prototype_pain.gui.moodle.bleeding.title1": "Небольшое кровотечение",
+  "prototype_pain.gui.moodle.bleeding.description1": "Кровь вытекает медленно. Нет непосредственной опасности.",
+  "prototype_pain.gui.moodle.bleeding.title2": "Кровотечение",
+  "prototype_pain.gui.moodle.bleeding.description2": "Кровь вытекает из раны среднего размера. Рекомендуется лечение.",
+  "prototype_pain.gui.moodle.bleeding.title3": "Сильное кровотечение",
+  "prototype_pain.gui.moodle.bleeding.description3": "Большое количество крови покидает ваше тело. Требуется лечение.",
+  "prototype_pain.gui.moodle.bleeding.title4": "Катастрофическое кровотечение",
+  "prototype_pain.gui.moodle.bleeding.description4": "Кровь хлещет как из пожарного шланга. Срочно требуется лечение!",
+  "prototype_pain.gui.moodle.internal_bleeding.title3": "Внутреннее кровотечение",
+  "prototype_pain.gui.moodle.internal_bleeding.description3": "Оказывается, ваши органы и лёгкие — не то место, где должна быть кровь. Рекомендуется лечение.",
+  "prototype_pain.gui.moodle.brain_health.title1": "Когнитивные нарушения",
+  "prototype_pain.gui.moodle.brain_health.title2": "Неврологические повреждения",
+  "prototype_pain.gui.moodle.brain_health.title3": "Сильная нейрофизиологическая деградация",
+  "prototype_pain.gui.moodle.brain_health.title4": "Кома",
+  "prototype_pain.gui.moodle.brain_health.description1": "Нарушение мышления из-за повреждений мозга. Вы чувствуете странную растерянность...",
+  "prototype_pain.gui.moodle.brain_health.description2": "Сильный умственный дефицит. Способность мыслить и самостоятельно существовать сильно ограничена. Серьёзные повреждения мозга.",
+  "prototype_pain.gui.moodle.brain_health.description3": "реальность  ..  перестаёт   иметь   смысл",
+  "prototype_pain.gui.moodle.brain_health.description4": ". . .",
+  "prototype_pain.gui.moodle.consiousness.title1": "Дезориентирован",
+  "prototype_pain.gui.moodle.consiousness.title2": "Сильно дезориентирован",
+  "prototype_pain.gui.moodle.consiousness.title3": "Обморок",
+  "prototype_pain.gui.moodle.consiousness.title4": "Обездвижен",
+  "prototype_pain.gui.moodle.consiousness.title5": "Без сознания",
+  "prototype_pain.gui.moodle.consiousness.description1": "Чувствуете дезориентацию и лёгкое головокружение.",
+  "prototype_pain.gui.moodle.consiousness.description2": "Дезориентация и головокружение, трудно воспринимать происходящее вокруг.",
+  "prototype_pain.gui.moodle.consiousness.description3": "Едва в сознании, кажется, что можете рухнуть в любой момент.",
+  "prototype_pain.gui.moodle.consiousness.description4": "Едва стоите и понимаете происходящее. Почти ничего не чувствуете.",
+  "prototype_pain.gui.moodle.consiousness.description5": "Никакой реакции на внешние раздражители. Свет погас.",
+  "prototype_pain.gui.moodle.dirty.description1": "Стоит принять быстрый душ.",
+  "prototype_pain.gui.moodle.dirty.title1": "Грязный",
+  "prototype_pain.gui.moodle.dirty.title2": "Очень грязный",
+  "prototype_pain.gui.moodle.dirty.description2": "Вам может быть всё равно на гигиену, но не вашему иммунитету. Примите душ.",
+  "prototype_pain.gui.moodle.dislocation.title3": "Вывих сустава",
+  "prototype_pain.gui.moodle.dislocation.description3": "У вас вывих. Постарайтесь не использовать повреждённую конечность и найдите способ вправить её. Рекомендуется лечение.",
+  "prototype_pain.gui.moodle.fracture.title3": "Перелом кости",
+  "prototype_pain.gui.moodle.fracture.description3": "Вы что-то сломали. Старайтесь не использовать повреждённую конечность и как можно больше отдыхайте. Настоятельно рекомендуется лечение.",
+  "prototype_pain.gui.moodle.hemothorax.title3": "Гемоторакс",
+  "prototype_pain.gui.moodle.hemothorax.description3": "В плевральной полости скапливается кровь из-за внутреннего кровотечения. У вас болит грудь... Требуется лечение.",
+  "prototype_pain.gui.moodle.high_blood.title1": "Вздутие",
+  "prototype_pain.gui.moodle.high_blood.title2": "Гиперволемия",
+  "prototype_pain.gui.moodle.high_blood.title3": "Критическая гиперволемия",
+  "prototype_pain.gui.moodle.high_blood.title4": "Смертельная гиперволемия",
+  "prototype_pain.gui.moodle.high_blood.description1": "Дискомфорт. Повышенное давление.",
+  "prototype_pain.gui.moodle.high_blood.description2": "Тело вздуто, высокое давление, головокружение и головная боль.",
+  "prototype_pain.gui.moodle.high_blood.description3": "Сильное вздутие. Крайне высокое давление. Трудно стоять и думать.",
+  "prototype_pain.gui.moodle.high_blood.description4": "Сильная боль в груди... Жизненные показатели угасают. Объём и давление крови слишком высоки.",
+  "prototype_pain.gui.moodle.infection.title1": "Инфекция",
+  "prototype_pain.gui.moodle.infection.description1": "Место инфекции опухло и нагрелось. Требуется лечение. Необходимо найти средство, способное уничтожить инородные тела.",
+  "prototype_pain.gui.moodle.infection.title2": "Болезненная инфекция",
+  "prototype_pain.gui.moodle.infection.description2": "Место инфекции выделяет тёмный гной и сильнее опухает. Требуется лечение.",
+  "prototype_pain.gui.moodle.infection.title3": "Тяжёлая инфекция",
+  "prototype_pain.gui.moodle.infection.description3": "Инфекция быстро и болезненно распространяется по конечности. Возможен сепсис. Срочно требуется лечение.",
+  "prototype_pain.gui.moodle.infection.title4": "Угрожающая жизни инфекция",
+  "prototype_pain.gui.moodle.infection.description4": "Инфекция распространяется на другие конечности, начинается некроз. Развивается сепсис. Требуется экстренная помощь.",
+  "prototype_pain.gui.moodle.low_blood.title1": "Бледный",
+  "prototype_pain.gui.moodle.low_blood.description1": "Небольшая потеря крови. Слабость и бледная кожа.",
+  "prototype_pain.gui.moodle.low_blood.title2": "Гиповолемия",
+  "prototype_pain.gui.moodle.low_blood.description2": "Слабость и спутанность из-за кровопотери. Вам очень плохо. Рекомендуется лечение.",
+  "prototype_pain.gui.moodle.low_blood.title3": "Критическая гиповолемия",
+  "prototype_pain.gui.moodle.low_blood.description3": "Потеряно большое количество крови, вы едва в сознании. Зрение расплывается... Требуется лечение.",
+  "prototype_pain.gui.moodle.low_blood.title4": "Обескровливание",
+  "prototype_pain.gui.moodle.low_blood.description4": "Угрожающая жизни потеря крови. Скоро потеряете сознание. Сердце вот-вот остановится. Смерть неизбежна.",
+  "prototype_pain.gui.moodle.lung_faliure.title4": "Отказ лёгких",
+  "prototype_pain.gui.moodle.lung_faliure.description4": "Лёгкие слишком повреждены для работы из-за критически плохого состояния грудных мышц. Удушье неизбежно.",
+  "prototype_pain.gui.moodle.not_breathing.title4": "Остановка дыхания",
+  "prototype_pain.gui.moodle.not_breathing.description4": "Удушье! Потеря сознания и смерть неизбежны без лечения.",
+  "prototype_pain.gui.moodle.opiate.title1": "Под опиатом",
+  "prototype_pain.gui.moodle.opiate.description1": "Расслаблен и спокоен. Тело онемело.",
+  "prototype_pain.gui.moodle.opiate.title2": "Передозировка опиатами",
+  "prototype_pain.gui.moodle.opiate.description2": "Очень расслаблен, но лёгкие кажутся тяжёлыми. Немного сильнее усталость. Пока что это приятно...",
+  "prototype_pain.gui.moodle.opiate.title3": "Сильная передозировка опиатами",
+  "prototype_pain.gui.moodle.opiate.description3": "Трудно дышать, но сознание в эйфории. Это точно нездорово. Если бы это длилось вечно...",
+  "prototype_pain.gui.moodle.opiate.title4": "Смертельная передозировка опиоидами",
+  "prototype_pain.gui.moodle.opiate.description4": "Дыхательная недостаточность. Вы покидаете этот мир в наркотической эйфории. Повреждение мозга и смерть неизбежны.",
+  "prototype_pain.gui.moodle.oxygen.title1": "Гипоксемия",
+  "prototype_pain.gui.moodle.oxygen.description1": "Пониженный уровень кислорода в крови. Лёгкая спутанность сознания, кожа как резиновая. Что-то не так...",
+  "prototype_pain.gui.moodle.oxygen.title2": "Тяжёлая гипоксемия",
+  "prototype_pain.gui.moodle.oxygen.description2": "По телу циркулирует недостаточно кислорода. Головокружение и онемение конечностей. Всё очень плохо.",
+  "prototype_pain.gui.moodle.oxygen.title3": "Удушье",
+  "prototype_pain.gui.moodle.oxygen.description3": "Потеря сознания. Ткани лишены кислорода. Повреждение мозга неизбежно.",
+  "prototype_pain.gui.moodle.oxygen.title4": "Остановка сердца",
+  "prototype_pain.gui.moodle.oxygen.description4": "Сердце остановилось. Мозг умирает от нехватки кислорода. Всё тело быстро отключается. Смерть близка.",
+  "prototype_pain.gui.moodle.pain.title1": "Дискомфорт",
+  "prototype_pain.gui.moodle.pain.description1": "Чувствуется лёгкая боль.",
+  "prototype_pain.gui.moodle.pain.title2": "Боль",
+  "prototype_pain.gui.moodle.pain.description2": "Довольно больно. Недовольство медленно растёт.",
+  "prototype_pain.gui.moodle.pain.title3": "Сильная боль",
+  "prototype_pain.gui.moodle.pain.description3": "Полубессознательное состояние, разум затуманен от боли. Недовольство растёт.",
+  "prototype_pain.gui.moodle.pain.title4": "Агония",
+  "prototype_pain.gui.moodle.pain.description4": "Разрывающая сознание боль. Движение затруднено. Смерть сейчас кажется предпочтительнее. Недовольство быстро растёт.",
+  "prototype_pain.gui.moodle.shock.title3": "Шок",
+  "prototype_pain.gui.moodle.shock.description3": "Вы впадаете в шок от агонии.",
+  "prototype_pain.gui.moodle.low_temp.title1": "Прохладно",
+  "prototype_pain.gui.moodle.low_temp.description1": "Немного холодно и некомфортно.",
+  "prototype_pain.gui.moodle.low_temp.title2": "Холодно",
+  "prototype_pain.gui.moodle.low_temp.description2": "Неприятно холодно. Тело замедляется.",
+  "prototype_pain.gui.moodle.low_temp.title3": "Гипотермия",
+  "prototype_pain.gui.moodle.low_temp.description3": "Опасно низкая температура, тело и разум скованы холодом. Весь организм медленно отключается.",
+  "prototype_pain.gui.moodle.low_temp.title4": "Замерзание насмерть",
+  "prototype_pain.gui.moodle.low_temp.description4": "Вы скоро уснёте и больше не проснётесь. Спокойной ночи.",
+  "prototype_pain.gui.moodle.high_temp.title1": "Тепло",
+  "prototype_pain.gui.moodle.high_temp.description1": "Слишком тепло для комфорта.",
+  "prototype_pain.gui.moodle.high_temp.title2": "Жарко",
+  "prototype_pain.gui.moodle.high_temp.description2": "Неприятно жарко. Усилилась жажда.",
+  "prototype_pain.gui.moodle.high_temp.title3": "Гипертермия",
+  "prototype_pain.gui.moodle.high_temp.description3": "Опасно жарко. Вам всё труднее держаться... Жажда сильно возросла.",
+  "prototype_pain.gui.moodle.high_temp.title4": "Тепловой удар",
+  "prototype_pain.gui.moodle.high_temp.description4": "Клетки начинают умирать от сильной жары. Необратимые повреждения органов неизбежны.",
+  "prototype_pain.gui.moodle.withdrawal.title1": "Тяга к опиоидам",
+  "prototype_pain.gui.moodle.withdrawal.description1": "Вам очень нужна ещё одна доза.",
+  "prototype_pain.gui.moodle.withdrawal.title2": "Ломка",
+  "prototype_pain.gui.moodle.withdrawal.description2": "Организм отчаянно требует ещё одну дозу. Хочется блевать... Очень плохо. Рекомендуется лечение.",
+  "prototype_pain.gui.moodle.withdrawal.title3": "Тяжёлая ломка",
+  "prototype_pain.gui.moodle.withdrawal.description3": "Вас трясёт, вы с трудом держитесь, отчаянно нуждаясь в облегчении. Это ужасно. Требуется лечение.",
+  "prototype_pain.gui.moodle.withdrawal.title4": "Смерть от ломки",
+  "prototype_pain.gui.moodle.withdrawal.description4": "Организм больше не может существовать без опиатов, к которым привык. Сердце с трудом гоняет кислород по телу, что приводит к гипоксическому повреждению мозга во время отчаянного приступа.",
+  "prototype_pain.gui.dislocation_instruction1": "Вбейте кость на место, чтобы вправить вывих.",
+  "prototype_pain.gui.shrapnel_instruction": "Медленно извлекайте осколки из этой конечности. Используйте пинцет, чтобы игнорировать ограничение по скорости.",
+  "prototype_pain.gui.moodle.adrenaline.title1": "Адреналин",
+  "prototype_pain.gui.moodle.adrenaline.description1": "Боль притуплена. Вы в состоянии повышенной готовности.",
+  "prototype_pain.gui.moodle.life_support.description1": "Уровень кислорода и сознания поддерживается аппаратом жизнеобеспечения",
+  "prototype_pain.gui.moodle.life_support.title1": "Жизнеобеспечение",
+  "prototype_pain.gui.moodle.amputated.description1": "Одна из ваших конечностей была оторвана. Травмирующий опыт. Очевидно, использовать утраченную конечность больше невозможно.",
+  "prototype_pain.gui.moodle.amputated.title1": "Ампутация",
+  "prototype_pain.gui.moodle.fracture_chest.description3": "Рёбра сломаны, из-за чего дышать больно и намного тяжелее. Надеюсь, они не пробили лёгкие.",
+  "prototype_pain.gui.moodle.fracture_chest.title3": "Перелом рёбер",
+  "prototype_pain.gui.moodle.fracture_head.description3": "Шея сломана. Спинной мозг не разорван, но любое движение причиняет агонию. Физическая слабость ниже шеи.",
+  "prototype_pain.gui.moodle.fracture_head.title3": "Перелом шеи",
+  "prototype_pain.gui.moodle.dislocation_chest.title3": "Вывих позвоночника",
+  "prototype_pain.gui.moodle.dislocation_chest.description3": "Позвоночник вывихнут. Спинной мозг не разорван, но любое движение причиняет сильную боль. Физическая слабость ниже пояса.",
+  "prototype_pain.gui.moodle.dislocation_head.title3": "Вывих челюсти",
+  "prototype_pain.gui.moodle.dislocation_head.description3": "Челюсть вывихнута, речь нарушена, а приём пищи становится крайне болезненным.",
+  "prototype_pain.gui.moodle.eye_gone.title1": "Полуслепой",
+  "prototype_pain.gui.moodle.eye_gone.title2": "Слепой",
+  "prototype_pain.gui.moodle.eye_gone.description1": "Один из глаз вырван, поле зрения уменьшилось вдвое. Этот опыт оставил шрам. Не потеряйте второй.",
+  "prototype_pain.gui.moodle.eye_gone.description2": "Оба глаза вырваны. Вы можете ориентироваться только на ощупь и слух. По крайней мере, свет вам больше не нужен...",
+  "prototype_pain.gui.moodle.mouth_gone.title2": "Обезображен",
+  "prototype_pain.gui.moodle.mouth_gone.description2": "Нижняя челюсть была оторвана из-за тяжёлой травмы головы. Есть и говорить намного сложнее. Вы ужасно изуродованы этим опытом.",
+  "prototype_pain.gui.moodle.sound_loss.title1": "Нарушение слуха",
+  "prototype_pain.gui.moodle.sound_loss.title2": "Потеря слуха",
+  "prototype_pain.gui.moodle.sound_loss.title3": "Тяжёлая потеря слуха",
+  "prototype_pain.gui.moodle.sound_loss.description1": "Вы хуже слышите высокие частоты. Дайте ушам немного отдохнуть.",
+  "prototype_pain.gui.moodle.sound_loss.description2": "Все звуки приглушённые и отдают эхом. Это раздражает. Понадобится время.",
+  "prototype_pain.gui.moodle.sound_loss.description3": "Вы почти ничего не слышите. Это очень раздражает. Ушам понадобится много времени, чтобы восстановиться.",
+  "prototype_pain.gui.cpr_instruction1": "Выполняйте компрессии грудной клетки в ритме таймера.",
+  "prototype_pain.gui.cpr_instruction2": "Не сбейтесь.",
+
+  "item.prototype_pain.brown_cap_mush.discription": "Наверное, плохая идея это есть...",
+  "item.prototype_pain.brown_cap_mush": "Гриб \"Коричневая шляпка\"",
+  "item.prototype_pain.experimental_treatment": "Экспериментальное лечение",
+  "item.prototype_pain.experimental_treatment.discription1": "На этикетке написано:",
+  "item.prototype_pain.experimental_treatment.discription2": "ЭКСПЕРИМЕНТАЛЬНОЕ ЛЕЧЕНИЕ EX-8UN. Только для авторизованных участников исследования. Возможные эффекты:",
+  "item.prototype_pain.experimental_treatment.discription3": "Лёгкое головокружение; Постоянное головокружение; Энергия; Вялость; Металлический привкус; Внезапное кровотечение; Остановка сердца; Незначительное повреждение мозга; Серьёзное повреждение мозга; Остановка дыхания; Дежавю; Паранойя; Потеря конечностей; Рост конечностей; Голод; Рвота; Дежавю; Потеря памяти...",
+  "item.prototype_pain.experimental_treatment.discription4": "Список продолжается ещё на две строки."
+
+}
